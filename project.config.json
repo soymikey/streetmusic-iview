@@ -4,7 +4,7 @@
 	"description": "streetmusic-iview",
 	"appid": "wxacfe5ae4fd8e4010",
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": false,
 		"postcss": false,
 		"preloadBackgroundData": false,

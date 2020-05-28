@@ -1,3 +1,5 @@
+const path = require('path')
+
 const config = {
   projectName: 'streetmusic-iview',
   date: '2020-5-28',
@@ -34,6 +36,10 @@ const config = {
   copy: {
     patterns: [{ from: 'src/iview/', to: 'dist/iview/' }]
 
+  },
+  alias: {
+    '@/components': path.resolve(__dirname, '..', 'src/components'),
+    '@/utils': path.resolve(__dirname, '..', 'src/utils'),
   },
   mini: {
     postcss: {

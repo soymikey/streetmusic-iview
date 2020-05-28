@@ -3,7 +3,9 @@ import { View, Button, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 
 import { add, minus, asyncAdd } from '../../actions/counter'
-
+import Test from '@/components/test/test'
+import { toolbox } from '@/utils/tools.js'
+import { request } from '@/utils/request.js'
 import './index.scss'
 
 
@@ -33,9 +35,25 @@ class Index extends Component {
     console.log(this.props, nextProps)
   }
 
+  testRequest() {
+    // http://49.235.133.74:4001/api/categories/getList
+    request('http://49.235.133.74:4001/api/categories/getList', {}, '123', 'get',
+      function (res) {
+        //res就是我们请求接口返回的数据
+        console.log(res)
+      }, function () {
+        wx.showToast({
+          title: '加载数据失败',
+        })
+      })
+
+  }
   componentWillUnmount() { }
 
-  componentDidShow() { }
+
+  componentDidShow() {
+    this.testRequest()
+  }
 
   componentDidHide() { }
   clickHandler() {
@@ -44,8 +62,9 @@ class Index extends Component {
   render() {
     return (
       <View className='index'>
+        <Test ></Test>
         <i-button type='primary' onClick={this.clickHandler.bind(this)}>
-          只显示文本
+          {isDev()}
         </i-button>
         <Button className='add_btn' onClick={this.props.add}>+</Button>
         <Button className='dec_btn' onClick={this.props.dec}>-</Button>
