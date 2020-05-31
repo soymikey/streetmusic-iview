@@ -1,4 +1,25 @@
+@import '@/styles/variables.scss';
 .index {
   flex-direction: column;
   width: 100%;
+  background-color: #fff;
+  box-sizing: border-box;
+  padding: 10px;
+  .sub-cate {
+    margin-top: 20px;
+  }
+  .cate-icon {
+    margin: 10px auto;
+    width: 80px;
+    height: 80px;
+    line-height: 20px;
+    background-color: rgba(228, 70, 59, 1);
+    text-align: center;
+    border: 1px solid rgba(228, 70, 59, 1);
+  }
+  .cate-title {
+    text-align: center;
+    font-size: $size-s;
+    font-weight: bold;
+  }
 }

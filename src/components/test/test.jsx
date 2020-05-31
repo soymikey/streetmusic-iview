@@ -1,52 +1,49 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View, Button, Text } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import Taro, { Component } from '@tarojs/taro';
+import { View, Button, Text } from '@tarojs/components';
 
-import { add, minus, asyncAdd } from '../../actions/counter'
+import './test.scss';
 
-import './test.scss'
-
-
-@connect(({ counter }) => ({
-  counter
-}), (dispatch) => ({
-  add() {
-    dispatch(add())
-  },
-  dec() {
-    dispatch(minus())
-  },
-  asyncAdd() {
-    dispatch(asyncAdd())
-  }
-}))
 class Test extends Component {
-
+  // eslint-disable-next-line react/sort-comp
   config = {
-    navigationBarTitleText: '首页'
+    navigationBarTitleText: '首页',
+    usingComponents: {
+      'i-row': '../../iView/row/index',
+      'i-col': '../../iView/col/index',
+    },
+  };
+  constructor() {
+    super(...arguments);
+    this.state = {};
   }
-
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps)
+    console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
-  componentDidShow() { }
+  componentDidShow() {}
 
-  componentDidHide() { }
+  componentDidHide() {}
 
   render() {
     return (
       <View className='test'>
-        <Button className='add_btn' onClick={this.props.add}>+</Button>
-        <Button className='dec_btn' onClick={this.props.dec}>-</Button>
-        <Button className='dec_btn' onClick={this.props.asyncAdd}>async</Button>
-        <View><Text>{this.props.counter.num}</Text></View>
-        <View><Text>this is test</Text></View>
+        <i-row>
+          <i-col span='8' i-class='col-class'>
+            col-8
+          </i-col>
+          <i-col span='8' i-class='col-class'>
+            col-8
+          </i-col>
+          <i-col span='8' i-class='col-class'>
+            col-8
+          </i-col>
+        </i-row>
+        <Text>this is test</Text>
       </View>
-    )
+    );
   }
 }
 
-export default Test
+export default Test;

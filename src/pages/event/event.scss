@@ -1,0 +1,54 @@
+@import '@/styles/variables.scss';
+.event {
+  flex-direction: column;
+  width: 100%;
+  background-color: #fff;
+  .info-container {
+    padding: 10px;
+
+    .title-row {
+      color: $Title;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .sub-title-row {
+      font-size: $size-s;
+      color: $Content;
+      margin-top: 20px;
+    }
+    .tag-container {
+      margin-top: 20px;
+      .i-tags {
+        margin-right: 20px;
+        margin-top: 10px;
+      }
+    }
+
+    .icon-row {
+      margin-top: 20px;
+      .icon-wrapper {
+        text-align: center;
+        .number {
+          font-size: $size-s;
+          color: $Content;
+        }
+      }
+    }
+    .user-row {
+      height: 80px;
+      line-height: 80px;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      .follow-col {
+        text-align: right;
+      }
+    }
+  }
+  .recommend-row {
+    height: 40px;
+    line-height: 40px;
+    font-size: $size-s;
+    font-weight: bold;
+    padding: 10px;
+  }
+}

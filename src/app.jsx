@@ -1,11 +1,11 @@
-import Taro, { Component } from '@tarojs/taro'
-import { Provider } from '@tarojs/redux'
+import Taro, { Component } from '@tarojs/taro';
+import { Provider } from '@tarojs/redux';
 
-import Index from './pages/index'
+import Index from './pages/index';
 
-import configStore from './store'
+import configStore from './store';
 
-import './app.scss'
+import './app.scss';
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -13,22 +13,19 @@ import './app.scss'
 //   require('nerv-devtools')
 // }
 
-const store = configStore()
+const store = configStore();
 
 class App extends Component {
-
+  // eslint-disable-next-line react/sort-comp
   config = {
-    pages: [
-      'pages/index/index'
-    ],
+    pages: ['pages/index/index', 'pages/event/event', 'pages/singer/singer'],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      navigationBarTextStyle: 'black',
     },
     usingComponents: {
-
       // "i-action-sheet": "./iview/action-sheet/index",
       // "i-alert": "./iview/alert/index",
       // "i-avatar": "./iview/avatar/index",
@@ -80,15 +77,15 @@ class App extends Component {
       // "i-tag": "./iview/tag/index",
       // "i-toast": "./iview/toast/index",
     },
-  }
+  };
 
-  componentDidMount() { }
+  componentDidMount() {}
 
-  componentDidShow() { }
+  componentDidShow() {}
 
-  componentDidHide() { }
+  componentDidHide() {}
 
-  componentDidCatchError() { }
+  componentDidCatchError() {}
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
@@ -97,8 +94,8 @@ class App extends Component {
       <Provider store={store}>
         <Index />
       </Provider>
-    )
+    );
   }
 }
 
-Taro.render(<App />, document.getElementById('app'))
+Taro.render(<App />, document.getElementById('app'));

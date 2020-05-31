@@ -41,6 +41,8 @@ const config = {
     patterns: [{ from: 'src/iview/', to: 'dist/iview/' }],
   },
   alias: {
+    '@/asset': path.resolve(__dirname, '..', 'src/asset'),
+    '@/styles': path.resolve(__dirname, '..', 'src/styles'),
     '@/components': path.resolve(__dirname, '..', 'src/components'),
     '@/utils': path.resolve(__dirname, '..', 'src/utils'),
     '@/api': path.resolve(__dirname, '..', 'src/api'),
