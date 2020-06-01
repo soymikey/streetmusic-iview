@@ -63,49 +63,19 @@
       }
     }
   }
-  .tab-container {
-    padding: 20px;
-  }
+
   .tab-container {
     background-color: #fff;
-    .tab1 {
-      .row-tab1 {
-        .avatar {
-          padding-right: 20px;
-          padding-top: 20px;
-          text-align: center;
-        }
-        .username {
-          font-weight: bold;
-          font-size: $size-s;
-        }
-        .date {
-          font-size: $size-s;
-          margin-top: 20px;
-        }
-        .content {
-          margin-top: 20px;
-        }
-
-        .image {
-          margin-top: 20px;
-        }
-        .row-others {
-          margin-top: 20px;
-          text-align: center;
-        }
-      }
-    }
   }
 
-  .icon-row {
-    margin-top: 20px;
-    .icon-wrapper {
-      text-align: center;
-      .number {
-        font-size: $size-xs;
-        color: $Content;
-      }
+  .swiper {
+    .tab2 {
+      height: 300px;
+      background-color: red;
+    }
+    .tab3 {
+      height: 1500px;
+      background-color: yellow;
     }
   }
 }

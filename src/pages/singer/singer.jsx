@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro';
-import { View, Button, Text, Image } from '@tarojs/components';
+import { View, Button, Text, Image, Swiper, SwiperItem } from '@tarojs/components';
 import post1 from '@/asset/images/poster1.png';
-
+import Tab1 from './tab1/tab1';
 import './singer.scss';
 
 class Singer extends Component {
@@ -22,11 +22,16 @@ class Singer extends Component {
   constructor() {
     super(...arguments);
     this.state = {
-      tabList: ['选项1', '选项2', '选项3'],
+      tabList: [
+        { key: 0, label: '选项1' },
+        { key: 1, label: '选项2' },
+        { key: 2, label: '选项3' },
+      ],
       tagList: ['15后', 'Lv.6', '北京', '白羊座'],
       colorList: ['blue', 'green', 'red', 'yellow', 'default'],
-      currentTab: '选项1',
+      currentTab: 2,
       iconList: ['like', 'share', 'document', 'collection'],
+      swiperHeight: 0,
     };
   }
   iconHandler(icon) {
@@ -40,6 +45,28 @@ class Singer extends Component {
   }
   onChangeTab(e) {
     const value = e.detail.key;
+    this.setSwiperHeight(value);
+    this.setState({ currentTab: value });
+  }
+
+  componentDidMount() {
+    this.setSwiperHeight(this.state.currentTab);
+  }
+  setSwiperHeight(value) {
+    let height = 0;
+    const query = Taro.createSelectorQuery();
+
+    query
+      .selectAll('#tab')
+      .boundingClientRect(rec => {
+        height = rec[value].height;
+        this.setState({ swiperHeight: height });
+      })
+      .exec();
+  }
+  onChangeSwiper(e) {
+    const value = e.detail.current;
+    this.setSwiperHeight(value);
     this.setState({ currentTab: value });
   }
   componentWillReceiveProps(nextProps) {
@@ -53,7 +80,16 @@ class Singer extends Component {
   componentDidHide() {}
 
   render() {
-    const { tagList, colorList, tabList, currentTab, iconList } = this.state;
+    const {
+      tagList,
+      colorList,
+      tabList,
+      currentTab,
+      iconList,
+      swiperHeight,
+      scrollTop,
+    } = this.state;
+
     return (
       <View className='singer'>
         <View className='singer-info'>
@@ -100,117 +136,46 @@ class Singer extends Component {
             })}
           </View>
         </View>
-        <View className='tabs-container'>
+        <View
+          className='tabs-container'
+          style='position:sticky;position: -webkit-sticky;top:0;z-index: 999;'>
           <i-tabs current={currentTab} onChange={this.onChangeTab.bind(this)}>
             {tabList.map(item => {
-              return <i-tab key={item} title={item} type='border' count='3'></i-tab>;
+              return (
+                <i-tab
+                  key={item.key}
+                  title={item.label}
+                  type='border'
+                  count='3'></i-tab>
+              );
             })}
           </i-tabs>
         </View>
-        <View className='tab-container'>
-          <View className='tab1'>
-            <i-row i-class='row-tab1'>
-              <i-col span='4' i-class='col-class avatar'>
-                <i-avatar
-                  src='https://i.loli.net/2017/08/21/599a521472424.jpg'
-                  size='large'
-                />
-              </i-col>
-              <i-col span='20' i-class='col-class'>
-                <i-row i-class='row-title'>
-                  <i-col span='24' i-class='col-class'>
-                    <View className='username'>
-                      <Text>网易云小秘书 发布视频：</Text>
-                    </View>
-                  </i-col>
-                  <i-col span='24' i-class='col-class'>
-                    <View className='date'>
-                      <Text> 昨天06：28</Text>
-                    </View>
-                  </i-col>
-                  <i-col span='24' i-class='col-class'>
-                    <View className='content'>
-                      <Text>
-                        #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！
-                      </Text>
-                    </View>
-                  </i-col>
-                  <i-col span='24' i-class='col-class'>
-                    <View className='image'>
-                      <Image src={post1} style='width: 100%;height:150px' />
-                    </View>
-                  </i-col>
-
-                  <i-row i-class='icon-row'>
-                    {iconList.map(item => {
-                      return (
-                        <i-col key={item} span='6' i-class='col-class icon-wrapper'>
-                          {/* <i-icon size={40} type='like_fill' /> */}
-                          <View onClick={this.iconHandler.bind(this, item)}>
-                            <i-icon size={30} type={item} />
-                          </View>
-                          <View className='number'>
-                            <Text>32423</Text>
-                          </View>
-                        </i-col>
-                      );
-                    })}
-                  </i-row>
-                </i-row>
-              </i-col>
-            </i-row>
-            <i-row i-class='row-tab1'>
-              <i-col span='4' i-class='col-class avatar'>
-                <i-avatar
-                  src='https://i.loli.net/2017/08/21/599a521472424.jpg'
-                  size='large'
-                />
-              </i-col>
-              <i-col span='20' i-class='col-class'>
-                <i-row i-class='row-title'>
-                  <i-col span='24' i-class='col-class'>
-                    <View className='username'>
-                      <Text>网易云小秘书 发布视频：</Text>
-                    </View>
-                  </i-col>
-                  <i-col span='24' i-class='col-class'>
-                    <View className='date'>
-                      <Text> 昨天06：28</Text>
-                    </View>
-                  </i-col>
-                  <i-col span='24' i-class='col-class'>
-                    <View className='content'>
-                      <Text>
-                        #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！
-                      </Text>
-                    </View>
-                  </i-col>
-                  <i-col span='24' i-class='col-class'>
-                    <View className='image'>
-                      <Image src={post1} style='width: 100%;height:150px' />
-                    </View>
-                  </i-col>
-
-                  <i-row i-class='icon-row'>
-                    {iconList.map(item => {
-                      return (
-                        <i-col key={item} span='6' i-class='col-class icon-wrapper'>
-                          {/* <i-icon size={40} type='like_fill' /> */}
-                          <View onClick={this.iconHandler.bind(this, item)}>
-                            <i-icon size={30} type={item} />
-                          </View>
-                          <View className='number'>
-                            <Text>32423</Text>
-                          </View>
-                        </i-col>
-                      );
-                    })}
-                  </i-row>
-                </i-row>
-              </i-col>
-            </i-row>
-          </View>
-        </View>
+        <Swiper
+          style={'height:' + swiperHeight + 'px;background-color:#fff;'}
+          current={currentTab}
+          id='swiper'
+          className='swiper'
+          indicatorColor='#999'
+          indicatorActiveColor='#333'
+          onChange={this.onChangeSwiper.bind(this)}
+          circular>
+          <SwiperItem>
+            <View className='tab1' id='tab'>
+              <Tab1 />
+            </View>
+          </SwiperItem>
+          <SwiperItem>
+            <View className='tab2' id='tab'>
+              2
+            </View>
+          </SwiperItem>
+          <SwiperItem>
+            <View className='tab3' id='tab'>
+              3
+            </View>
+          </SwiperItem>
+        </Swiper>
       </View>
     );
   }
