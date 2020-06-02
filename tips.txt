@@ -8,3 +8,4 @@ box-sizing:border-box
 }
 
 Taro create --name [页面名称]
+微信小程序之上拉加载与下拉刷新 https://www.jianshu.com/p/d89e79d09e64

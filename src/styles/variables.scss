@@ -35,3 +35,27 @@ $Border: #dddee1;
 $Divider: #e9eaec;
 // 背景
 $Background: #f8f8f9;
+
+.primary {
+  background: $Primary;
+  color: #fff;
+}
+.info {
+  background: $Info;
+  color: #fff;
+}
+.success {
+  background: $Success;
+  color: #fff;
+}
+.warning {
+  background: $Warning;
+  color: #fff;
+}
+.error {
+  background: $Error;
+  color: #fff;
+}
+.tabbar-container {
+  position: fixed;
+}

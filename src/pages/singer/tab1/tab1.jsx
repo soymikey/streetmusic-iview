@@ -1,48 +1,33 @@
 import Taro, { Component } from '@tarojs/taro';
-import { View, Button, Text, Image } from '@tarojs/components';
-import post1 from '@/asset/images/poster1.png';
+import { View, Button, Text } from '@tarojs/components';
 
 import './tab1.scss';
 
 class Tab1 extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
-    navigationBarTitleText: '',
+    navigationBarTitleText: '首页',
+
     usingComponents: {
       'i-row': '../../../iView/row/index',
       'i-col': '../../../iView/col/index',
-
-      'i-avatar': '../../../iView/avatar/index',
-
-      'i-icon': '../../../iView/icon/index',
+      'i-cell-group': '../../../iView/cell-group/index',
+      'i-cell': '../../../iView/cell/index',
+      'i-switch': '../../../iView/switch/index',
+      'i-tag': '../../../iView/tag/index',
+      'i-button': '../../../iView/button/index',
+      'i-divider': '../../../iView/divider/index',
     },
   };
-
+  static defaultProps = {
+    loading: false,
+    _songList: [],
+  };
   constructor() {
     super(...arguments);
-    this.state = {
-      tabList: [
-        { key: 0, label: '选项1' },
-        { key: 1, label: '选项2' },
-        { key: 2, label: '选项3' },
-      ],
-      tagList: ['15后', 'Lv.6', '北京', '白羊座'],
-      colorList: ['blue', 'green', 'red', 'yellow', 'default'],
-      currentTab: 2,
-      iconList: ['like', 'share', 'document', 'collection'],
-      swiperHeight: 0,
-    };
+    this.state = {};
   }
 
-  iconHandler(icon) {
-    const index = this.state.iconList.findIndex(item => item === icon);
-    const newIcon =
-      icon.indexOf('_fill') === -1 ? icon + '_fill' : icon.split('_fill')[0];
-    // this.state.iconList.splice(index, 1, newIcon);
-    // console.log(this.state.iconList);
-    this.state.iconList.splice(index, 1, newIcon);
-    this.setState({ iconList: this.state.iconList });
-  }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
@@ -54,118 +39,23 @@ class Tab1 extends Component {
   componentDidHide() {}
 
   render() {
-    const {
-      tagList,
-      colorList,
-      tabList,
-      currentTab,
-      iconList,
-      swiperHeight,
-      scrollTop,
-    } = this.state;
-
+    const { _songList, _loading } = this.props;
+    console.log('_songList', _songList);
+    console.log('_loading', _loading);
     return (
-      <View className='tab1'>
-        <i-row i-class='row-tab1'>
-          <i-col span='4' i-class='col-class avatar'>
-            <i-avatar
-              src='https://i.loli.net/2017/08/21/599a521472424.jpg'
-              size='large'
-            />
-          </i-col>
-          <i-col span='20' i-class='col-class'>
-            <i-row i-class='row-title'>
-              <i-col span='24' i-class='col-class'>
-                <View className='username'>
-                  <Text>网易云小秘书 发布视频：</Text>
-                </View>
-              </i-col>
-              <i-col span='24' i-class='col-class'>
-                <View className='date'>
-                  <Text> 昨天06：28</Text>
-                </View>
-              </i-col>
-              <i-col span='24' i-class='col-class'>
-                <View className='content'>
-                  <Text>
-                    #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！
-                  </Text>
-                </View>
-              </i-col>
-              <i-col span='24' i-class='col-class'>
-                <View className='image'>
-                  <Image src={post1} style='width: 100%;height:150px' />
-                </View>
-              </i-col>
-
-              <i-row i-class='icon-row'>
-                {iconList.map(item => {
-                  return (
-                    <i-col key={item} span='6' i-class='col-class icon-wrapper'>
-                      {/* <i-icon size={40} type='like_fill' /> */}
-                      <View onClick={this.iconHandler.bind(this, item)}>
-                        <i-icon size={30} type={item} />
-                      </View>
-                      <View className='number'>
-                        <Text>32423</Text>
-                      </View>
-                    </i-col>
-                  );
-                })}
-              </i-row>
-            </i-row>
-          </i-col>
-        </i-row>
-        <i-row i-class='row-tab1'>
-          <i-col span='4' i-class='col-class avatar'>
-            <i-avatar
-              src='https://i.loli.net/2017/08/21/599a521472424.jpg'
-              size='large'
-            />
-          </i-col>
-          <i-col span='20' i-class='col-class'>
-            <i-row i-class='row-title'>
-              <i-col span='24' i-class='col-class'>
-                <View className='username'>
-                  <Text>网易云小秘书 发布视频：</Text>
-                </View>
-              </i-col>
-              <i-col span='24' i-class='col-class'>
-                <View className='date'>
-                  <Text> 昨天06：28</Text>
-                </View>
-              </i-col>
-              <i-col span='24' i-class='col-class'>
-                <View className='content'>
-                  <Text>
-                    #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！
-                  </Text>
-                </View>
-              </i-col>
-              <i-col span='24' i-class='col-class'>
-                <View className='image'>
-                  <Image src={post1} style='width: 100%;height:150px' />
-                </View>
-              </i-col>
-
-              <i-row i-class='icon-row'>
-                {iconList.map(item => {
-                  return (
-                    <i-col key={item} span='6' i-class='col-class icon-wrapper'>
-                      {/* <i-icon size={40} type='like_fill' /> */}
-                      <View onClick={this.iconHandler.bind(this, item)}>
-                        <i-icon size={30} type={item} />
-                      </View>
-                      <View className='number'>
-                        <Text>32423</Text>
-                      </View>
-                    </i-col>
-                  );
-                })}
-              </i-row>
-            </i-row>
-          </i-col>
-        </i-row>
+      <View className='index'>
+        <i-cell-group>
+          {_songList.map(item => {
+            return (
+              <i-cell key={item.name} title={item.name} label={item.price}>
+                <Button slot='footer' size='mini' className='primary'>
+                  点歌
+                </Button>
+              </i-cell>
+            );
+          })}
+        </i-cell-group>
+        <i-divider content='加载已经完成,没有其他数据'></i-divider>
       </View>
     );
   }

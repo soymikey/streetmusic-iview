@@ -18,12 +18,49 @@ const store = configStore();
 class App extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
-    pages: ['pages/index/index', 'pages/event/event', 'pages/singer/singer'],
+    pages: [
+      'pages/index/index',
+      'pages/singer/singer',
+      'pages/event/event',
+      'pages/news/news',
+      'pages/order/order',
+      'pages/user/user',
+    ],
     window: {
+      enablePullDownRefresh: true,
+      onReachBottomDistance: 100,
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black',
+    },
+    tabBar: {
+      color: '#7a7a7a',
+      selectedColor: '#006dcc',
+      backgroundColor: '#fafafa',
+      borderStyle: 'black',
+      list: [
+        {
+          pagePath: 'pages/index/index',
+
+          text: '首页',
+        },
+        {
+          pagePath: 'pages/news/news',
+
+          text: '动态',
+        },
+        {
+          pagePath: 'pages/order/order',
+
+          text: '订单',
+        },
+        {
+          pagePath: 'pages/user/user',
+
+          text: '我的',
+        },
+      ],
     },
     usingComponents: {
       // "i-action-sheet": "./iview/action-sheet/index",
@@ -79,7 +116,9 @@ class App extends Component {
     },
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    Taro.hideTabBar();
+  }
 
   componentDidShow() {}
 
