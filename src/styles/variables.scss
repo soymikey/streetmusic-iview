@@ -59,3 +59,8 @@ $Background: #f8f8f9;
 .tabbar-container {
   position: fixed;
 }
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -20,8 +20,7 @@ class Tab1 extends Component {
     },
   };
   static defaultProps = {
-    loading: false,
-    _songList: [],
+    list: [],
   };
   constructor() {
     super(...arguments);
@@ -29,7 +28,7 @@ class Tab1 extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
+    // console.log(this.props, nextProps);
   }
 
   componentWillUnmount() {}
@@ -39,13 +38,12 @@ class Tab1 extends Component {
   componentDidHide() {}
 
   render() {
-    const { _songList, _loading } = this.props;
-    console.log('_songList', _songList);
-    console.log('_loading', _loading);
+    const { list } = this.props;
+
     return (
       <View className='index'>
         <i-cell-group>
-          {_songList.map(item => {
+          {list.map(item => {
             return (
               <i-cell key={item.name} title={item.name} label={item.price}>
                 <Button slot='footer' size='mini' className='primary'>

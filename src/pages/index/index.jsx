@@ -114,11 +114,11 @@ class Index extends Component {
             </View>
           </i-col>
         </i-row>
-        <i-divider></i-divider>
+        <i-divider height={24}></i-divider>
         <SixBlockComp title='推荐歌单' />
-        <i-divider></i-divider>
+        <i-divider height={24}></i-divider>
         <SixBlockComp title='热门歌单' />
-        <i-divider></i-divider>
+        <i-divider height={24}></i-divider>
         <OneBlockComp />
         <View className='tabbar-container'>
           <TabbarComp currentTab='index' />

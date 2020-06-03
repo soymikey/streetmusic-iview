@@ -68,7 +68,7 @@ class TabbarComp extends Component {
       <View className='tabbar-container'>
         <i-tab-bar
           current={currentTab}
-          color='#f759ab'
+          color='#2d8cf0'
           onChange={this.onChangeTabbar.bind(this)}>
           <i-tab-bar-item
             key='index'
@@ -83,8 +83,8 @@ class TabbarComp extends Component {
             title='动态'></i-tab-bar-item>
           <i-tab-bar-item
             key='order'
-            icon='group'
-            current-icon='group_fill'
+            icon='document'
+            current-icon='document_fill'
             title='订单'></i-tab-bar-item>
 
           <i-tab-bar-item

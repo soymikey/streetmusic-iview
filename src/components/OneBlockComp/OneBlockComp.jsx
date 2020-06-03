@@ -63,7 +63,7 @@ class OneBlockComp extends Component {
                   <Text className='username'>hwllow world</Text>
                 </i-col>
               </i-row>
-              <i-divider height={20}></i-divider>
+              <i-divider height={24}></i-divider>
             </View>
           );
         })}

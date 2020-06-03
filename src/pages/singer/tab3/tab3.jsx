@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Image } from '@tarojs/components';
-import post1 from '@/asset/images/poster1.png';
 
 import './tab3.scss';
 
@@ -13,11 +12,14 @@ class Tab3 extends Component {
       'i-col': '../../../iView/col/index',
 
       'i-avatar': '../../../iView/avatar/index',
-
+      'i-divider': '../../../iView/divider/index',
       'i-icon': '../../../iView/icon/index',
+      'i-divider': '../../../iView/divider/index',
     },
   };
-
+  static defaultProps = {
+    list: [],
+  };
   constructor() {
     super(...arguments);
     this.state = {
@@ -38,13 +40,12 @@ class Tab3 extends Component {
     const index = this.state.iconList.findIndex(item => item === icon);
     const newIcon =
       icon.indexOf('_fill') === -1 ? icon + '_fill' : icon.split('_fill')[0];
-    // this.state.iconList.splice(index, 1, newIcon);
-    // console.log(this.state.iconList);
+
     this.state.iconList.splice(index, 1, newIcon);
     this.setState({ iconList: this.state.iconList });
   }
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
+    // console.log(this.props, nextProps);
   }
 
   componentWillUnmount() {}
@@ -54,118 +55,89 @@ class Tab3 extends Component {
   componentDidHide() {}
 
   render() {
-    const {
-      tagList,
-      colorList,
-      tabList,
-      currentTab,
-      iconList,
-      swiperHeight,
-      scrollTop,
-    } = this.state;
-
+    // const { iconList } = this.state;
+    const { list } = this.props;
     return (
       <View className='tab3'>
-        <i-row i-class='row-tab3'>
-          <i-col span='4' i-class='col-class avatar'>
-            <i-avatar
-              src='https://i.loli.net/2017/08/21/599a521472424.jpg'
-              size='large'
-            />
-          </i-col>
-          <i-col span='20' i-class='col-class'>
-            <i-row i-class='row-title'>
-              <i-col span='24' i-class='col-class'>
-                <View className='username'>
-                  <Text>网易云小秘书 发布视频：</Text>
-                </View>
+        {list.map(item => {
+          console.log('item.posts[0]', item.posters);
+          return (
+            <i-row i-class='row-tab3' key={item.id}>
+              <i-col span='4' i-class='col-class avatar'>
+                <i-avatar
+                  src='https://i.loli.net/2017/08/21/599a521472424.jpg'
+                  size='large'
+                />
               </i-col>
-              <i-col span='24' i-class='col-class'>
-                <View className='date'>
-                  <Text> 昨天06：28</Text>
-                </View>
-              </i-col>
-              <i-col span='24' i-class='col-class'>
-                <View className='content'>
-                  <Text>
-                    #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！
-                  </Text>
-                </View>
-              </i-col>
-              <i-col span='24' i-class='col-class'>
-                <View className='image'>
-                  <Image src={post1} style='width: 100%;height:150px' />
-                </View>
-              </i-col>
-
-              <i-row i-class='icon-row'>
-                {iconList.map(item => {
-                  return (
-                    <i-col key={item} span='6' i-class='col-class icon-wrapper'>
-                      {/* <i-icon size={40} type='like_fill' /> */}
-                      <View onClick={this.iconHandler.bind(this, item)}>
-                        <i-icon size={30} type={item} />
-                      </View>
-                      <View className='number'>
-                        <Text>32423</Text>
+              <i-col span='20' i-class='col-class'>
+                <i-row i-class='row-title'>
+                  <i-col span='24' i-class='col-class'>
+                    <View className='username'>
+                      <Text>{item.username} 发布视频：</Text>
+                    </View>
+                  </i-col>
+                  <i-col span='24' i-class='col-class'>
+                    <View className='date'>
+                      <Text>{item.date}</Text>
+                    </View>
+                  </i-col>
+                  <i-col span='24' i-class='col-class'>
+                    <View className='content'>
+                      <Text>{item.content}</Text>
+                    </View>
+                  </i-col>
+                  {item.posters.length && (
+                    <i-col span='24' i-class='col-class'>
+                      <View className='image'>
+                        <Image
+                          src={item.posters[0]}
+                          style='width: 100%;height:150px'
+                        />
                       </View>
                     </i-col>
-                  );
-                })}
-              </i-row>
-            </i-row>
-          </i-col>
-        </i-row>
-        <i-row i-class='row-tab3'>
-          <i-col span='4' i-class='col-class avatar'>
-            <i-avatar
-              src='https://i.loli.net/2017/08/21/599a521472424.jpg'
-              size='large'
-            />
-          </i-col>
-          <i-col span='20' i-class='col-class'>
-            <i-row i-class='row-title'>
-              <i-col span='24' i-class='col-class'>
-                <View className='username'>
-                  <Text>网易云小秘书 发布视频：</Text>
-                </View>
-              </i-col>
-              <i-col span='24' i-class='col-class'>
-                <View className='date'>
-                  <Text> 昨天06：28</Text>
-                </View>
-              </i-col>
-              <i-col span='24' i-class='col-class'>
-                <View className='content'>
-                  <Text>
-                    #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！
-                  </Text>
-                </View>
-              </i-col>
-              <i-col span='24' i-class='col-class'>
-                <View className='image'>
-                  <Image src={post1} style='width: 100%;height:150px' />
-                </View>
-              </i-col>
+                  )}
 
-              <i-row i-class='icon-row'>
-                {iconList.map(item => {
-                  return (
-                    <i-col key={item} span='6' i-class='col-class icon-wrapper'>
-                      {/* <i-icon size={40} type='like_fill' /> */}
-                      <View onClick={this.iconHandler.bind(this, item)}>
-                        <i-icon size={30} type={item} />
+                  <i-row i-class='icon-row'>
+                    <i-col span='6' i-class='col-class icon-wrapper'>
+                      <View onClick={this.iconHandler.bind(this, 'like')}>
+                        <i-icon size={30} type='like' />
                       </View>
                       <View className='number'>
-                        <Text>32423</Text>
+                        <Text>{item.likes}</Text>
                       </View>
                     </i-col>
-                  );
-                })}
-              </i-row>
+                    <i-col span='6' i-class='col-class icon-wrapper'>
+                      <View onClick={this.iconHandler.bind(this, 'share')}>
+                        <i-icon size={30} type='share' />
+                      </View>
+                      <View className='number'>
+                        <Text>{item.shares}</Text>
+                      </View>
+                    </i-col>
+                    <i-col span='6' i-class='col-class icon-wrapper'>
+                      <View onClick={this.iconHandler.bind(this, 'document')}>
+                        <i-icon size={30} type='document' />
+                      </View>
+                      <View className='number'>
+                        <Text>{item.comments}</Text>
+                      </View>
+                    </i-col>
+                    <i-col span='6' i-class='col-class icon-wrapper'>
+                      <View onClick={this.iconHandler.bind(this, 'collection')}>
+                        <i-icon size={30} type='collection' />
+                      </View>
+                      <View className='number'>
+                        <Text>{item.collections}</Text>
+                      </View>
+                    </i-col>
+                  </i-row>
+                </i-row>
+              </i-col>
+              <i-divider height={24}></i-divider>
             </i-row>
-          </i-col>
-        </i-row>
+          );
+        })}
+        <i-divider content='加载已经完成,没有其他数据'></i-divider>
       </View>
     );
   }

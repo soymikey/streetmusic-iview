@@ -1,12 +1,8 @@
 @import '@/styles/variables.scss';
 
 page {
+  height: 100%;
   font-family: PingFangSC-Regular, sans-serif;
   font-size: $size-m;
   background-color: $Background;
-}
-.ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
