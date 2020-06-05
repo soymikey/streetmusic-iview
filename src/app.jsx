@@ -19,8 +19,9 @@ class App extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
     pages: [
-      'pages/singer/singer',
       'pages/index/index',
+      'pages/singer/singer',
+
 
       'pages/event/event',
       'pages/news/news',
@@ -121,11 +122,11 @@ class App extends Component {
     Taro.hideTabBar();
   }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
-  componentDidCatchError() {}
+  componentDidCatchError() { }
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
