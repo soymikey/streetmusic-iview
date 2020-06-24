@@ -6,8 +6,10 @@ import Tab3 from './tab3/tab3';
 import Tab1 from './tab1/tab1';
 import Tab2 from './tab2/tab2';
 import './singer.scss';
+
 const post1_ = require('@/asset/images/poster1.png');
 const post2_ = require('@/asset/images/poster2.png');
+
 class Singer extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
@@ -191,11 +193,11 @@ class Singer extends Component {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
   fetchSongList(pageNo) {
     this.setState({ loading: true });
     Taro.showLoading({
@@ -221,7 +223,7 @@ class Singer extends Component {
         {
           currentSongPage: pageNo, //当前的页号
           totalSongPage: 8, //总页数
-          songList: this.state.songLists.slice(0, pageNo * 2),
+          songList: this.state.songLists.slice(0, pageNo * 10),
           loading: false,
         },
         () => {
@@ -243,7 +245,7 @@ class Singer extends Component {
         {
           currentOrderPage: pageNo, //当前的页号
           totalOrderPage: 8, //总页数
-          orderList: this.state.orderLists.slice(0, pageNo * 10),
+          orderList: this.state.orderLists.slice(0, pageNo * 3),
           loading: false,
         },
         () => {
@@ -387,7 +389,8 @@ class Singer extends Component {
                 <i-tag
                   key={item}
                   color={colorList[Math.floor(Math.random() * 6)]}
-                  class='i-tags'>
+                  class='i-tags'
+                >
                   {item}
                 </i-tag>
               );
@@ -396,17 +399,35 @@ class Singer extends Component {
         </View>
         <View
           className='tabs-container'
-          style='position:sticky;position: -webkit-sticky;top:0;z-index: 999;'>
+          style='position:sticky;position: -webkit-sticky;top:0;z-index: 999;'
+        >
           <i-tabs current={currentTab} onChange={this.onChangeTab.bind(this)}>
-            {tabList.map(item => {
+            {/* {tabList.map(item => {
               return (
                 <i-tab
                   key={item.key}
                   title={item.label}
                   type='border'
-                  count={count}></i-tab>
+                  count={count}
+                ></i-tab>
               );
-            })}
+            })} */}
+            <i-tab
+              key={0}
+              title='歌曲'
+              type='border'
+              count={count}
+            ></i-tab>
+            <i-tab
+              key={1}
+              title='正在播放'
+              type='border'
+            ></i-tab>
+            <i-tab
+              key={2}
+              title='动态'
+              type='border'
+            ></i-tab>
           </i-tabs>
         </View>
         <Swiper
@@ -417,7 +438,8 @@ class Singer extends Component {
           indicatorColor='#999'
           indicatorActiveColor='#333'
           onChange={this.onChangeSwiper.bind(this)}
-          circular>
+          circular
+        >
           <SwiperItem>
             <View className='tab1' id='tab'>
               <Tab1 list={songList} />
