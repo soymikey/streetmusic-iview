@@ -58,9 +58,17 @@ $Background: #f8f8f9;
 }
 .tabbar-container {
   position: fixed;
+  z-index: 100;
 }
 .ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.pb50px {
+  padding-bottom: 100px;
+}
+.divider {
+  background-color: #fff;
 }

@@ -1,352 +1,249 @@
 {
-	// Place your snippets for javascriptreact here. Each snippet is defined under a snippet name and has a prefix, body and 
-	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
-	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
-	// same ids are connected.
-	// Example:
-	// "Print to console": {
-	// 	"prefix": "log",
-	// 	"body": [
-	// 		"console.log('$1');",
-	// 		"$2"
-	// 	],
-	// 	"description": "Log output to console"
-	// }
-	"view with class1": {
-		"prefix": "i-row",
-		"body": [
-			"'i-row': '../../iView/row/index',",
-		],
-	},
-	"view with class": {
-		"prefix": "vc",
-		"body": [
-			"<View className='$1'></View>",
-			"$2"
-		],
-		"description": "view with class"
-	},
-	"view": {
-		"prefix": "v",
-		"body": [
-			"<View>$1</View>",
-		],
-		"description": "view"
-	},
-	"Text with class": {
-		"prefix": "tc",
-		"body": [
-			"<Text className='$1'></Text>",
-			"$2"
-		],
-		"description": "Text with class"
-	},
-	"Text": {
-		"prefix": "t",
-		"body": [
-			"<Text>$1</Text>",
-		],
-		"description": "Text"
-	},
-	//iview 的snipet
-	"i-action-sheet": {
-		"prefix": "i-action-sheet",
-		"body": [
-			"'i-action-sheet':'../../iView/action-sheet/index'",
-		]
-	},
-	"i-alert": {
-		"prefix": "i-alert",
-		"body": [
-			"'i-alert':'../../iView/alert/index'",
-		]
-	},
-	"i-avatar": {
-		"prefix": "i-avatar",
-		"body": [
-			"'i-avatar':'../../iView/avatar/index'",
-		]
-	},
-	"i-badge": {
-		"prefix": "i-badge",
-		"body": [
-			"'i-badge':'../../iView/badge/index'",
-		]
-	},
-	"i-button": {
-		"prefix": "i-button",
-		"body": [
-			"'i-button':'../../iView/button/index'",
-		]
-	},
-	"i-card": {
-		"prefix": "i-card",
-		"body": [
-			"'i-card':'../../iView/card/index'",
-		]
-	},
-	"i-cell": {
-		"prefix": "i-cell",
-		"body": [
-			"'i-cell':'../../iView/cell/index'",
-		]
-	},
-	"i-cell-group": {
-		"prefix": "i-cell-group",
-		"body": [
-			"'i-cell-group':'../../iView/cell-group/index'",
-		]
-	},
-	"i-checkbox": {
-		"prefix": "i-checkbox",
-		"body": [
-			"'i-checkbox':'../../iView/checkbox/index'",
-		]
-	},
-	"i-checkbox-group": {
-		"prefix": "i-checkbox-group",
-		"body": [
-			"'i-checkbox-group':'../../iView/checkbox-group/index'",
-		]
-	},
-	"i-col": {
-		"prefix": "i-col",
-		"body": [
-			"'i-col':'../../iView/col/index'",
-		]
-	},
-	"i-collapse": {
-		"prefix": "i-collapse",
-		"body": [
-			"'i-collapse':'../../iView/collapse/index'",
-		]
-	},
-	"i-collapse-item": {
-		"prefix": "i-collapse-item",
-		"body": [
-			"'i-collapse-item':'../../iView/collapse-item/index'",
-		]
-	},
-	"i-count-down": {
-		"prefix": "i-count-down",
-		"body": [
-			"'i-count-down':'../../iView/count-down/index'",
-		]
-	},
-	"i-divider": {
-		"prefix": "i-divider",
-		"body": [
-			"'i-divider':'../../iView/divider/index'",
-		]
-	},
-	"i-drawer": {
-		"prefix": "i-drawer",
-		"body": [
-			"'i-drawer':'../../iView/drawer/index'",
-		]
-	},
-	"i-grid": {
-		"prefix": "i-grid",
-		"body": [
-			"'i-grid':'../../iView/grid/index'",
-		]
-	},
-	"i-grid-icon": {
-		"prefix": "i-grid-icon",
-		"body": [
-			"'i-grid-icon':'../../iView/grid-icon/index'",
-		]
-	},
-	"i-grid-item": {
-		"prefix": "i-grid-item",
-		"body": [
-			"'i-grid-item':'../../iView/grid-item/index'",
-		]
-	},
-	"i-grid-label": {
-		"prefix": "i-grid-label",
-		"body": [
-			"'i-grid-label':'../../iView/grid-label/index'",
-		]
-	},
-	"i-icon": {
-		"prefix": "i-icon",
-		"body": [
-			"'i-icon':'../../iView/icon/index'",
-		]
-	},
-	"i-index": {
-		"prefix": "i-index",
-		"body": [
-			"'i-index':'../../iView/index/index'",
-		]
-	},
-	"i-index-item": {
-		"prefix": "i-index-item",
-		"body": [
-			"'i-index-item':'../../iView/index-item/index'",
-		]
-	},
-	"i-input": {
-		"prefix": "i-input",
-		"body": [
-			"'i-input':'../../iView/input/index'",
-		]
-	},
-	"i-input-number": {
-		"prefix": "i-input-number",
-		"body": [
-			"'i-input-number':'../../iView/input-number/index'",
-		]
-	},
-	"i-load-more": {
-		"prefix": "i-load-more",
-		"body": [
-			"'i-load-more':'../../iView/load-more/index'",
-		]
-	},
-	"i-message": {
-		"prefix": "i-message",
-		"body": [
-			"'i-message':'../../iView/message/index'",
-		]
-	},
-	"i-modal": {
-		"prefix": "i-modal",
-		"body": [
-			"'i-modal':'../../iView/modal/index'",
-		]
-	},
-	"i-notice-bar": {
-		"prefix": "i-notice-bar",
-		"body": [
-			"'i-notice-bar':'../../iView/notice-bar/index'",
-		]
-	},
-	"i-page": {
-		"prefix": "i-page",
-		"body": [
-			"'i-page':'../../iView/page/index'",
-		]
-	},
-	"i-panel": {
-		"prefix": "i-panel",
-		"body": [
-			"'i-panel':'../../iView/panel/index'",
-		]
-	},
-	"i-progress": {
-		"prefix": "i-progress",
-		"body": [
-			"'i-progress':'../../iView/progress/index'",
-		]
-	},
-	"i-radio": {
-		"prefix": "i-radio",
-		"body": [
-			"'i-radio':'../../iView/radio/index'",
-		]
-	},
-	"i-radio-group": {
-		"prefix": "i-radio-group",
-		"body": [
-			"'i-radio-group':'../../iView/radio-group/index'",
-		]
-	},
-	"i-rate": {
-		"prefix": "i-rate",
-		"body": [
-			"'i-rate':'../../iView/rate/index'",
-		]
-	},
-	"i-row": {
-		"prefix": "i-row",
-		"body": [
-			"'i-row':'../../iView/row/index'",
-		]
-	},
-	"i-slide": {
-		"prefix": "i-slide",
-		"body": [
-			"'i-slide':'../../iView/slide/index'",
-		]
-	},
-	"i-spin": {
-		"prefix": "i-spin",
-		"body": [
-			"'i-spin':'../../iView/spin/index'",
-		]
-	},
-	"i-step": {
-		"prefix": "i-step",
-		"body": [
-			"'i-step':'../../iView/step/index'",
-		]
-	},
-	"i-steps": {
-		"prefix": "i-steps",
-		"body": [
-			"'i-steps':'../../iView/steps/index'",
-		]
-	},
-	"i-sticky": {
-		"prefix": "i-sticky",
-		"body": [
-			"'i-sticky':'../../iView/sticky/index'",
-		]
-	},
-	"i-sticky-item": {
-		"prefix": "i-sticky-item",
-		"body": [
-			"'i-sticky-item':'../../iView/sticky-item/index'",
-		]
-	},
-	"i-swipeout": {
-		"prefix": "i-swipeout",
-		"body": [
-			"'i-swipeout':'../../iView/swipeout/index'",
-		]
-	},
-	"i-switch": {
-		"prefix": "i-switch",
-		"body": [
-			"'i-switch':'../../iView/switch/index'",
-		]
-	},
-	"i-tab": {
-		"prefix": "i-tab",
-		"body": [
-			"'i-tab':'../../iView/tab/index'",
-		]
-	},
-	"i-tab-bar": {
-		"prefix": "i-tab-bar",
-		"body": [
-			"'i-tab-bar':'../../iView/tab-bar/index'",
-		]
-	},
-	"i-tab-bar-item": {
-		"prefix": "i-tab-bar-item",
-		"body": [
-			"'i-tab-bar-item':'../../iView/tab-bar-item/index'",
-		]
-	},
-	"i-tabs": {
-		"prefix": "i-tabs",
-		"body": [
-			"'i-tabs':'../../iView/tabs/index'",
-		]
-	},
-	"i-tag": {
-		"prefix": "i-tag",
-		"body": [
-			"'i-tag':'../../iView/tag/index'",
-		]
-	},
-	"i-toast": {
-		"prefix": "i-toast",
-		"body": [
-			"'i-toast':'../../iView/toast/index'",
-		]
-	},
+  // Place your snippets for javascriptreact here. Each snippet is defined under a snippet name and has a prefix, body and
+  // description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the
+  // same ids are connected.
+  // Example:
+  // "Print to console": {
+  // 	"prefix": "log",
+  // 	"body": [
+  // 		"console.log('$1');",
+  // 		"$2"
+  // 	],
+  // 	"description": "Log output to console"
+  // }
+  "constructor": {
+    "prefix": "constructor",
+    "body": ["constructor() {", "	super(...arguments);", "	this.state = {};", "  }"]
+  },
+  "view with class1": {
+    "prefix": "i-row",
+    "body": ["'i-row': '../../iView/row/index',"]
+  },
+  "view with class": {
+    "prefix": "vc",
+    "body": ["<View className='$1'></View>", "$2"],
+    "description": "view with class"
+  },
+  "view with class with text": {
+    "prefix": "vt",
+    "body": ["<View className='$1'><Text></Text></View>", "$2"],
+    "description": "view with class"
+  },
+  "view": {
+    "prefix": "v",
+    "body": ["<View>$1</View>"],
+    "description": "view"
+  },
+  "Text with class": {
+    "prefix": "tc",
+    "body": ["<Text className='$1'></Text>", "$2"],
+    "description": "Text with class"
+  },
+  "Text": {
+    "prefix": "t",
+    "body": ["<Text>$1</Text>"],
+    "description": "Text"
+  },
+  //iview 的snipet
+  "i-action-sheet": {
+    "prefix": "i-action-sheet",
+    "body": ["'i-action-sheet':'../../iView/action-sheet/index'"]
+  },
+  "i-alert": {
+    "prefix": "i-alert",
+    "body": ["'i-alert':'../../iView/alert/index'"]
+  },
+  "i-avatar": {
+    "prefix": "i-avatar",
+    "body": ["'i-avatar':'../../iView/avatar/index'"]
+  },
+  "i-badge": {
+    "prefix": "i-badge",
+    "body": ["'i-badge':'../../iView/badge/index'"]
+  },
+  "i-button": {
+    "prefix": "i-button",
+    "body": ["'i-button':'../../iView/button/index'"]
+  },
+  "i-card": {
+    "prefix": "i-card",
+    "body": ["'i-card':'../../iView/card/index'"]
+  },
+  "i-cell": {
+    "prefix": "i-cell",
+    "body": ["'i-cell':'../../iView/cell/index'"]
+  },
+  "i-cell-group": {
+    "prefix": "i-cell-group",
+    "body": ["'i-cell-group':'../../iView/cell-group/index'"]
+  },
+  "i-checkbox": {
+    "prefix": "i-checkbox",
+    "body": ["'i-checkbox':'../../iView/checkbox/index'"]
+  },
+  "i-checkbox-group": {
+    "prefix": "i-checkbox-group",
+    "body": ["'i-checkbox-group':'../../iView/checkbox-group/index'"]
+  },
+  "i-col": {
+    "prefix": "i-col",
+    "body": ["'i-col':'../../iView/col/index'"]
+  },
+  "i-collapse": {
+    "prefix": "i-collapse",
+    "body": ["'i-collapse':'../../iView/collapse/index'"]
+  },
+  "i-collapse-item": {
+    "prefix": "i-collapse-item",
+    "body": ["'i-collapse-item':'../../iView/collapse-item/index'"]
+  },
+  "i-count-down": {
+    "prefix": "i-count-down",
+    "body": ["'i-count-down':'../../iView/count-down/index'"]
+  },
+  "i-divider": {
+    "prefix": "i-divider",
+    "body": ["'i-divider':'../../iView/divider/index'"]
+  },
+  "i-drawer": {
+    "prefix": "i-drawer",
+    "body": ["'i-drawer':'../../iView/drawer/index'"]
+  },
+  "i-grid": {
+    "prefix": "i-grid",
+    "body": ["'i-grid':'../../iView/grid/index'"]
+  },
+  "i-grid-icon": {
+    "prefix": "i-grid-icon",
+    "body": ["'i-grid-icon':'../../iView/grid-icon/index'"]
+  },
+  "i-grid-item": {
+    "prefix": "i-grid-item",
+    "body": ["'i-grid-item':'../../iView/grid-item/index'"]
+  },
+  "i-grid-label": {
+    "prefix": "i-grid-label",
+    "body": ["'i-grid-label':'../../iView/grid-label/index'"]
+  },
+  "i-icon": {
+    "prefix": "i-icon",
+    "body": ["'i-icon':'../../iView/icon/index'"]
+  },
+  "i-index": {
+    "prefix": "i-index",
+    "body": ["'i-index':'../../iView/index/index'"]
+  },
+  "i-index-item": {
+    "prefix": "i-index-item",
+    "body": ["'i-index-item':'../../iView/index-item/index'"]
+  },
+  "i-input": {
+    "prefix": "i-input",
+    "body": ["'i-input':'../../iView/input/index'"]
+  },
+  "i-input-number": {
+    "prefix": "i-input-number",
+    "body": ["'i-input-number':'../../iView/input-number/index'"]
+  },
+  "i-load-more": {
+    "prefix": "i-load-more",
+    "body": ["'i-load-more':'../../iView/load-more/index'"]
+  },
+  "i-message": {
+    "prefix": "i-message",
+    "body": ["'i-message':'../../iView/message/index'"]
+  },
+  "i-modal": {
+    "prefix": "i-modal",
+    "body": ["'i-modal':'../../iView/modal/index'"]
+  },
+  "i-notice-bar": {
+    "prefix": "i-notice-bar",
+    "body": ["'i-notice-bar':'../../iView/notice-bar/index'"]
+  },
+  "i-page": {
+    "prefix": "i-page",
+    "body": ["'i-page':'../../iView/page/index'"]
+  },
+  "i-panel": {
+    "prefix": "i-panel",
+    "body": ["'i-panel':'../../iView/panel/index'"]
+  },
+  "i-progress": {
+    "prefix": "i-progress",
+    "body": ["'i-progress':'../../iView/progress/index'"]
+  },
+  "i-radio": {
+    "prefix": "i-radio",
+    "body": ["'i-radio':'../../iView/radio/index'"]
+  },
+  "i-radio-group": {
+    "prefix": "i-radio-group",
+    "body": ["'i-radio-group':'../../iView/radio-group/index'"]
+  },
+  "i-rate": {
+    "prefix": "i-rate",
+    "body": ["'i-rate':'../../iView/rate/index'"]
+  },
+  "i-row": {
+    "prefix": "i-row",
+    "body": ["'i-row':'../../iView/row/index'"]
+  },
+  "i-slide": {
+    "prefix": "i-slide",
+    "body": ["'i-slide':'../../iView/slide/index'"]
+  },
+  "i-spin": {
+    "prefix": "i-spin",
+    "body": ["'i-spin':'../../iView/spin/index'"]
+  },
+  "i-step": {
+    "prefix": "i-step",
+    "body": ["'i-step':'../../iView/step/index'"]
+  },
+  "i-steps": {
+    "prefix": "i-steps",
+    "body": ["'i-steps':'../../iView/steps/index'"]
+  },
+  "i-sticky": {
+    "prefix": "i-sticky",
+    "body": ["'i-sticky':'../../iView/sticky/index'"]
+  },
+  "i-sticky-item": {
+    "prefix": "i-sticky-item",
+    "body": ["'i-sticky-item':'../../iView/sticky-item/index'"]
+  },
+  "i-swipeout": {
+    "prefix": "i-swipeout",
+    "body": ["'i-swipeout':'../../iView/swipeout/index'"]
+  },
+  "i-switch": {
+    "prefix": "i-switch",
+    "body": ["'i-switch':'../../iView/switch/index'"]
+  },
+  "i-tab": {
+    "prefix": "i-tab",
+    "body": ["'i-tab':'../../iView/tab/index'"]
+  },
+  "i-tab-bar": {
+    "prefix": "i-tab-bar",
+    "body": ["'i-tab-bar':'../../iView/tab-bar/index'"]
+  },
+  "i-tab-bar-item": {
+    "prefix": "i-tab-bar-item",
+    "body": ["'i-tab-bar-item':'../../iView/tab-bar-item/index'"]
+  },
+  "i-tabs": {
+    "prefix": "i-tabs",
+    "body": ["'i-tabs':'../../iView/tabs/index'"]
+  },
+  "i-tag": {
+    "prefix": "i-tag",
+    "body": ["'i-tag':'../../iView/tag/index'"]
+  },
+  "i-toast": {
+    "prefix": "i-toast",
+    "body": ["'i-toast':'../../iView/toast/index'"]
+  }
 }

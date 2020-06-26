@@ -1,12 +1,21 @@
+/* eslint-disable react/sort-comp */
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text } from '@tarojs/components';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 
+import { connect } from '@tarojs/redux';
 import './order.scss';
 
 class Order extends Component {
   config = {
-    navigationBarTitleText: '我的订单',
+    navigationBarTitleText: '订单',
+    usingComponents: {
+      'i-row': '../../iView/row/index',
+      'i-col': '../../iView/col/index',
+      'i-cell-group': '../../iView/cell-group/index',
+      'i-cell': '../../iView/cell/index',
+      'i-divider': '../../iView/divider/index',
+    },
   };
 
   componentWillReceiveProps(nextProps) {
@@ -22,7 +31,10 @@ class Order extends Component {
   render() {
     return (
       <View className='order'>
-        <Text>我的订单</Text>
+        <i-cell-group>
+          <i-cell title='最近订单' is-link url='/pages/order/myOrder'></i-cell>
+          <i-cell title='现在订单' is-link url='/pages/order/myOrder'></i-cell>
+        </i-cell-group>
         <View className='tabbar-container'>
           <TabbarComp currentTab='order' />
         </View>

@@ -19,14 +19,19 @@ class App extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
     pages: [
+      'pages/user/user',
+      'pages/user/uploadSong/uploadSong',
+      'pages/user/uploadEvent/uploadEvent',
+      'pages/user/mySong/mySong',
+      'pages/user/myEvent/myEvent',
+      'pages/user/registerArtist/registerArtist',
+      'pages/news/news',
+      'pages/event/event',
+
+      'pages/order/order',
+      'pages/order/myOrder',
       'pages/index/index',
       'pages/singer/singer',
-
-
-      'pages/event/event',
-      'pages/news/news',
-      'pages/order/order',
-      'pages/user/user',
     ],
     window: {
       enablePullDownRefresh: true,
@@ -122,11 +127,11 @@ class App extends Component {
     Taro.hideTabBar();
   }
 
-  componentDidShow() { }
+  componentDidShow() {}
 
-  componentDidHide() { }
+  componentDidHide() {}
 
-  componentDidCatchError() { }
+  componentDidCatchError() {}
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数

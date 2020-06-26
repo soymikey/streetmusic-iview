@@ -1,6 +1,15 @@
 import Taro, { Component } from '@tarojs/taro';
 
-import { View, Button, Text, Swiper, SwiperItem, Image, Input, Textarea } from '@tarojs/components';
+import {
+  View,
+  Button,
+  Text,
+  Swiper,
+  SwiperItem,
+  Image,
+  Input,
+  Textarea,
+} from '@tarojs/components';
 import { toolbox } from '@/utils/tools.js';
 import { getUserInfo } from '@/api/user';
 import post1 from '@/asset/images/poster1.png';
@@ -44,7 +53,7 @@ class Index extends Component {
     //     console.log('err', err);
     //   });
   }
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
   componentDidShow() {
     // getUserInfo('http://49.235.133.74:4001/api/categories/getList', {}, 'get')
@@ -56,21 +65,20 @@ class Index extends Component {
     //   });
   }
 
-  componentDidHide() { }
+  componentDidHide() {}
   clickHandler() {
     console.log('clicked');
   }
   render() {
     return (
-      <View className='index'>
+      <View className='index pb50px'>
         <Swiper
           className='test-h'
           indicatorColor='#999'
           indicatorActiveColor='#333'
           circular
           indicatorDots
-          autoplay
-        >
+          autoplay>
           <SwiperItem>
             <Image src={post1} style='width: 100%' />
           </SwiperItem>
@@ -123,26 +131,6 @@ class Index extends Component {
         <OneBlockComp />
         <View className='tabbar-container'>
           <TabbarComp currentTab='index' />
-        </View>
-        <Input type='text' placeholder='将会获取焦点' focus />
-        <Text>控制最大输入长度的 input</Text>
-        <Input type='text' placeholder='最大输入长度为 10' maxLength='10' />
-        <Text>数字输入的 input</Text>
-        <Input type='number' placeholder='这是一个数字输入框' />
-        <Text>密码输入的 input</Text>
-        <Input type='password' password placeholder='这是一个密码输入框' />
-        <Text>带小数点的 input</Text>
-        <Input type='digit' placeholder='带小数点的数字键盘' />
-        <Text>身份证输入的 input</Text>
-        <Input type='idcard' placeholder='身份证输入键盘' />
-        <Text>控制占位符颜色的 input</Text>
-        <Input type='text' placeholder='占位符字体是红色的' placeholderStyle='color:red' />
-        <i-divider height={24}></i-divider>
-        <View className='components-page'>
-          <Text>输入区域高度自适应，不会出现滚动条</Text>
-          <Textarea style='background:#fff;width:100%;min-height:80px;padding:0 30rpx;' autoHeight />
-          <Text>这是一个可以自动聚焦的 textarea</Text>
-          <Textarea style='background:#fff;width:100%;height:80px;padding:0 30rpx;' autoFocus />
         </View>
       </View>
     );

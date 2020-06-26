@@ -1,4 +1,30 @@
+@import '@/styles/variables.scss';
+
 .index {
   flex-direction: column;
   width: 100%;
+}
+.user {
+  background-color: #fff;
+  height: 100%;
+  .user-info {
+    padding: 40px;
+
+    .col-avatar {
+      text-align: center;
+      height: 80px;
+      line-height: 80px;
+    }
+    .user-name {
+      font-size: $size-s;
+      height: 40px;
+      line-height: 40px;
+    }
+    .user-level {
+      color: $Color;
+      font-size: $size-xs;
+      height: 40px;
+      line-height: 40px;
+    }
+  }
 }
