@@ -23,7 +23,7 @@ class OneBlockComp extends Component {
   }
   goToEventPage() {
     Taro.navigateTo({
-      url: '/pages/event/event',
+      url: '/pages/event/eventDetail/eventDetail',
     });
   }
   componentWillReceiveProps(nextProps) {

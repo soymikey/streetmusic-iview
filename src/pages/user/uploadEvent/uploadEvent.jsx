@@ -151,6 +151,9 @@ class UploadEvent extends Component {
       poster: this.state.poster.concat(obj),
     });
   }
+  hideKeyBoard() {
+    Taro.hideKeyboard();
+  }
   componentDidShow() {}
 
   componentDidHide() {}
@@ -187,32 +190,40 @@ class UploadEvent extends Component {
         />
 
         <Picker mode='date' onChange={this.onChangeDate.bind(this)}>
-          <i-input title='日期' placeholder='活动日期' value={date} disabled />
+          <View onClick={this.hideKeyBoard.bind(this)}>
+            <i-input title='日期' placeholder='活动日期' value={date} disabled />
+          </View>
         </Picker>
         <Picker mode='time' onChange={this.onChangeStartTime.bind(this)}>
-          <i-input
-            title='开始时间'
-            placeholder='活动开始时间'
-            value={startTime}
-            disabled
-          />
+          <View onClick={this.hideKeyBoard.bind(this)}>
+            <i-input
+              title='开始时间'
+              placeholder='活动开始时间'
+              value={startTime}
+              disabled
+            />
+          </View>
         </Picker>
 
         <Picker mode='time' onChange={this.onChangeEndTime.bind(this)}>
-          <i-input
-            title='结束时间'
-            placeholder='活动结束时间'
-            value={endTime}
-            disabled
-          />
+          <View onClick={this.hideKeyBoard.bind(this)}>
+            <i-input
+              title='结束时间'
+              placeholder='活动结束时间'
+              value={endTime}
+              disabled
+            />
+          </View>
         </Picker>
         <Picker mode='region' onChange={this.onChangeProvinceCityRegion.bind(this)}>
-          <i-input
-            title='省市区'
-            placeholder='省份/城市/区域'
-            value={provinceCityRegion.value.join('/')}
-            disabled
-          />
+          <View onClick={this.hideKeyBoard.bind(this)}>
+            <i-input
+              title='省市区'
+              placeholder='省份/城市/区域'
+              value={provinceCityRegion.value.join('/')}
+              disabled
+            />
+          </View>
         </Picker>
         <i-input
           title='地址'

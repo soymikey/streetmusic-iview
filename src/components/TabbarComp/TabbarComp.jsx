@@ -34,9 +34,9 @@ class TabbarComp extends Component {
         url: '/pages/index/index',
       });
     }
-    if (key === 'news') {
+    if (key === 'event') {
       Taro.switchTab({
-        url: '/pages/news/news',
+        url: '/pages/event/event',
       });
     }
     if (key === 'order') {
@@ -67,6 +67,7 @@ class TabbarComp extends Component {
     return (
       <View className='tabbar-container'>
         <i-tab-bar
+          i-class='tabBar'
           current={currentTab}
           color='#2d8cf0'
           onChange={this.onChangeTabbar.bind(this)}>
@@ -76,11 +77,11 @@ class TabbarComp extends Component {
             current-icon='homepage_fill'
             title='首页'></i-tab-bar-item>
           <i-tab-bar-item
-            key='news'
+            key='event'
             icon='remind'
             current-icon='remind_fill'
             count='3'
-            title='动态'></i-tab-bar-item>
+            title='活动'></i-tab-bar-item>
           <i-tab-bar-item
             key='order'
             icon='document'

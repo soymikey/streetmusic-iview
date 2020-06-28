@@ -86,6 +86,9 @@ class Uploadsong extends Component {
     }
     console.log(this.state);
   }
+  hideKeyBoard() {
+    Taro.hideKeyboard();
+  }
   componentDidShow() {}
 
   componentDidHide() {}
@@ -111,7 +114,9 @@ class Uploadsong extends Component {
         />
 
         <Picker mode='time' onChange={this.onChangeTime.bind(this)}>
-          <i-input title='时长' placeholder='歌曲时长' value={duration} disabled />
+          <View onClick={this.hideKeyBoard.bind(this)}>
+            <i-input title='时长' placeholder='歌曲时长' value={duration} disabled />
+          </View>
         </Picker>
         <i-input
           title='类型'

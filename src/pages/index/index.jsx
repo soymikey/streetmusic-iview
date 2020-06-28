@@ -16,8 +16,13 @@ import post1 from '@/asset/images/poster1.png';
 import post2 from '@/asset/images/poster2.png';
 import SixBlockComp from '@/components/SixBlockComp/SixBlockComp';
 import OneBlockComp from '@/components/OneBlockComp/OneBlockComp';
+import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
+
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import './index.scss';
+
+const post1_ = require('@/asset/images/poster1.png');
+const post2_ = require('@/asset/images/poster2.png');
 
 class Index extends Component {
   // eslint-disable-next-line react/sort-comp
@@ -31,7 +36,49 @@ class Index extends Component {
       'i-tab-bar-item': '../../iView/tab-bar-item/index',
     },
   };
+  constructor() {
+    super(...arguments);
+    this.state = {
+      eventList: [
+        {
+          id: 1,
+          username: '网易云小秘书',
+          date: ' 昨天06：28',
+          content:
+            ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
+          posters: [post1_],
+          likes: '112',
+          shares: '223',
+          comments: '334',
+          collections: '445',
+        },
+        {
+          id: 2,
+          username: '网易云小秘书2',
+          date: ' 昨天06：28',
+          content:
+            ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
 
+          likes: '112',
+          shares: '223',
+          comments: '334',
+          collections: '445',
+        },
+        {
+          id: 2,
+          username: '网易云小秘书2',
+          date: ' 昨天06：28',
+          content:
+            ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
+          posters: [post2_],
+          likes: '112',
+          shares: '223',
+          comments: '334',
+          collections: '445',
+        },
+      ],
+    };
+  }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
@@ -70,6 +117,7 @@ class Index extends Component {
     console.log('clicked');
   }
   render() {
+    const { eventList } = this.state;
     return (
       <View className='index pb50px'>
         <Swiper
@@ -128,7 +176,10 @@ class Index extends Component {
         <i-divider height={24}></i-divider>
         <SixBlockComp title='热门歌单' />
         <i-divider height={24}></i-divider>
-        <OneBlockComp />
+        {/* <OneBlockComp /> */}
+
+        <EventSumaryComp list={eventList} isShowIcons={false} />
+        <i-divider content='加载已经完成,没有其他数据'></i-divider>
         <View className='tabbar-container'>
           <TabbarComp currentTab='index' />
         </View>

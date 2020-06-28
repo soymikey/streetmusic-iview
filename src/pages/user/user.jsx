@@ -18,6 +18,8 @@ class User extends Component {
       'i-button': '../../iView/button/index',
       'i-divider': '../../iView/divider/index',
       'i-avatar': '../../iView/avatar/index',
+      'i-icon': '../../iView/icon/index',
+      'i-message': '../../iView/message/index',
     },
   };
 
@@ -26,7 +28,7 @@ class User extends Component {
   }
 
   componentDidMount() {
-    Taro.navigateTo({ url: '/pages/user/registerArtist/registerArtist' });
+    // Taro.navigateTo({ url: '/pages/user/registerArtist/registerArtist' });
   }
   componentWillUnmount() {}
 
@@ -52,6 +54,40 @@ class User extends Component {
             </View>
           </i-col>
         </i-row>
+        <i-row i-class='summary-row'>
+          <i-col span='6' i-class='col-class border-right'>
+            <View className='title'>
+              <Text>活动</Text>
+            </View>
+            <View className='content'>
+              <Text>323</Text>
+            </View>
+          </i-col>
+          <i-col span='6' i-class='col-class border-right'>
+            <View className='title'>
+              <Text>关注</Text>
+            </View>
+            <View className='content'>
+              <Text>323</Text>
+            </View>
+          </i-col>
+          <i-col span='6' i-class='col-class border-right'>
+            <View className='title'>
+              <Text>粉丝</Text>
+            </View>
+            <View className='content'>
+              <Text>323</Text>
+            </View>
+          </i-col>
+          <i-col span='6' i-class='col-class'>
+            <View className='title'>
+              <Text>我的资料</Text>
+            </View>
+            <View className='content'>
+              <i-icon type='editor' />
+            </View>
+          </i-col>
+        </i-row>
         <i-divider i-class='divider' height={24}></i-divider>
         <i-cell-group>
           <i-cell
@@ -69,6 +105,8 @@ class User extends Component {
             url='/pages/user/uploadEvent/uploadEvent'></i-cell>
           <i-cell title='我的活动' is-link url='/pages/user/myEvent/myEvent'></i-cell>
           <i-cell title='我的收益' is-link></i-cell>
+          <i-cell title='收款二维码' is-link></i-cell>
+          <i-cell title='关于' is-link></i-cell>
         </i-cell-group>
 
         <View style='text-align:center;margin-top:40px;'>

@@ -44,6 +44,9 @@ class Registerartist extends Component {
       provinceCityRegion: { value: e.detail.value, code: e.detail.code },
     });
   }
+  hideKeyBoard() {
+    Taro.hideKeyboard();
+  }
   onChangeAddress(e) {
     this.setState({ address: e.detail.detail.value });
   }
@@ -154,12 +157,14 @@ class Registerartist extends Component {
         />
 
         <Picker mode='region' onChange={this.onChangeProvinceCityRegion.bind(this)}>
-          <i-input
-            title='省市区'
-            placeholder='省份/城市/区域'
-            value={provinceCityRegion.value.join('/')}
-            disabled
-          />
+          <View onClick={this.hideKeyBoard.bind(this)}>
+            <i-input
+              title='省市区'
+              placeholder='省份/城市/区域'
+              value={provinceCityRegion.value.join('/')}
+              disabled
+            />
+          </View>
         </Picker>
         <i-input
           title='地址'

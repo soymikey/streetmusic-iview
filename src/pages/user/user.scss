@@ -1,5 +1,4 @@
 @import '@/styles/variables.scss';
-
 .index {
   flex-direction: column;
   width: 100%;
@@ -25,6 +24,22 @@
       font-size: $size-xs;
       height: 40px;
       line-height: 40px;
+    }
+  }
+  .summary-row {
+    margin-top: 20px;
+    text-align: center;
+    color: $Color;
+    font-size: $size-xs;
+    .border-right {
+      border-right: solid $Border 1px;
+    }
+    .title {
+      font-size: $size-s;
+      color: $Title;
+    }
+    .content {
+      margin-top: 10px;
     }
   }
 }

@@ -32,7 +32,7 @@ class Singer extends Component {
       tabList: [
         { key: 0, label: '歌曲' },
         { key: 1, label: '正在播放' },
-        { key: 2, label: '动态' },
+        { key: 2, label: '活动' },
       ],
       tagList: ['15后', 'Lv.6', '北京', '白羊座'],
       colorList: ['blue', 'green', 'red', 'yellow', 'default'],
@@ -44,8 +44,8 @@ class Singer extends Component {
       totalSongPage: 8,
       currentOrderPage: 1,
       totalOrderPage: 8,
-      currentNewsPage: 1,
-      totalNewsPage: 8,
+      currentEventsPage: 1,
+      totalEventsPage: 8,
       songLists: [
         { name: '阿桑-给你的爱一直很安静', price: '12.00' },
         { name: '又是一个睡不着的夜晚', price: '12.00' },
@@ -111,7 +111,7 @@ class Singer extends Component {
         { name: '私房歌', price: '12.00' },
       ],
       orderList: [],
-      newsLists: [
+      eventLists: [
         {
           id: 1,
           username: '网易云小秘书',
@@ -149,7 +149,7 @@ class Singer extends Component {
           collections: '445',
         },
       ],
-      newsList: [],
+      eventList: [],
     };
   }
   iconHandler(icon) {
@@ -170,7 +170,7 @@ class Singer extends Component {
   componentDidMount() {
     this.fetchSongList(1);
     this.fetchOrderList(1);
-    this.fetchNewsList(1);
+    this.fetchEventsList(1);
   }
   setSwiperHeight(value) {
     let height = 0;
@@ -193,11 +193,11 @@ class Singer extends Component {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
-  componentDidShow() { }
+  componentDidShow() {}
 
-  componentDidHide() { }
+  componentDidHide() {}
   fetchSongList(pageNo) {
     this.setState({ loading: true });
     Taro.showLoading({
@@ -256,18 +256,18 @@ class Singer extends Component {
       Taro.hideLoading();
     }, 1000);
   }
-  fetchNewsList(pageNo) {
+  fetchEventsList(pageNo) {
     this.setState({ loading: true });
     Taro.showLoading({
-      title: '加载中-动态',
+      title: '加载中-活动',
     });
 
     setTimeout(() => {
       this.setState(
         {
-          currentNewsPage: pageNo, //当前的页号
-          totalNewsPage: 8, //总页数
-          newsList: this.state.newsLists.slice(0, pageNo * 10),
+          currentEventsPage: pageNo, //当前的页号
+          totalEventsPage: 8, //总页数
+          eventList: this.state.eventLists.slice(0, pageNo * 10),
           loading: false,
         },
         () => {
@@ -298,7 +298,7 @@ class Singer extends Component {
     }
     if (currentTab === 2) {
       if (!this.state.loading) {
-        this.fetchNewsList(1);
+        this.fetchEventsList(1);
         // 处理完成后，终止下拉刷新
         Taro.stopPullDownRefresh();
       }
@@ -325,9 +325,9 @@ class Singer extends Component {
     if (currentTab === 2) {
       if (
         !this.state.loading &&
-        this.state.currentNewsPage < this.state.totalNewsPage
+        this.state.currentEventsPage < this.state.totalEventsPage
       ) {
-        this.fetchNewsList(this.state.currentNewsPage + 1);
+        this.fetchEventsList(this.state.currentEventsPage + 1);
       }
     }
   }
@@ -343,7 +343,7 @@ class Singer extends Component {
       scrollTop,
       songList,
       orderList,
-      newsList,
+      eventList,
       loading,
     } = this.state;
     console.log(songList.length);
@@ -389,8 +389,7 @@ class Singer extends Component {
                 <i-tag
                   key={item}
                   color={colorList[Math.floor(Math.random() * 6)]}
-                  class='i-tags'
-                >
+                  class='i-tags'>
                   {item}
                 </i-tag>
               );
@@ -399,8 +398,7 @@ class Singer extends Component {
         </View>
         <View
           className='tabs-container'
-          style='position:sticky;position: -webkit-sticky;top:0;z-index: 999;'
-        >
+          style='position:sticky;position: -webkit-sticky;top:0;z-index: 999;'>
           <i-tabs current={currentTab} onChange={this.onChangeTab.bind(this)}>
             {/* {tabList.map(item => {
               return (
@@ -412,22 +410,9 @@ class Singer extends Component {
                 ></i-tab>
               );
             })} */}
-            <i-tab
-              key={0}
-              title='歌曲'
-              type='border'
-              count={count}
-            ></i-tab>
-            <i-tab
-              key={1}
-              title='正在播放'
-              type='border'
-            ></i-tab>
-            <i-tab
-              key={2}
-              title='动态'
-              type='border'
-            ></i-tab>
+            <i-tab key={0} title='歌曲' type='border' count={count}></i-tab>
+            <i-tab key={1} title='正在播放' type='border'></i-tab>
+            <i-tab key={2} title='活动' type='border'></i-tab>
           </i-tabs>
         </View>
         <Swiper
@@ -438,8 +423,7 @@ class Singer extends Component {
           indicatorColor='#999'
           indicatorActiveColor='#333'
           onChange={this.onChangeSwiper.bind(this)}
-          circular
-        >
+          circular>
           <SwiperItem>
             <View className='tab1' id='tab'>
               <Tab1 list={songList} />
@@ -452,7 +436,7 @@ class Singer extends Component {
           </SwiperItem>
           <SwiperItem>
             <View className='tab3' id='tab'>
-              <Tab3 list={newsList} />
+              <Tab3 list={eventList} />
             </View>
           </SwiperItem>
         </Swiper>

@@ -7,6 +7,8 @@ import configStore from './store';
 
 import './app.scss';
 
+const { $Message } = require('./iView/base/index');
+
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
 // if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
@@ -14,10 +16,14 @@ import './app.scss';
 // }
 
 const store = configStore();
+Taro.name = 'michael';
 
 class App extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
+    usingComponents: {
+      'i-message': './iView/message/index',
+    },
     pages: [
       'pages/user/user',
       'pages/user/uploadSong/uploadSong',
@@ -25,8 +31,9 @@ class App extends Component {
       'pages/user/mySong/mySong',
       'pages/user/myEvent/myEvent',
       'pages/user/registerArtist/registerArtist',
-      'pages/news/news',
+
       'pages/event/event',
+      'pages/event/eventDetail/eventDetail',
 
       'pages/order/order',
       'pages/order/myOrder',
@@ -53,9 +60,9 @@ class App extends Component {
           text: '首页',
         },
         {
-          pagePath: 'pages/news/news',
+          pagePath: 'pages/event/event',
 
-          text: '动态',
+          text: '活动',
         },
         {
           pagePath: 'pages/order/order',
@@ -125,6 +132,9 @@ class App extends Component {
 
   componentDidMount() {
     Taro.hideTabBar();
+    $Message({
+      content: '这是一条普通提醒',
+    });
   }
 
   componentDidShow() {}
@@ -138,6 +148,8 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
+        {' '}
+        <i-message id='message' />
         <Index />
       </Provider>
     );

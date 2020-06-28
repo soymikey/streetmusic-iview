@@ -1,0 +1,63 @@
+@import '@/styles/variables.scss';
+.eventDetail {
+  flex-direction: column;
+  width: 100%;
+  background-color: #fff;
+  .info-container {
+    padding: 10px;
+
+    .title-row {
+      color: $Title;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .sub-title-row {
+      font-size: $size-s;
+      color: $Content;
+      margin-top: 20px;
+    }
+    .tag-container {
+      margin-top: 20px;
+      .i-tags {
+        margin-right: 20px;
+        margin-top: 10px;
+      }
+    }
+
+    .icon-row {
+      margin-top: 20px;
+      .icon-wrapper {
+        text-align: center;
+        .number {
+          font-size: $size-xs;
+          color: $Content;
+        }
+      }
+    }
+    .user-row {
+      height: 80px;
+      line-height: 80px;
+      padding: 20px;
+      padding-bottom: 20px;
+      .username {
+        margin-left: 20px;
+      }
+      .follow-col {
+        height: 100%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+  .recommend-row {
+    height: 40px;
+    line-height: 40px;
+    font-size: $size-s;
+    font-weight: bold;
+    padding: 10px;
+  }
+  .EventSumaryCompWrapper {
+    padding: 20px;
+  }
+}
