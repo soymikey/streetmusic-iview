@@ -5,6 +5,7 @@ import post1 from '@/asset/images/poster1.png';
 import post2 from '@/asset/images/poster2.png';
 import OneBlockComp from '@/components/OneBlockComp/OneBlockComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
+import CommentSumaryComp from '@/components/commentSumaryComp/commentSumaryComp';
 import './eventDetail.scss';
 
 const post1_ = require('@/asset/images/poster1.png');
@@ -92,11 +93,11 @@ class EventDetail extends Component {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     const { list, tagList, iconList, eventList } = this.state;
@@ -188,10 +189,21 @@ class EventDetail extends Component {
             </View>
           </i-col>
         </i-row>
-        <i-divider height={10} />
         <View className='EventSumaryCompWrapper'>
           <EventSumaryComp list={eventList} isShowIcons={false} />
         </View>
+
+        <i-row i-class='recommend-row'>
+          <i-col span='6' i-class='col-class'>
+            <View className='recommend-title'>
+              <Text>相关评论</Text>
+            </View>
+          </i-col>
+        </i-row>
+        <View className='CommentSumaryCompWrapper'>
+          <CommentSumaryComp list={eventList} />
+        </View>
+        <i-divider content='加载已经完成,没有其他数据'></i-divider>
       </View>
     );
   }

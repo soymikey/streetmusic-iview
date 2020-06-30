@@ -55,11 +55,11 @@ class TabbarComp extends Component {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     const { currentTab } = this.props;
@@ -95,6 +95,8 @@ class TabbarComp extends Component {
             dot
             title='我的'></i-tab-bar-item>
         </i-tab-bar>
+        <View className='tabbar-block' style='height:10px;background:#fff'></View>
+
       </View>
     );
   }

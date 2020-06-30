@@ -108,11 +108,11 @@ class Registerartist extends Component {
     }
     Taro.showToast({ title: '注册成功' });
   }
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     const {

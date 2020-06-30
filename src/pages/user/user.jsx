@@ -30,11 +30,11 @@ class User extends Component {
   componentDidMount() {
     // Taro.navigateTo({ url: '/pages/user/registerArtist/registerArtist' });
   }
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     return (

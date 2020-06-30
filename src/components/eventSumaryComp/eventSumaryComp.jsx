@@ -26,17 +26,17 @@ class Eventsumarycomp extends Component {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     const { list, isShowIcons } = this.props;
     return (
       <View className='eventSumaryComp'>
-        {list.map(item => {
+        {list.map((item, index) => {
           return (
             <i-row i-class='row-tab3' key={item.id}>
               <i-col span='3' i-class='col-class avatar'>
@@ -112,7 +112,7 @@ class Eventsumarycomp extends Component {
                   ) : null}
                 </i-row>
               </i-col>
-              <i-divider i-class='divider' height={24}></i-divider>
+              {list.length - 1 === index ? null : <i-divider i-class='divider' height={24}></i-divider>}
             </i-row>
           );
         })}

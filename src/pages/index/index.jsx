@@ -1,4 +1,5 @@
 import Taro, { Component } from '@tarojs/taro';
+import { connect } from '@tarojs/redux'
 
 import {
   View,
@@ -11,18 +12,21 @@ import {
   Textarea,
 } from '@tarojs/components';
 import { toolbox } from '@/utils/tools.js';
-import { getUserInfo } from '@/api/user';
+import { myLogin } from '@/api/user';
 import post1 from '@/asset/images/poster1.png';
 import post2 from '@/asset/images/poster2.png';
 import SixBlockComp from '@/components/SixBlockComp/SixBlockComp';
 import OneBlockComp from '@/components/OneBlockComp/OneBlockComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
-
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
+import { setUserInfo } from '@/actions/user'
+
 import './index.scss';
 
 const post1_ = require('@/asset/images/poster1.png');
 const post2_ = require('@/asset/images/poster2.png');
+@connect(state => state, { setUserInfo })
+
 
 class Index extends Component {
   // eslint-disable-next-line react/sort-comp
@@ -39,6 +43,7 @@ class Index extends Component {
   constructor() {
     super(...arguments);
     this.state = {
+      canIUse: Taro.canIUse('button.open-type.getUserInfo'),
       eventList: [
         {
           id: 1,
@@ -79,28 +84,42 @@ class Index extends Component {
       ],
     };
   }
+
+  async login(e) {
+    console.log('e', e)
+    myLogin().then(res => {
+      this.props.setUserInfo(res.data)
+    })
+
+    // if (res.errno === 0) {
+    //   clear()
+    //   set('openId', res.data.openid)
+    //   set('session', res.data.session_key)
+    // } else {
+    //   Taro.showToast({ title: '登录失败请重试', icon: 'none' })
+    // }
+  }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
 
-  testRequest() {
-    // http://49.235.133.74:4001/api/categories/getList
-    // request(
-    //   'http://49.235.133.74:4001/api/categories/getList',
-    //   {},
-    //   '123',
-    //   'post',
-    //   '1',
-    //   '2'
-    // )
-    //   .then(res => {
-    //     console.log('res', res);
-    //   })
-    //   .catch(err => {
-    //     console.log('err', err);
-    //   });
+  componentDidMount() {
+
+    // 查看是否授权
+    // Taro.getSetting({
+    //   success(res) {
+    //     if (res.authSetting['scope.userInfo']) {
+    //       // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+    //       Taro.getUserInfo({
+    //         success: function (res) {
+    //           console.log(res.userInfo)
+    //         }
+    //       })
+    //     }
+    //   }
+    // })
   }
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
   componentDidShow() {
     // getUserInfo('http://49.235.133.74:4001/api/categories/getList', {}, 'get')
@@ -112,14 +131,17 @@ class Index extends Component {
     //   });
   }
 
-  componentDidHide() {}
+  componentDidHide() { }
   clickHandler() {
     console.log('clicked');
   }
+
   render() {
-    const { eventList } = this.state;
+    const { eventList, canIUse } = this.state;
     return (
       <View className='index pb50px'>
+
+        <Button onGetUserInfo={this.login.bind(this)} openType="getUserInfo">登录</Button>
         <Swiper
           className='test-h'
           indicatorColor='#999'

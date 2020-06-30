@@ -1,3 +1,9 @@
+@import '@/styles/variables.scss';
+
+
+
+
+
 .float-layout {
   position: fixed;
   width: 100%;
@@ -31,8 +37,10 @@
   position: absolute;
   bottom: 0;
   width: 100%;
-  min-height: 600px;
-  max-height: 950px;
+  // min-height: 600px;
+  // max-height: 950px;
+ height: 450px;
+  overflow-y: auto;
   background-color: #fff;
   border-radius: 32px 32px 0px 0px;
   transform: translate3d(0, 100%, 0);
@@ -46,6 +54,8 @@
   position: relative;
   padding: 30px 0;
   text-align: center;
+  font-size: $size-s;
+  color: $Color;
   .close-img {
     position: absolute;
     right: 28px;
@@ -76,7 +86,7 @@
 .float-layout .layout-body {
   font-size: 28px;
   padding: 20px;
-  height: 602px;
+  // height: 602px;
 }
 .float-layout .layout-body__content {
   position: relative;

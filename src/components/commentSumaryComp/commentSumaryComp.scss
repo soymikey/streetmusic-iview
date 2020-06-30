@@ -1,0 +1,41 @@
+@import '@/styles/variables.scss';
+
+.row-tab3 {
+  .avatar {
+    padding-right: 20px;
+    padding-top: 20px;
+    text-align: center;
+  }
+  .username {
+    font-weight: bold;
+    font-size: $size-s;
+  }
+  .date {
+    font-size: $size-xs;
+    margin-top: 20px;
+    color: $Color;
+  }
+  .content {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: $size-s;
+  }
+
+  .image {
+    margin-top: 20px;
+  }
+  .row-others {
+    margin-top: 20px;
+    text-align: center;
+  }
+  .icon-row {
+    margin-top: 20px;
+    .icon-wrapper {
+      text-align: center;
+      .number {
+        font-size: $size-xs;
+        color: $Content;
+      }
+    }
+  }
+}

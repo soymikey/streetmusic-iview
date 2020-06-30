@@ -7,7 +7,6 @@ import configStore from './store';
 
 import './app.scss';
 
-const { $Message } = require('./iView/base/index');
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -16,7 +15,7 @@ const { $Message } = require('./iView/base/index');
 // }
 
 const store = configStore();
-Taro.name = 'michael';
+
 
 class App extends Component {
   // eslint-disable-next-line react/sort-comp
@@ -25,6 +24,8 @@ class App extends Component {
       'i-message': './iView/message/index',
     },
     pages: [
+      'pages/index/index',
+      'pages/event/event',
       'pages/user/user',
       'pages/user/uploadSong/uploadSong',
       'pages/user/uploadEvent/uploadEvent',
@@ -32,12 +33,12 @@ class App extends Component {
       'pages/user/myEvent/myEvent',
       'pages/user/registerArtist/registerArtist',
 
-      'pages/event/event',
+
       'pages/event/eventDetail/eventDetail',
 
       'pages/order/order',
       'pages/order/myOrder',
-      'pages/index/index',
+
       'pages/singer/singer',
     ],
     window: {
@@ -132,24 +133,22 @@ class App extends Component {
 
   componentDidMount() {
     Taro.hideTabBar();
-    $Message({
-      content: '这是一条普通提醒',
-    });
+
   }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
-  componentDidCatchError() {}
+  componentDidCatchError() { }
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
   render() {
     return (
       <Provider store={store}>
-        {' '}
-        <i-message id='message' />
+
+
         <Index />
       </Provider>
     );

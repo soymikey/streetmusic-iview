@@ -19,15 +19,15 @@ export const request = (url, params, method = 'post', message = '加载中') => 
     });
   }
 
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     console.log('url', url);
 
     Taro.request({
       url: url,
       data: params,
       header: {
-        //'Content-Type': 'application/json'
-        'content-type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json'
+        // 'content-type': 'application/x-www-form-urlencoded',
       },
       method: method,
       success: res => {
@@ -43,13 +43,13 @@ export const request = (url, params, method = 'post', message = '加载中') => 
           reject('错误1');
         }
       },
-      fail: function(res) {
+      fail: function (res) {
         if (message != '') {
           Taro.hideLoading();
         }
         reject('错误2');
       },
-      complete: res => {},
+      complete: res => { },
     });
   });
 };
