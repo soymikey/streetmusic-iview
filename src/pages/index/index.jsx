@@ -82,7 +82,7 @@ class Index extends Component {
         },
       ],
       total: 0,
-      pageSize: 10,
+      pageSize: 1,
       pageNo: 1,
       loading: false,
     };
@@ -94,7 +94,7 @@ class Index extends Component {
   }
 
   componentDidMount() {
-    this.fetchHotEventList()
+    this.fetchHotEventList(true)
     // 查看是否授权
     // Taro.getSetting({
     //   success(res) {
@@ -114,7 +114,7 @@ class Index extends Component {
   componentDidShow() {
 
   }
-  fetchHotEventList() {
+  fetchHotEventList(override) {
     Taro.showLoading({
       title: '加载中-活动',
     });
@@ -127,7 +127,7 @@ class Index extends Component {
           item.poster = JSON.parse(item.poster)
         }
         this.setState({
-          hotEventList: res.data.list,
+          hotEventList: override ? res.data.list : this.state.hotEventList.concat(res.data.list),
           total: res.data.total, //总页数
           loading: false,
         });
@@ -144,11 +144,13 @@ class Index extends Component {
   onPullDownRefresh() {
     if (!this.state.loading) {
       this.setState({ pageNo: 1 }, () => {
-        this.fetchHotEventList();
+        this.fetchHotEventList(true).then(res => {
+          // 处理完成后，终止下拉刷新
+          Taro.stopPullDownRefresh();
+        });
       });
 
-      // 处理完成后，终止下拉刷新
-      Taro.stopPullDownRefresh();
+
     }
   }
   onReachBottom() {

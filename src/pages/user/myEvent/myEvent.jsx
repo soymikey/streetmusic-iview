@@ -45,7 +45,7 @@ class MyEvent extends Component {
   componentDidMount() {
 
   }
-  fetchEventList() {
+  fetchEventList(override) {
     Taro.showLoading({
       title: '加载中-活动',
     });
@@ -55,7 +55,7 @@ class MyEvent extends Component {
     return getEventListById(data)
       .then(res => {
         this.setState({
-          list: this.state.list.concat(res.data.list),
+          list: override ? res.data.list : this.state.list.concat(res.data.list),
           total: res.data.total, //总页数
           loading: false,
         });
@@ -77,7 +77,7 @@ class MyEvent extends Component {
     } else {
       deleteEvent({ id: this.state.eventId }).then(res => {
         this.setState({ isShowModal: false });
-        this.fetchEventList()
+        this.fetchEventList(true)
       })
     }
 
@@ -87,18 +87,20 @@ class MyEvent extends Component {
   componentWillUnmount() { }
 
   componentDidShow() {
-    this.fetchEventList();
+    this.fetchEventList(true);
   }
 
   componentDidHide() { }
   onPullDownRefresh() {
     if (!this.state.loading) {
       this.setState({ pageNo: 1 }, () => {
-        this.fetchEventList();
+        this.fetchEventList(true).then(res => {
+          // 处理完成后，终止下拉刷新
+          Taro.stopPullDownRefresh();
+        });
       });
 
-      // 处理完成后，终止下拉刷新
-      Taro.stopPullDownRefresh();
+
     }
   }
   onReachBottom() {

@@ -42,7 +42,7 @@ class MySong extends Component {
   }
   componentDidMount() {
   }
-  fetchSongList() {
+  fetchSongList(override) {
     Taro.showLoading({
       title: '加载中-歌曲',
     });
@@ -53,8 +53,9 @@ class MySong extends Component {
       .then(res => {
         console.log('res.data', res.data)
         this.setState({
-          list: res.data.list,
+          list: override ? res.data.list : this.state.list.concat(res.data.list),
           total: res.data.total, //总页数
+          loading: false,
         });
       })
       .catch(err => {
@@ -80,7 +81,7 @@ class MySong extends Component {
     } else {
       deleteSong({ id: this.state.songId }).then(res => {
         this.setState({ isShowModal: false });
-        this.fetchSongList()
+        this.fetchSongList(true)
       })
     }
 
@@ -88,18 +89,20 @@ class MySong extends Component {
   componentWillUnmount() { }
 
   componentDidShow() {
-    this.fetchSongList();
+    this.fetchSongList(true);
   }
 
   componentDidHide() { }
   onPullDownRefresh() {
     if (!this.state.loading) {
       this.setState({ pageNo: 1 }, () => {
-        this.fetchSongList();
+        this.fetchSongList(true).then(res => {
+          // 处理完成后，终止下拉刷新
+          Taro.stopPullDownRefresh();
+        });
       });
 
-      // 处理完成后，终止下拉刷新
-      Taro.stopPullDownRefresh();
+
     }
   }
   onReachBottom() {

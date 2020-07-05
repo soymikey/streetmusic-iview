@@ -180,9 +180,9 @@ class Singer extends Component {
   }
 
   componentDidMount() {
-    this.fetchSongList(1);
-    this.fetchOrderList(1);
-    this.fetchEventList();
+    this.fetchSongList(true);
+    this.fetchOrderList(true);
+    this.fetchEventList(true);
   }
   setSwiperHeight(value) {
     let height = 0;
@@ -210,7 +210,7 @@ class Singer extends Component {
   componentDidShow() { }
 
   componentDidHide() { }
-  fetchSongList() {
+  fetchSongList(override) {
     Taro.showLoading({
       title: '加载中-歌曲',
     });
@@ -220,7 +220,7 @@ class Singer extends Component {
     return getSongListById(data)
       .then(res => {
         this.setState({
-          songList: res.data.list,
+          songList: override ? res.data.list : this.state.songList.concat(res.data.list),
           songTotal: res.data.total, //总页数
           loading: false,
         });
@@ -229,7 +229,7 @@ class Singer extends Component {
         console.log('==> [ERROR]', err);
       })
   }
-  fetchOrderList(pageNo) {
+  fetchOrderList(override) {
     this.setState({ loading: true });
     Taro.showLoading({
       title: '加载中-订单',
@@ -251,7 +251,7 @@ class Singer extends Component {
       Taro.hideLoading();
     }, 1000);
   }
-  fetchEventList() {
+  fetchEventList(override) {
     Taro.showLoading({
       title: '加载中-活动',
     });
@@ -264,7 +264,7 @@ class Singer extends Component {
           item.poster = JSON.parse(item.poster)
         }
         this.setState({
-          eventList: this.state.eventList.concat(res.data.list),
+          eventList: override ? res.data.list : this.state.songList.concat(res.data.list),
           eventTotal: res.data.total, //总页数
           loading: false,
         });
@@ -281,9 +281,11 @@ class Singer extends Component {
       // 上拉刷新
       if (!this.state.loading) {
         this.setState({ songPageNo: 1 }, () => {
-          this.fetchSongList(1);
-          // 处理完成后，终止下拉刷新
-          Taro.stopPullDownRefresh();
+          this.fetchSongList(true).then(res => {
+
+            // 处理完成后，终止下拉刷新
+            Taro.stopPullDownRefresh();
+          });
         });
 
       }
@@ -298,9 +300,12 @@ class Singer extends Component {
     if (currentTab === 2) {
       if (!this.state.loading) {
         this.setState({ eventPageNo: 1 }, () => {
-          this.fetchEventList(1);
-          // 处理完成后，终止下拉刷新
-          Taro.stopPullDownRefresh();
+          this.fetchEventList(true).then(res => {
+
+            // 处理完成后，终止下拉刷新
+            Taro.stopPullDownRefresh();
+          });
+
         });
 
       }

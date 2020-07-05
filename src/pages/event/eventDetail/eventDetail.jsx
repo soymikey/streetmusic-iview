@@ -171,7 +171,7 @@ class EventDetail extends Component {
       })
   }
   // 留言列表
-  fetchCommentList() {
+  fetchCommentList(override) {
     Taro.showLoading({
       title: '加载中-留言',
     });
@@ -184,7 +184,7 @@ class EventDetail extends Component {
       .then(res => {
 
         this.setState({
-          commentList: res.data.list,
+          commentList: override ? res.data.list : this.state.commentList(res.data.list),
           total: res.data.total,
           loading: false
         });
@@ -196,7 +196,10 @@ class EventDetail extends Component {
   init() {
     this.getEventDetail()//活动详情
     this.fetchHotEventList()//热门推荐活动
-    this.fetchCommentList()//留言列表
+    this.fetchCommentList(true).then(res => {
+      // 处理完成后，终止下拉刷新
+      Taro.stopPullDownRefresh();
+    })//留言列表
   }
   componentWillMount() {
     this.init()
@@ -216,8 +219,7 @@ class EventDetail extends Component {
   onPullDownRefresh() {
 
     this.init();
-    // 处理完成后，终止下拉刷新
-    Taro.stopPullDownRefresh();
+
 
   }
   onReachBottom() {
