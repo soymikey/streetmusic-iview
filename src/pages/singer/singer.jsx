@@ -6,6 +6,8 @@ import Tab3 from './tab3/tab3';
 import Tab1 from './tab1/tab1';
 import Tab2 from './tab2/tab2';
 import './singer.scss';
+import { getEventListById } from '@/api/event';
+import { getSongListById } from '@/api/song';
 
 const post1_ = require('@/asset/images/poster1.png');
 const post2_ = require('@/asset/images/poster2.png');
@@ -91,7 +93,7 @@ class Singer extends Component {
         { name: '张学友', price: '12.00' },
         { name: '友情歌', price: '12.00' },
       ],
-      songList: [],
+
       orderLists: [
         { name: '阿桑-给你的爱一直很安静', price: '12.00' },
         { name: '疯人院', price: '12.00' },
@@ -149,7 +151,17 @@ class Singer extends Component {
           collections: '445',
         },
       ],
+      //活动分页
+      eventPageSize: 10,
+      eventPageNo: 1,
       eventList: [],
+      eventTotal: 0,
+      loading: false,
+      //歌曲分页
+      songPageSize: 10,
+      songPageNo: 1,
+      songList: [],
+      songTotal: 0,
     };
   }
   iconHandler(icon) {
@@ -170,7 +182,7 @@ class Singer extends Component {
   componentDidMount() {
     this.fetchSongList(1);
     this.fetchOrderList(1);
-    this.fetchEventsList(1);
+    this.fetchEventList();
   }
   setSwiperHeight(value) {
     let height = 0;
@@ -193,46 +205,29 @@ class Singer extends Component {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
-  fetchSongList(pageNo) {
-    this.setState({ loading: true });
+  componentDidHide() { }
+  fetchSongList() {
     Taro.showLoading({
       title: '加载中-歌曲',
     });
     // 向后端请求指定页码的数据
-    // return getArticles(pageNo)
-    //   .then(res => {
-    //     this.setState({
-    //       currentSongPage: pageNo, //当前的页号
-    //       totalSongPage: res.pages, //总页数
-    //       songList: [],
-    //     });
-    //   })
-    //   .catch(err => {
-    //     console.log('==> [ERROR]', err);
-    //   })
-    //   .then(() => {
-    //     this.loading = false;
-    //   });
-    setTimeout(() => {
-      this.setState(
-        {
-          currentSongPage: pageNo, //当前的页号
-          totalSongPage: 8, //总页数
-          songList: this.state.songLists.slice(0, pageNo * 10),
-          loading: false,
-        },
-        () => {
-          this.setSwiperHeight(this.state.currentTab);
-        }
-      );
+    const data = { id: 'o2VHy5Fn3m8GlVISHmDgNS6y3WrM', pageSize: this.state.songPageSize, pageNo: this.state.songPageNo }
 
-      Taro.hideLoading();
-    }, 1000);
+    return getSongListById(data)
+      .then(res => {
+        this.setState({
+          songList: res.data.list,
+          songTotal: res.data.total, //总页数
+          loading: false,
+        });
+      })
+      .catch(err => {
+        console.log('==> [ERROR]', err);
+      })
   }
   fetchOrderList(pageNo) {
     this.setState({ loading: true });
@@ -256,27 +251,28 @@ class Singer extends Component {
       Taro.hideLoading();
     }, 1000);
   }
-  fetchEventsList(pageNo) {
-    this.setState({ loading: true });
+  fetchEventList() {
     Taro.showLoading({
       title: '加载中-活动',
     });
-
-    setTimeout(() => {
-      this.setState(
-        {
-          currentEventsPage: pageNo, //当前的页号
-          totalEventsPage: 8, //总页数
-          eventList: this.state.eventLists.slice(0, pageNo * 10),
-          loading: false,
-        },
-        () => {
-          this.setSwiperHeight(this.state.currentTab);
+    // 向后端请求指定页码的数据
+    const data = { id: 'o2VHy5Fn3m8GlVISHmDgNS6y3WrM', pageSize: this.state.eventPageSize, pageNo: this.state.eventPageNo }
+    return getEventListById(data)
+      .then(res => {
+        console.log('res.data', res.data)
+        for (const item of res.data.list) {
+          item.poster = JSON.parse(item.poster)
         }
-      );
+        this.setState({
+          eventList: this.state.eventList.concat(res.data.list),
+          eventTotal: res.data.total, //总页数
+          loading: false,
+        });
+      })
+      .catch(err => {
 
-      Taro.hideLoading();
-    }, 1000);
+        console.log('==> [ERROR]', err);
+      })
   }
 
   onPullDownRefresh() {
@@ -284,9 +280,12 @@ class Singer extends Component {
     if (currentTab === 0) {
       // 上拉刷新
       if (!this.state.loading) {
-        this.fetchSongList(1);
-        // 处理完成后，终止下拉刷新
-        Taro.stopPullDownRefresh();
+        this.setState({ songPageNo: 1 }, () => {
+          this.fetchSongList(1);
+          // 处理完成后，终止下拉刷新
+          Taro.stopPullDownRefresh();
+        });
+
       }
     }
     if (currentTab === 1) {
@@ -298,9 +297,12 @@ class Singer extends Component {
     }
     if (currentTab === 2) {
       if (!this.state.loading) {
-        this.fetchEventsList(1);
-        // 处理完成后，终止下拉刷新
-        Taro.stopPullDownRefresh();
+        this.setState({ eventPageNo: 1 }, () => {
+          this.fetchEventList(1);
+          // 处理完成后，终止下拉刷新
+          Taro.stopPullDownRefresh();
+        });
+
       }
     }
   }
@@ -309,9 +311,11 @@ class Singer extends Component {
     if (currentTab === 0) {
       if (
         !this.state.loading &&
-        this.state.currentSongPage < this.state.totalSongPage
+        this.state.songPageNo < this.state.songTotal
       ) {
-        this.fetchSongList(this.state.currentSongPage + 1);
+        this.setState({ songPageNo: this.state.songPageNo + 1 }, () => {
+          this.fetchSongList();
+        });
       }
     }
     if (currentTab === 1) {
@@ -323,11 +327,14 @@ class Singer extends Component {
       }
     }
     if (currentTab === 2) {
+
       if (
         !this.state.loading &&
-        this.state.currentEventsPage < this.state.totalEventsPage
+        this.state.eventPageNo < this.state.eventTotal
       ) {
-        this.fetchEventsList(this.state.currentEventsPage + 1);
+        this.setState({ eventPageNo: this.state.eventPageNo + 1 }, () => {
+          this.fetchEventList();
+        });
       }
     }
   }

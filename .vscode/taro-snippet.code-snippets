@@ -12,6 +12,18 @@
   // 	],
   // 	"description": "Log output to console"
   // }
+  "gotopage": {
+    "prefix": "gotopage",
+    "body": [
+      "import { goToPage } from '@/utils/tools.js';"
+    ]
+  },
+  "st": {
+    "prefix": "st",
+    "body": [
+      "Taro.showToast({title:'$1',icon:'none'})"
+    ]
+  },
   "clg": {
     "prefix": "console",
     "body": [
@@ -21,7 +33,13 @@
   "sst": {
     "prefix": "setstate",
     "body": [
-      "this.setState({$1})"
+      "this.setState({ $1 })"
+    ]
+  },
+  "isdisabled": {
+    "prefix": "setstate",
+    "body": [
+      "this.setState({ isDisabled: $1 });"
     ]
   },
   "constructor": {

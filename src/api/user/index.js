@@ -1,6 +1,6 @@
 import Taro from "@tarojs/taro"
 import Wechat from "@/utils/wechat.js"
-import { baseURL } from '../../config'
+import { baseURL } from '@/config'
 import { set, clear } from '@/utils/localStorage';
 
 // 小程序启动，通过wx.login()获取code
@@ -30,7 +30,7 @@ export const myLogin = async () => {
         const getUserInfoResult = await Wechat.getUserInfo() // 从微信后台获取用户信息传用户信息参数
         if (getUserInfoResult.errMsg === 'getUserInfo:ok') {
 
-            const info = { ...getUserInfoResult.userInfo, openId: openId }
+            const info = { ...getUserInfoResult.userInfo, id: openId }
             const val = await getUserInfo(info)//获取数据库用户信息，如果没有会自动注册然后返回注册过的用户信息
             if (val.errno === 0) {
                 set('token', val.data.token)
@@ -50,12 +50,14 @@ export const myLogin = async () => {
 export const getUserInfo = (data) => { return Wechat.request("/api/userinfo/detail", data) }//获取用户信息
 
 export const createUser = (data) => { return Wechat.request("/api/userinfo/create", data) }// 创建用户
-// export const wechatLogin = (data) => { return Wechat.request( "/api/userinfo/wechatLogin", data ) }//微信登录
-export const updateUserState = (data) => { return Wechat.request("/api/userinfo/updateState", data) }//获取用户信息
+export const registerArtist = (data) => { return Wechat.request("/api/userinfo/registerArtist", data) }//注册艺人
+export const updateUserInfo = (data) => { return Wechat.request("/api/userinfo/update", data) }// 更新用户
+
+
 
 export const getFullUserInfo = () => { return Wechat.request("/api/userinfo/fullDetail") }//获取用户所有信息
 
-export const updateUserInfo = (data) => { return Wechat.request("/api/userinfo/update", data) }// 更新用户
+
 export const createArtist = (data) => { return Wechat.request("/api/userinfo/createArtist", data) }// 更新用户信息和role变成艺人
 export const uploadUserImage = (files) => {
     return new Promise((resolve, reject) => {

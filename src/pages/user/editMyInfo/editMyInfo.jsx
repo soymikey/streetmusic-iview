@@ -2,17 +2,18 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Picker } from '@tarojs/components';
 import ImagePickerComp from '@/components/ImagePickerComp/ImagePickerComp';
-import './registerArtist.scss';
-import { getUserInfo, registerArtist } from '@/api/user';
+import './editMyInfo.scss';
+import { getUserInfo, updateUserInfo } from '@/api/user';
 import { connect } from '@tarojs/redux'
 import validator from '@/utils/validator'
+import { uploadImage } from '@/api/common';
 import { setUserInfo } from '@/actions/user'
 
 @connect(state => state, { setUserInfo })
 
-class Registerartist extends Component {
+class EditMyInfo extends Component {
   config = {
-    navigationBarTitleText: '注册艺人',
+    navigationBarTitleText: '编辑资料',
     usingComponents: {
       'i-row': '../../../iView/row/index',
       'i-col': '../../../iView/col/index',
@@ -28,32 +29,104 @@ class Registerartist extends Component {
   constructor() {
     super(...arguments);
     this.state = {
-      realName: '',
-      introduction: '',
+
       provinceCityRegion: { code: [], value: [] },
       address: '',
-      // avatar: [],
+      avatar: '',
+      city: '',
+      cityCode: '',
+      country: '',
+      gender: '',
+      id: '',
+      introduction: '',
+      language: '',
+      lastLogin: '',
+      nickName: '',
       phone: '',
+      province: '',
+      provinceCode: '',
+      realName: '',
+      region: '',
+      regionCode: '',
+      registerArtistDate: '',
+      registerDate: '',
       residentId: '',
-      isDisabled: false,
+      role: '',
+      state: '',
+      token: '',
+      isDisabled: false
+
     };
   }
   componentDidMount() {
     getUserInfo({ id: this.props.user.id }).then(res => {
-      const { address,
-        avatar, introduction,
+      const {
+        address,
+        avatar,
+        city,
+        cityCode,
+        country,
+        gender,
+        id,
+        introduction,
+        language,
+        lastLogin,
+        nickName,
+        phone,
+        province,
+        provinceCode,
+        realName,
+        region,
+        regionCode,
+        registerArtistDate,
+        registerDate,
+        residentId,
+        role,
+        state,
+        token,
       } = res.data
       this.setState({
         avatar: [{ url: avatar }],
+        address,
+        city,
+        cityCode,
+        country,
+        gender,
+        id,
+        introduction,
+        language,
+        lastLogin,
+        nickName,
+        phone,
+        province,
+        provinceCode,
+        realName,
+        region,
+        regionCode,
+        registerArtistDate,
+        registerDate,
+        residentId,
+        role,
+        state,
+        token,
+        provinceCityRegion: {
+          code: [provinceCode,
+            cityCode,
+            regionCode,], value: [
+              province,
+              city,
+              region,]
+        },
       })
     })
+
   }
 
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
-  onChangeRealName(e) {
-    this.setState({ realName: e.target.detail.value });
+  onChangeName(e) {
+    this.setState({ nickName: e.target.detail.value });
   }
   onChangeProvinceCityRegion(e) {
     this.setState({
@@ -85,14 +158,14 @@ class Registerartist extends Component {
       avatar: this.state.avatar.concat(obj),
     });
   }
-  registerArtist() {
+  async updateMyInfo() {
     const {
-      realName,
-      introduction,
       provinceCityRegion,
       address,
+      avatar,
+      introduction,
+      nickName,
       phone,
-      residentId,
     } = this.state;
 
 
@@ -101,10 +174,17 @@ class Registerartist extends Component {
       [
 
         {
-          value: realName,
+          value: avatar,
+          rules: [{
+            rule: 'arrLength',
+            msg: '头像不能为空'
+          }]
+        },
+        {
+          value: nickName,
           rules: [{
             rule: 'required',
-            msg: '真实名字不能为空'
+            msg: '昵称不能为空'
           }]
         },
         {
@@ -113,12 +193,7 @@ class Registerartist extends Component {
             rule: 'isMobile',
           }]
         },
-        {
-          value: residentId,
-          rules: [{
-            rule: 'isIdentityNumber',
-          }]
-        },
+
         {
           value: provinceCityRegion.value,
           rules: [{
@@ -151,16 +226,35 @@ class Registerartist extends Component {
       Taro.showToast({ title: isValid.msg, icon: 'none' });
       return;
     }
+    const avatar_ = []
+    for (const item of avatar) {
+      if (item.url.includes('http://qiniu.migaox.com')) {
+        avatar_.push(item.url)
+      } else {
+        const isUploaded = await uploadImage(item.url, '/api/event/image/upload')
+        const isUploaded_ = JSON.parse(isUploaded)
+        if (isUploaded_.errno !== 0) {
+          Taro.showToast({ title: '上传失败', icon: 'none' })
+          this.setState({ isDisabled: false });
+          return
+        } else {
+          avatar_.push(isUploaded_.data.url)
+        }
+      }
+
+    }
     const data = {
-      realName,
-      introduction,
       provinceCityRegion,
       address,
+      avatar: avatar_[0],
+      introduction,
+      nickName,
       phone,
-      residentId,
+      address
     }
+
     this.setState({ isDisabled: true });
-    registerArtist(data).then(res => {
+    updateUserInfo(data).then(res => {
       this.setState({ isDisabled: false });
       setTimeout(async () => {
         await getUserInfo({ id: this.props.user.id }).then(res => {
@@ -185,30 +279,49 @@ class Registerartist extends Component {
 
   render() {
     const {
-      realName,
-      introduction,
+
       provinceCityRegion,
       address,
       avatar,
+      city,
+      cityCode,
+      country,
+      gender,
+      id,
+      introduction,
+      language,
+      lastLogin,
+      nickName,
       phone,
-      residentId, isDisabled
+      province,
+      provinceCode,
+      realName,
+      region,
+      regionCode,
+      registerArtistDate,
+      registerDate,
+      residentId,
+      role,
+      state,
+      token,
+      isDisabled
     } = this.state;
     return (
-      <View className='registerArtist'>
-        {/* <i-panel title='个人头像'>
+      <View className='editMyInfo'>
+        <i-panel title='个人头像'>
           <ImagePickerComp
             count={1}
             files={avatar}
             onRemove_={this.remove.bind(this)}
             onAdd_={this.add.bind(this)}
           />
-        </i-panel> */}
+        </i-panel>
         <i-input
-          title='名字'
-          placeholder='真实名字'
-          value={realName}
+          title='昵称'
+          placeholder='用户昵称'
+          value={nickName}
           maxlength={-1}
-          onChange={this.onChangeRealName.bind(this)}
+          onChange={this.onChangeName.bind(this)}
         />
         <i-input
           title='手机'
@@ -217,14 +330,6 @@ class Registerartist extends Component {
           maxlength={11}
           onChange={this.onChangePhone.bind(this)}
         />
-        <i-input
-          title='身份证'
-          placeholder='身份证号码'
-          value={residentId}
-          maxlength={18}
-          onChange={this.onChangeResidentId.bind(this)}
-        />
-
         <Picker mode='region' onChange={this.onChangeProvinceCityRegion.bind(this)}>
           <View onClick={this.hideKeyBoard.bind(this)}>
             <i-input
@@ -251,8 +356,8 @@ class Registerartist extends Component {
           onChange={this.onChangeIntroduction.bind(this)}
         />
         <View className='button-wrapper'>
-          <Button size='mini' className='primary' onClick={this.registerArtist.bind(this)} disabled={isDisabled}>
-            注册艺人
+          <Button size='mini' className='primary' onClick={this.updateMyInfo.bind(this)} disabled={isDisabled}>
+            更新资料
           </Button>
         </View>
       </View>
@@ -260,4 +365,4 @@ class Registerartist extends Component {
   }
 }
 
-export default Registerartist;
+export default EditMyInfo;

@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Image } from '@tarojs/components';
-
+import { goToPage } from '@/utils/tools.js';
 import square1 from '@/asset/images/square1.png';
 
 import square2 from '@/asset/images/square2.png';
@@ -27,19 +27,18 @@ class SixBlockComp extends Component {
     };
   }
   goToSingerPage() {
-    Taro.navigateTo({
-      url: '/pages/singer/singer',
-    });
+
+    goToPage('/pages/singer/singer')
   }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     const { list } = this.state;

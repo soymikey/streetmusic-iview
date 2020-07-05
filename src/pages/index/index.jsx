@@ -11,8 +11,6 @@ import {
   Input,
   Textarea,
 } from '@tarojs/components';
-import { toolbox } from '@/utils/tools.js';
-import { myLogin } from '@/api/user';
 import post1 from '@/asset/images/poster1.png';
 import post2 from '@/asset/images/poster2.png';
 import SixBlockComp from '@/components/SixBlockComp/SixBlockComp';
@@ -20,6 +18,7 @@ import OneBlockComp from '@/components/OneBlockComp/OneBlockComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import { setUserInfo } from '@/actions/user'
+import { getHotEventList } from '@/api/event';
 
 import './index.scss';
 
@@ -44,7 +43,7 @@ class Index extends Component {
     super(...arguments);
     this.state = {
       canIUse: Taro.canIUse('button.open-type.getUserInfo'),
-      eventList: [
+      hotEventList: [
         {
           id: 1,
           username: '网易云小秘书',
@@ -82,29 +81,20 @@ class Index extends Component {
           collections: '445',
         },
       ],
+      total: 0,
+      pageSize: 10,
+      pageNo: 1,
+      loading: false,
     };
   }
 
-  async login(e) {
-    console.log('e', e)
-    myLogin().then(res => {
-      this.props.setUserInfo(res.data)
-    })
 
-    // if (res.errno === 0) {
-    //   clear()
-    //   set('openId', res.data.openid)
-    //   set('session', res.data.session_key)
-    // } else {
-    //   Taro.showToast({ title: '登录失败请重试', icon: 'none' })
-    // }
-  }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
 
   componentDidMount() {
-
+    this.fetchHotEventList()
     // 查看是否授权
     // Taro.getSetting({
     //   success(res) {
@@ -122,27 +112,64 @@ class Index extends Component {
   componentWillUnmount() { }
 
   componentDidShow() {
-    // getUserInfo('http://49.235.133.74:4001/api/categories/getList', {}, 'get')
-    //   .then(res => {
-    //     console.log('res', res);
-    //   })
-    //   .catch(err => {
-    //     console.log('err', err);
-    //   });
+
+  }
+  fetchHotEventList() {
+    Taro.showLoading({
+      title: '加载中-活动',
+    });
+    // 向后端请求指定页码的数据
+    const data = { pageSize: this.state.pageSize, pageNo: this.state.pageNo }
+    this.setState({ loading: true });
+    return getHotEventList(data)
+      .then(res => {
+        for (const item of res.data.list) {
+          item.poster = JSON.parse(item.poster)
+        }
+        this.setState({
+          hotEventList: res.data.list,
+          total: res.data.total, //总页数
+          loading: false,
+        });
+      })
+      .catch(err => {
+        console.log('==> [ERROR]', err);
+      })
   }
 
   componentDidHide() { }
   clickHandler() {
     console.log('clicked');
   }
+  onPullDownRefresh() {
+    if (!this.state.loading) {
+      this.setState({ pageNo: 1 }, () => {
+        this.fetchHotEventList();
+      });
+
+      // 处理完成后，终止下拉刷新
+      Taro.stopPullDownRefresh();
+    }
+  }
+  onReachBottom() {
+    if (
+      !this.state.loading &&
+      this.state.pageNo < this.state.total
+    ) {
+      this.setState({ pageNo: this.state.pageNo + 1 }, () => {
+        this.fetchHotEventList();
+      });
+    }
+  }
 
   render() {
-    const { eventList, canIUse } = this.state;
+    const { hotEventList, canIUse } = this.state;
+    const { user } = this.props
     return (
       <View className='index pb50px'>
-
-        <Button onGetUserInfo={this.login.bind(this)} openType="getUserInfo">登录</Button>
+        {user.role}
         <Swiper
+          style='height:250px;'
           className='test-h'
           indicatorColor='#999'
           indicatorActiveColor='#333'
@@ -150,13 +177,13 @@ class Index extends Component {
           indicatorDots
           autoplay>
           <SwiperItem>
-            <Image src={post1} style='width: 100%' />
+            <Image src={post1} mode='aspectFit' style='width: 100%' />
           </SwiperItem>
           <SwiperItem>
-            <Image src={post2} style='width: 100%' />
+            <Image src={post2} mode='aspectFit' style='width: 100%' />
           </SwiperItem>
           <SwiperItem>
-            <View className='demo-text-3'>3</View>
+            <Image src={post1} mode='aspectFit' style='width: 100%' />
           </SwiperItem>
         </Swiper>
         <i-row i-class='sub-cate'>
@@ -200,7 +227,7 @@ class Index extends Component {
         <i-divider height={24}></i-divider>
         {/* <OneBlockComp /> */}
 
-        <EventSumaryComp list={eventList} isShowIcons={false} />
+        <EventSumaryComp list={hotEventList} isShowIcons={false} />
         <i-divider content='加载已经完成,没有其他数据'></i-divider>
         <View className='tabbar-container'>
           <TabbarComp currentTab='index' />

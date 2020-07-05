@@ -1,6 +1,8 @@
 @import '@/styles/variables.scss';
 @import '~taro-ui/dist/style/components/image-picker.scss';
 @import '~taro-ui/dist/style/components/icon.scss';
+@import "~taro-ui/dist/style/components/textarea.scss";
+
 page {
   height: 100%;
   font-family: PingFangSC-Regular, sans-serif;

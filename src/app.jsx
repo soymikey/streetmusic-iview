@@ -2,11 +2,8 @@ import Taro, { Component } from '@tarojs/taro';
 import { Provider } from '@tarojs/redux';
 
 import Index from './pages/index';
-
 import configStore from './store';
-
 import './app.scss';
-
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -25,13 +22,16 @@ class App extends Component {
     },
     pages: [
       'pages/index/index',
-      'pages/event/event',
+
       'pages/user/user',
+      'pages/event/event',
+
       'pages/user/uploadSong/uploadSong',
       'pages/user/uploadEvent/uploadEvent',
       'pages/user/mySong/mySong',
       'pages/user/myEvent/myEvent',
       'pages/user/registerArtist/registerArtist',
+      'pages/user/editMyInfo/editMyInfo',
 
 
       'pages/event/eventDetail/eventDetail',

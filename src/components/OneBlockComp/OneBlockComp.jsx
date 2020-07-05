@@ -2,6 +2,8 @@ import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Image } from '@tarojs/components';
 import post1 from '@/asset/images/poster1.png';
 import post2 from '@/asset/images/poster2.png';
+import { goToPage } from '@/utils/tools.js';
+
 import './OneBlockComp.scss';
 
 class OneBlockComp extends Component {
@@ -22,19 +24,18 @@ class OneBlockComp extends Component {
     };
   }
   goToEventPage() {
-    Taro.navigateTo({
-      url: '/pages/event/eventDetail/eventDetail',
-    });
+
+    goToPage('/pages/event/eventDetail/eventDetail')
   }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     const { list } = this.state;

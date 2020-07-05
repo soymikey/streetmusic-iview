@@ -1,8 +1,5 @@
 import Taro, { Component } from '@tarojs/taro';
-import { View, Button, Text, Image } from '@tarojs/components';
-
-import { connect } from '@tarojs/redux';
-
+import { View, Text } from '@tarojs/components';
 import './commentSumaryComp.scss';
 
 class CommentSumaryComp extends Component {
@@ -18,10 +15,7 @@ class CommentSumaryComp extends Component {
       'i-divider': '../../iView/divider/index',
     },
   };
-  goToEventDetailPage() {
-    console.log('goToEventDetailPage');
-    Taro.navigateTo({ url: '/pages/event/eventDetail/eventDetail?id=123' });
-  }
+
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
@@ -38,7 +32,7 @@ class CommentSumaryComp extends Component {
   componentDidHide() { }
 
   render() {
-    const { list, } = this.props;
+    const { list } = this.props;
     return (
       <View className='commentSumaryComp'>
         {list.map((item, index) => {
@@ -46,7 +40,7 @@ class CommentSumaryComp extends Component {
             <i-row i-class='row-tab3' key={item.id}>
               <i-col span='3' i-class='col-class avatar'>
                 <i-avatar
-                  src='https://i.loli.net/2017/08/21/599a521472424.jpg'
+                  src={item.avatar}
                   size='large'
                 />
               </i-col>
@@ -55,7 +49,7 @@ class CommentSumaryComp extends Component {
                   <View >
                     <i-col span='24' i-class='col-class'>
                       <View className='username'>
-                        <Text>{item.username} 评论：</Text>
+                        <Text>{item.nickName} 评论：</Text>
                       </View>
                     </i-col>
 
@@ -64,9 +58,9 @@ class CommentSumaryComp extends Component {
                         <Text>{item.content}</Text>
                       </View>
                     </i-col>
-                    <i-col span='6' i-class='col-class'>
+                    <i-col span='10' i-class='col-class'>
                       <View className='date'>
-                        <Text>{item.date}</Text>
+                        {item.createdDate && <Text><Text>{item.createdDate.slice(0, 10)}</Text><Text decode="true">&nbsp; &nbsp;</Text> <Text>{item.createdDate.slice(11, 16)}</Text></Text>}
                       </View>
                     </i-col>
                     <i-col span='8' i-class='col-class'>

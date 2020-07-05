@@ -58,10 +58,19 @@ class Wechat {
                     }
                     if (res.statusCode == 200) {
                         //   success(res.data);
+                        if (res.data.errno === 0) {
+                            if (res.data.message) {
+                                Taro.showToast({ title: res.data.message, icon: 'none' })
+                            }
 
-                        resolve(res.data);
+                            resolve(res.data);
+                        } else {
+                            Taro.showToast({ title: res.data.message, icon: 'none' })
+                            reject(res.data.message)
+                        }
                     } else {
                         //   fail();
+                        Taro.showToast({ title: '请求错误', icon: 'none' })
                         reject('错误1');
                     }
                 },
@@ -69,6 +78,8 @@ class Wechat {
                     if (message != '') {
                         Taro.hideLoading();
                     }
+                    Taro.showToast({ title: '请求错误', icon: 'none' })
+
                     reject('错误2');
                 },
                 complete: res => { },
@@ -129,7 +140,12 @@ class Wechat {
                 })
             } else {
                 // 无skey，作为首次登录
-                myLogin();
+                Taro.showToast({
+                    title: '您还未登录,请登录~',
+                    duration: 2000,
+                    icon: 'none',
+                })
+                // myLogin();
 
             }
         })

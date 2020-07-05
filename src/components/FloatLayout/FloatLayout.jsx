@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro';
 import { View, Image, Input, Textarea, Button } from '@tarojs/components';
 import closeImg from '@/asset/images/poster1.png';
 import { AtTextarea } from 'taro-ui'
+import { createComment } from '@/api/common';
 
 import './FloatLayout.scss';
 
@@ -15,7 +16,8 @@ class FloatLayout extends Component {
   constructor() {
     super(...arguments);
     this.state = {
-      address: ''
+      content: '',
+      isDisabled: false,
     };
   }
 
@@ -23,13 +25,26 @@ class FloatLayout extends Component {
   handleClose() {
     this.props.onClose();
   }
-  onChangeAddress(e) {
-    this.setState({ address: e.detail.detail.value });
+  onChangeContent(value) {
+    this.setState({ content: value });
   }
 
+  commit() {
+    const data = {
+      content: this.state.content,
+      type: this.props.type,
+      id: this.props.id_
+    }
+    createComment(data).then(res => {
+      this.setState({ isDisabled: false, content: '', });
+      this.props.onClose();
+    }).catch(e => {
+      this.setState({ isDisabled: false });
+    })
+  }
   render() {
     const { isOpened, title } = this.props;
-    const { address } = this.state;
+    const { content, isDisabled } = this.state;
     return (
       <View className={isOpened ? 'float-layout active' : 'float-layout'}>
         <View
@@ -83,17 +98,17 @@ class FloatLayout extends Component {
 
               <AtTextarea
                 cursorSpacing={200}
-                value={address}
-                onChange={this.onChangeAddress.bind(this)}
+                value={content}
+                onChange={this.onChangeContent.bind(this)}
                 maxLength={200}
                 placeholder='请输入你的评论'
                 height={100}
                 style='width:100%'
               />
               <View style='text-align:center;margin-top:20px;margin-bottom:40px'>
-                <Button size='mini' className='primary'>
+                <Button size='mini' className='primary' onClick={this.commit.bind(this)} disabled={isDisabled}>
                   发表
-          </Button>
+                </Button>
 
               </View>
             </View>
@@ -105,3 +120,10 @@ class FloatLayout extends Component {
 }
 
 export default FloatLayout;
+
+FloatLayout.defaultProps = {
+  isOpened: false,
+  title: '',
+  id_: '',
+  type: 1
+};

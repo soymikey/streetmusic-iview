@@ -1,0 +1,19 @@
+@import '@/styles/variables.scss';
+.commentBarComp{
+  background-color: #fff;
+  height: 90px;
+  .searchBar{
+    .content{
+      padding-left: 10px;
+    }
+    font-size: $size-s;
+    margin-top: 10px;
+    line-height: 50px;
+    margin-left: 20px;
+    margin-right: 11px;
+    background: #f7f7f7;
+    border-radius: 15PX;
+    height: 50px;
+
+  }
+}

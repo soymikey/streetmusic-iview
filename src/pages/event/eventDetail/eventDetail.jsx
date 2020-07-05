@@ -1,11 +1,14 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Swiper, SwiperItem, Image } from '@tarojs/components';
+import { getEventDetailById, getHotEventList } from '@/api/event';
+import { getCommentList } from '@/api/common';
 
 import post1 from '@/asset/images/poster1.png';
 import post2 from '@/asset/images/poster2.png';
 import OneBlockComp from '@/components/OneBlockComp/OneBlockComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
 import CommentSumaryComp from '@/components/commentSumaryComp/commentSumaryComp';
+import CommentBarComp from '@/components/commentBarComp/commentBarComp';
 import './eventDetail.scss';
 
 const post1_ = require('@/asset/images/poster1.png');
@@ -39,8 +42,17 @@ class EventDetail extends Component {
         '古典音乐',
         '民乐',
       ],
+      name: '',
+      introduction: '',
+      date: '',
+      startTime: '',
+      endTime: '',
+      address: '',
+      poster: [],
+      provinceCityRegion: { code: [], value: [] },
+      avatar: '', nickName: '',
       iconList: ['like', 'share', 'document', 'collection'],
-      eventList: [
+      commentList: [
         {
           id: 1,
           username: '网易云小秘书',
@@ -78,6 +90,11 @@ class EventDetail extends Component {
           collections: '445',
         },
       ],
+      hotEventList: [],
+      loading: false,
+      pageSize: 10,
+      pageNo: 1,
+      total: 0,
     };
   }
   iconHandler(icon) {
@@ -89,6 +106,104 @@ class EventDetail extends Component {
     this.state.iconList.splice(index, 1, newIcon);
     this.setState({ iconList: this.state.iconList });
   }
+  getEventDetail() {
+    getEventDetailById({ id: this.$router.params.id }).then(res => {
+      const { address,
+        city,
+        cityCode,
+        date,
+        endTime,
+        introduction,
+        name,
+        poster,
+        province,
+        provinceCode,
+        region,
+        regionCode,
+        startTime,
+        avatar, nickName,
+      } = res.data
+      let poster_ = []
+      if (JSON.parse(poster).length) {
+        poster_ = JSON.parse(poster).map(item => { return { url: item } })
+      }
+      this.setState({
+        avatar, nickName,
+        name,
+        introduction,
+        date,
+        startTime,
+        endTime,
+        address,
+        poster: poster_,
+        provinceCityRegion: {
+          code: [provinceCode,
+            cityCode,
+            regionCode,], value: [
+              province,
+              city,
+              region,]
+        },
+      })
+    })
+  }
+
+  // 热门活动
+  fetchHotEventList() {
+    Taro.showLoading({
+      title: '加载中-活动',
+    });
+    // 向后端请求指定页码的数据
+    const data = { pageSize: 5, pageNo: 1 }
+
+    return getHotEventList(data)
+      .then(res => {
+        for (const item of res.data.list) {
+          item.poster = JSON.parse(item.poster)
+        }
+        this.setState({
+          hotEventList: res.data.list,
+
+        });
+      })
+      .catch(err => {
+        console.log('==> [ERROR]', err);
+      })
+  }
+  // 留言列表
+  fetchCommentList() {
+    Taro.showLoading({
+      title: '加载中-留言',
+    });
+    // 向后端请求指定页码的数据
+    // 向后端请求指定页码的数据
+    const data = { pageSize: this.state.pageSize, pageNo: this.state.pageNo, id: this.$router.params.id }
+    this.setState({ loading: true });
+
+    return getCommentList(data)
+      .then(res => {
+
+        this.setState({
+          commentList: res.data.list,
+          total: res.data.total,
+          loading: false
+        });
+      })
+      .catch(err => {
+        console.log('==> [ERROR]', err);
+      })
+  }
+  init() {
+    this.getEventDetail()//活动详情
+    this.fetchHotEventList()//热门推荐活动
+    this.fetchCommentList()//留言列表
+  }
+  componentWillMount() {
+    this.init()
+  }
+  componentDidMount() {
+
+  }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
@@ -98,22 +213,47 @@ class EventDetail extends Component {
   componentDidShow() { }
 
   componentDidHide() { }
+  onPullDownRefresh() {
 
+    this.init();
+    // 处理完成后，终止下拉刷新
+    Taro.stopPullDownRefresh();
+
+  }
+  onReachBottom() {
+    if (
+      !this.state.loading &&
+      this.state.pageNo < this.state.total
+    ) {
+      this.setState({ pageNo: this.state.pageNo + 1 }, () => {
+        this.fetchCommentList();
+      });
+    }
+  }
   render() {
-    const { list, tagList, iconList, eventList } = this.state;
+    const { list, hotEventList, tagList, iconList, commentList, name,
+      introduction,
+      date,
+      startTime,
+      endTime,
+      address,
+      poster,
+      avatar, nickName,
+      provinceCityRegion, } = this.state;
     return (
       <View className='eventDetail'>
         <Swiper
+          style='height:250px;'
           className='test-h'
           indicatorColor='#999'
           indicatorActiveColor='#333'
           circular
           indicatorDots
           autoplay>
-          {list.map(item => {
+          {poster.map(item => {
             return (
-              <SwiperItem key={item}>
-                <Image src={item} style='width: 100%' />
+              <SwiperItem key={item.url}>
+                <Image src={item.url} mode='aspectFit' style='width: 100%' />
               </SwiperItem>
             );
           })}
@@ -123,13 +263,12 @@ class EventDetail extends Component {
             <i-col span='24' i-class='col-class'>
               <View class='title ellipsis'>
                 <Text>
-                  当邓超喊出蓝莲花的时候
-                  我无耻ellipsisellipsisellipsisellipsisellipsisellipsis的笑了
+                  {name}
                 </Text>
               </View>
             </i-col>
           </i-row>
-          <i-row i-class='sub-title-row'>
+          {/* <i-row i-class='sub-title-row'>
             <i-col span='12' i-class='col-class'>
               <View class='sub-title'>
                 <Text>发布:2019-10-02</Text>
@@ -140,6 +279,41 @@ class EventDetail extends Component {
                 <Text>播放:342423</Text>
               </View>
             </i-col>
+          </i-row> */}
+          <View class='time-title'>
+            <Text>活动时间</Text>
+          </View>
+          <i-row i-class='time'>
+            <i-col span='24' i-class='col-class'>
+              <View >
+                <Text>{date.slice(0, 10)}<Text decode="true">&nbsp;</Text>{startTime.slice(0, 5)}
+                  <Text decode="true">&nbsp;</Text>
+                到<Text decode="true">&nbsp;</Text>{date.slice(0, 10)}<Text decode="true">&nbsp;</Text>{endTime.slice(0, 5)}</Text>
+              </View>
+            </i-col>
+
+          </i-row>
+          <View class='address-title'>
+            <Text>活动地址</Text>
+          </View>
+          <i-row i-class='address'>
+            <i-col span='24' i-class='col-class'>
+              <View >
+                <Text>{provinceCityRegion.value[0]}-{provinceCityRegion.value[1]}-{provinceCityRegion.value[2]}-{address}</Text>
+              </View>
+            </i-col>
+
+          </i-row>
+          <View class='introduction-title'>
+            <Text>活动介绍</Text>
+          </View>
+          <i-row i-class='introduction'>
+            <i-col span='24' i-class='col-class'>
+              <View >
+                <Text>{introduction}</Text>
+              </View>
+            </i-col>
+
           </i-row>
 
           <View className='tag-container'>
@@ -170,10 +344,10 @@ class EventDetail extends Component {
           <i-row i-class='user-row'>
             <i-col span='20' i-class='col-class'>
               <i-avatar
-                src='https://i.loli.net/2017/08/21/599a521472424.jpg'
+                src={avatar}
                 size='large'
               />
-              <Text className='username'>hwllow world</Text>
+              <Text className='username'>{nickName}</Text>
             </i-col>
             <i-col span='4' i-class='col-class follow-col'>
               <Button size='mini' className='error'>
@@ -190,7 +364,7 @@ class EventDetail extends Component {
           </i-col>
         </i-row>
         <View className='EventSumaryCompWrapper'>
-          <EventSumaryComp list={eventList} isShowIcons={false} />
+          <EventSumaryComp list={hotEventList} isShowIcons={false} />
         </View>
 
         <i-row i-class='recommend-row'>
@@ -201,9 +375,12 @@ class EventDetail extends Component {
           </i-col>
         </i-row>
         <View className='CommentSumaryCompWrapper'>
-          <CommentSumaryComp list={eventList} />
+          <CommentSumaryComp list={commentList} />
         </View>
         <i-divider content='加载已经完成,没有其他数据'></i-divider>
+        <View className='commentBarComp-wrapper'>
+          <CommentBarComp id_={this.$router.params.id} type={1} />
+        </View>
       </View>
     );
   }

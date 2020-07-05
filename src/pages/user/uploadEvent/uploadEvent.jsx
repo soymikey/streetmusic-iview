@@ -2,11 +2,14 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Picker } from '@tarojs/components';
 import ImagePickerComp from '@/components/ImagePickerComp/ImagePickerComp';
+import { createEvent, getEventDetailById, updateEvent } from '@/api/event';
+import { uploadImage } from '@/api/common';
+import validator from '@/utils/validator'
+
 import './uploadEvent.scss';
 
 class UploadEvent extends Component {
   config = {
-    navigationBarTitleText: '上传活动',
     usingComponents: {
       'i-row': '../../../iView/row/index',
       'i-col': '../../../iView/col/index',
@@ -24,7 +27,7 @@ class UploadEvent extends Component {
     super(...arguments);
     this.state = {
       name: '',
-      content: '',
+      introduction: '',
       date: '',
       startTime: '',
       endTime: '',
@@ -35,17 +38,8 @@ class UploadEvent extends Component {
       address: '',
       id: '',
       isEdit: false,
-      poster: [
-        // {
-        //   url: 'https://jimczj.gitee.io/lazyrepay/aragaki1.jpeg',
-        // },
-        // {
-        //   url: 'https://jimczj.gitee.io/lazyrepay/aragaki2.jpeg',
-        // },
-        // {
-        //   url: 'https://jimczj.gitee.io/lazyrepay/aragaki3.png',
-        // },
-      ],
+      poster: [],
+      isDisabled: false,
     };
   }
 
@@ -53,14 +47,61 @@ class UploadEvent extends Component {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
   componentWillMount() {
-    console.log(this.$router.params);
     if (this.$router.params.id) {
-      this.setState({ isEdit: true, id: this.$router.params.id });
+      this.setState({ isEdit: true, id: this.$router.params.id }, () => {
+        this.getEventDetail()
+        Taro.setNavigationBarTitle({
+          title: '更新活动'
+        })
+      })
     } else {
       this.setState({ isEdit: false, id: '' });
+      Taro.setNavigationBarTitle({
+        title: '上传活动'
+      })
     }
+  }
+  getEventDetail() {
+    getEventDetailById({ id: this.state.id }).then(res => {
+      const { address,
+        city,
+        cityCode,
+        date,
+        endTime,
+
+        introduction,
+        name,
+        poster,
+        province,
+        provinceCode,
+        region,
+        regionCode,
+        startTime,
+      } = res.data
+      let poster_ = []
+      if (JSON.parse(poster).length) {
+        poster_ = JSON.parse(poster).map(item => { return { url: item } })
+      }
+      this.setState({
+        name,
+        introduction,
+        date: date.slice(0, 10),
+        startTime,
+        endTime,
+        address,
+        poster: poster_,
+        provinceCityRegion: {
+          code: [provinceCode,
+            cityCode,
+            regionCode,], value: [
+              province,
+              city,
+              region,]
+        },
+      })
+    })
   }
   onChangeTime(e) {
     this.setState({ duration: e.detail.value });
@@ -68,8 +109,8 @@ class UploadEvent extends Component {
   onChangeName(e) {
     this.setState({ name: e.detail.detail.value });
   }
-  onChangeContent(e) {
-    this.setState({ content: e.detail.detail.value });
+  onChangeIntroduction(e) {
+    this.setState({ introduction: e.detail.detail.value });
   }
   onChangeDate(e) {
     this.setState({ date: e.detail.value });
@@ -98,55 +139,164 @@ class UploadEvent extends Component {
     this.setState({ address: e.detail.detail.value });
   }
 
-  onClickUpload() {
+  async onClickUpload() {
+
     const {
       name,
-      content,
+      introduction,
       date,
       startTime,
       endTime,
       address,
       poster,
       provinceCityRegion,
-    } = this.state;
-    if (!name.trim().length) {
-      Taro.showToast({ title: '活动名称不能为空', icon: 'none' });
-      return;
-    }
-    if (!content.length && !content.length < 30) {
-      Taro.showToast({ title: '活动介绍不能为空或者小于30个字', icon: 'none' });
-      return;
-    }
-    if (!date.trim().length) {
-      Taro.showToast({ title: '活动日期不能为空', icon: 'none' });
-      return;
-    }
-    if (!startTime.trim().length) {
-      Taro.showToast({ title: '活动开始时间不能为空', icon: 'none' });
-      return;
-    }
-    if (!endTime.trim().length) {
-      Taro.showToast({ title: '活动结束时间不能为空', icon: 'none' });
-      return;
-    }
-    if (!(provinceCityRegion.value.length && address.trim().length)) {
-      Taro.showToast({ title: '地址不能为空', icon: 'none' });
-      return;
-    }
-    if (!poster.length) {
-      Taro.showToast({ title: '活动图片不能为空', icon: 'none' });
-      return;
-    }
-    Taro.showToast({ title: '上传成功' });
 
-    console.log(this.state);
+    } = this.state;
+    const isValid = validator([
+      {
+        value: name,
+        rules: [{
+          rule: 'required',
+          msg: '活动名称不能为空'
+        }]
+      },
+      {
+        value: introduction,
+        rules: [
+          {
+            rule: 'required',
+            msg: '活动介绍不能为空'
+          }, {
+            rule: 'greater',
+            type: 30,
+            msg: '活动介绍不能小于30个字'
+          }]
+      },
+      {
+        value: date,
+        rules: [{
+          rule: 'required',
+          msg: '活动日期不能为空'
+        }]
+      },
+      {
+        value: startTime,
+        rules: [{
+          rule: 'required',
+          msg: '活动开始时间不能为空'
+        }]
+      },
+      {
+        value: endTime,
+        rules: [{
+          rule: 'required',
+          msg: '活动结束时间不能为空'
+        }]
+      },
+      {
+        value: provinceCityRegion.value,
+        rules: [{
+          rule: 'arrLength',
+          msg: '省市区不能为空'
+        }]
+      },
+      {
+        value: address,
+        rules: [{
+          rule: 'required',
+          msg: '地址不能为空'
+        }]
+      },
+      {
+        value: poster,
+        rules: [{
+          rule: 'arrLength',
+          msg: '活动图片不能为空'
+        }]
+      },
+    ])
+    if (!isValid.status) {
+      Taro.showToast({ title: isValid.msg, icon: 'none' });
+      return;
+    }
+    const poster_ = []
+    for (const item of poster) {
+      if (item.url.includes('http://qiniu.migaox.com')) {
+        poster_.push(item.url)
+      } else {
+        const isUploaded = await uploadImage(item.url, '/api/event/image/upload')
+        console.log('isUploaded', isUploaded)
+        const isUploaded_ = JSON.parse(isUploaded)
+        if (isUploaded_.errno !== 0) {
+          Taro.showToast({ title: '上传失败', icon: 'none' })
+          this.setState({ isDisabled: false });
+          return
+        } else {
+          poster_.push(isUploaded_.data.url)
+        }
+      }
+
+    }
+    const data = {
+      name,
+      introduction,
+      date,
+      startTime,
+      endTime,
+      address,
+      poster: JSON.stringify(poster_),
+      provinceCityRegion,
+    }
+    console.log('data', data)
+    this.setState({ isDisabled: true });
+    if (this.state.isEdit) {
+      data.id = this.state.id
+      updateEvent(data).then(res => {
+        this.setState({ isDisabled: false });
+        Taro.showToast({
+          title: '更新成功', icon: 'none', duration: 2000, success: () => {
+            Taro.navigateBack(-1)
+          }
+        })
+
+
+      }).catch(err => {
+        this.setState({ isDisabled: false });
+      })
+
+    } else {
+      createEvent(data).then(res => {
+        this.setState({ isDisabled: false });
+        Taro.showToast({ title: '创建成功', icon: 'none' })
+        this.setState({
+          name: '',
+          introduction: '',
+          date: '',
+          startTime: '',
+          endTime: '',
+          provinceCityRegion: { code: [], value: [] },
+          province: '',
+          city: '',
+          region: '',
+          address: '',
+          id: '',
+          isEdit: false,
+          poster: [],
+        });
+
+      }).catch(err => {
+        this.setState({ isDisabled: false });
+      })
+    }
+
+
   }
   remove(index) {
     this.setState({
       poster: this.state.poster.filter((item, index_) => index_ !== index),
     });
   }
-  add(obj) {
+  async add(obj) {
     this.setState({
       poster: this.state.poster.concat(obj),
     });
@@ -154,14 +304,14 @@ class UploadEvent extends Component {
   hideKeyBoard() {
     Taro.hideKeyboard();
   }
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     const {
       name,
-      content,
+      introduction,
       date,
       startTime,
       endTime,
@@ -170,7 +320,9 @@ class UploadEvent extends Component {
       provinceCityRegion,
       isEdit,
       id,
+      isDisabled
     } = this.state;
+    console.log('poster', poster)
     return (
       <View className='uploadEvent'>
         <i-input
@@ -181,8 +333,8 @@ class UploadEvent extends Component {
           onChange={this.onChangeName.bind(this)}
         />
         <i-input
-          onChange={this.onChangeContent.bind(this)}
-          value={content}
+          onChange={this.onChangeIntroduction.bind(this)}
+          value={introduction}
           title='介绍'
           placeholder='活动介绍'
           maxlength={150}
@@ -232,7 +384,9 @@ class UploadEvent extends Component {
           maxlength={-1}
           onChange={this.onChangeAddress.bind(this)}
         />
+
         <i-panel title='活动图片'></i-panel>
+
         <ImagePickerComp
           files={poster}
           onRemove_={this.remove.bind(this)}
@@ -244,17 +398,19 @@ class UploadEvent extends Component {
             <Button
               size='mini'
               className='success'
+              disabled={isDisabled}
               onClick={this.onClickUpload.bind(this)}>
               更新活动
             </Button>
           ) : (
-            <Button
-              size='mini'
-              className='primary'
-              onClick={this.onClickUpload.bind(this)}>
-              上传活动
-            </Button>
-          )}
+              <Button
+                size='mini'
+                className='primary'
+                disabled={isDisabled}
+                onClick={this.onClickUpload.bind(this)}>
+                上传活动
+              </Button>
+            )}
         </View>
       </View>
     );

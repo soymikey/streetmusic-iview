@@ -95,7 +95,7 @@ class TabbarComp extends Component {
             dot
             title='我的'></i-tab-bar-item>
         </i-tab-bar>
-        <View className='tabbar-block' style='height:10px;background:#fff'></View>
+        <View className='tabbar-block'></View>
 
       </View>
     );

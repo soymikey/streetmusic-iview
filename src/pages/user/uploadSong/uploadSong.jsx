@@ -2,12 +2,12 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Picker } from '@tarojs/components';
 import { numberOrDecimal } from '@/utils/tools.js';
-
+import { createSong, getSongDetailById, updateSong } from '@/api/song';
+import validator from '@/utils/validator'
 import './uploadSong.scss';
 
 class Uploadsong extends Component {
   config = {
-    navigationBarTitleText: '上传歌曲',
     usingComponents: {
       'i-row': '../../../iView/row/index',
       'i-col': '../../../iView/col/index',
@@ -24,12 +24,13 @@ class Uploadsong extends Component {
     super(...arguments);
     this.state = {
       name: '',
-      content: '',
+      introduction: '',
       duration: '',
       type: '',
       price: '',
       id: '',
       isEdit: false,
+      isDisabled: false
     };
   }
 
@@ -37,14 +38,44 @@ class Uploadsong extends Component {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
   componentWillMount() {
     console.log(this.$router.params);
     if (this.$router.params.id) {
-      this.setState({ isEdit: true, id: this.$router.params.id });
+      this.setState({ isEdit: true, id: this.$router.params.id }, () => {
+        this.getSongDetail()
+      })
+      Taro.setNavigationBarTitle({
+        title: '更新歌曲'
+      })
     } else {
       this.setState({ isEdit: false, id: '' });
+      Taro.setNavigationBarTitle({
+        title: '上传歌曲'
+      })
     }
+  }
+  getSongDetail() {
+    getSongDetailById({ id: this.state.id }).then(res => {
+      console.log('res', res)
+
+      const { createdDate,
+        duration,
+        id,
+        introduction,
+        name,
+        price,
+        type,
+        userId, } = res.data
+      this.setState({
+        duration,
+        id,
+        introduction,
+        name,
+        price,
+        type,
+      })
+    })
   }
   onChangeTime(e) {
     this.setState({ duration: e.detail.value });
@@ -53,7 +84,7 @@ class Uploadsong extends Component {
     this.setState({ name: e.target.detail.value });
   }
   onChangeContent(e) {
-    this.setState({ content: e.target.detail.value });
+    this.setState({ introduction: e.target.detail.value });
   }
   onChangeType(e) {
     this.setState({ type: e.target.detail.value });
@@ -64,37 +95,89 @@ class Uploadsong extends Component {
     this.setState({ price: value });
   }
   onClickUpload() {
-    const { name, content, duration, type, price } = this.state;
-    if (!name.trim().length) {
-      Taro.showToast({ title: '歌曲名称不能为空', icon: 'none' });
+    const { name, introduction, duration, type, price } = this.state;
+    const isValid = validator(
+      [
+        {
+          value: name,
+          rules: [{
+            rule: 'required',
+            msg: '歌曲名称不能为空'
+          }]
+        },
+        {
+          value: duration,
+          rules: [{
+            rule: 'required',
+            msg: '歌曲时间不能为空'
+          }]
+        },
+        {
+          value: type,
+          rules: [{
+            rule: 'required',
+            msg: '歌曲类型不能为空'
+          }]
+        },
+        {
+          value: price,
+          rules: [{
+            rule: 'isPrice',
+            msg: '歌曲价格只能是整数或者两位小数'
+          }]
+        },
+      ]
+    )
+    if (!isValid.status) {
+      Taro.showToast({ title: isValid.msg, icon: 'none' });
       return;
     }
-    if (!duration.trim().length) {
-      Taro.showToast({ title: '歌曲时间不能为空', icon: 'none' });
-      return;
+    const data = {
+      name, introduction, duration, type, price
     }
-    if (!type.trim().length) {
-      Taro.showToast({ title: '歌曲类型不能为空', icon: 'none' });
-      return;
+    if (this.state.isEdit) {
+      data.id = this.state.id
+      updateSong(data).then(res => {
+        this.setState({ isDisabled: false });
+        Taro.showToast({
+          title: '更新成功', icon: 'none', duration: 2000, success: () => {
+            Taro.navigateBack(-1)
+          }
+        })
+
+
+      }).catch(err => {
+        this.setState({ isDisabled: false });
+      })
+
+    } else {
+      createSong(data).then(res => {
+        this.setState({ isDisabled: false });
+        Taro.showToast({ title: '创建成功', icon: 'none' })
+        this.setState({
+          name: '', introduction: '', duration: '', type: '', price: '',
+          id: '',
+          isEdit: false,
+
+        });
+
+      }).catch(err => {
+        this.setState({ isDisabled: false });
+      })
     }
-    if (!numberOrDecimal(price)) {
-      Taro.showToast({
-        title: '歌曲价格只能是整数或者小数',
-        icon: 'none',
-      });
-      return;
-    }
-    console.log(this.state);
+
   }
   hideKeyBoard() {
     Taro.hideKeyboard();
   }
-  componentDidShow() {}
+  componentDidShow() {
 
-  componentDidHide() {}
+  }
+
+  componentDidHide() { }
 
   render() {
-    const { name, content, duration, type, price, isEdit, id } = this.state;
+    const { name, introduction, duration, type, price, isEdit, id, disabled } = this.state;
     return (
       <View className='uploadSong'>
         <i-input
@@ -106,7 +189,7 @@ class Uploadsong extends Component {
         />
         <i-input
           onChange={this.onChangeContent.bind(this)}
-          value={content}
+          value={introduction}
           title='介绍'
           placeholder='歌曲介绍'
           maxlength={150}
@@ -138,17 +221,19 @@ class Uploadsong extends Component {
             <Button
               size='mini'
               className='success'
+              disabled={isDisabled}
               onClick={this.onClickUpload.bind(this)}>
               更新歌曲
             </Button>
           ) : (
-            <Button
-              size='mini'
-              className='primary'
-              onClick={this.onClickUpload.bind(this)}>
-              上传歌曲
-            </Button>
-          )}
+              <Button
+                size='mini'
+                className='primary'
+                disabled={isDisabled}
+                onClick={this.onClickUpload.bind(this)}>
+                上传歌曲
+              </Button>
+            )}
         </View>
       </View>
     );

@@ -49,6 +49,7 @@ const config = {
     '@/pages': path.resolve(__dirname, '..', 'src/pages'),
     '@/actions': path.resolve(__dirname, '..', 'src/actions'),
     '@/reducers': path.resolve(__dirname, '..', 'src/reducers'),
+    '@/config': path.resolve(__dirname, '..', 'src/config.js'),
   },
   mini: {
     postcss: {
@@ -102,7 +103,7 @@ const config = {
   },
 };
 
-module.exports = function(merge) {
+module.exports = function (merge) {
   if (process.env.NODE_ENV === 'development') {
     return merge({}, config, require('./dev'));
   }

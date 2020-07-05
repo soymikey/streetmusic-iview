@@ -1,8 +1,12 @@
 /* eslint-disable react/sort-comp */
 import Taro, { Component } from '@tarojs/taro';
-import { View, Button, Text, Picker } from '@tarojs/components';
-
+import { View, Button, } from '@tarojs/components';
+import { getEventListById, deleteEvent } from '@/api/event';
+import { connect } from '@tarojs/redux'
+import { goToPage } from '@/utils/tools.js';
 import './myEvent.scss';
+@connect(state => state)
+
 
 class MyEvent extends Component {
   config = {
@@ -24,56 +28,14 @@ class MyEvent extends Component {
   constructor() {
     super(...arguments);
     this.state = {
-      eventLists: [
-        { name: '阿桑-给你的爱一直很安静', price: '12.00' },
-        { name: '又是一个睡不着的夜晚', price: '12.00' },
-        { name: '疯人院', price: '12.00' },
-        { name: '无邪', price: '12.00' },
-        { name: '罪', price: '12.00' },
-        { name: '落霜', price: '12.00' },
-        { name: '背对背拥抱', price: '12.00' },
-        { name: '春夏秋冬失去了你', price: '12.00' },
-        { name: '江南（片段版）（翻自&nbsp;梁静茹）&nbsp;', price: '12.00' },
-        { name: '如果云知道', price: '12.00' },
-        { name: '领悟', price: '12.00' },
-        { name: '辛晓琪', price: '12.00' },
-        { name: '守候·辛晓琪', price: '12.00' },
-        { name: '心如刀割', price: '12.00' },
-        { name: '张学友', price: '12.00' },
-        { name: '友情歌', price: '12.00' },
-        { name: '无地自容', price: '12.00' },
-        { name: '黑豹乐队', price: '12.00' },
-        { name: '黑豹', price: '12.00' },
-        { name: '大海', price: '12.00' },
-        { name: '张雨生', price: '12.00' },
-        { name: '大海', price: '12.00' },
-        { name: '原谅', price: '12.00' },
-        { name: '张玉华', price: '12.00' },
-        { name: '张玉华', price: '12.00' },
-        { name: '水手', price: '12.00' },
-        { name: '郑智化', price: '12.00' },
-        { name: '私房歌', price: '12.00' },
-        { name: '雨一直下', price: '12.00' },
-        { name: '群星', price: '12.00' },
-        { name: '大人的情歌', price: '12.00' },
-        { name: '练习', price: '12.00' },
-        { name: '刘德华', price: '12.00' },
-        { name: '美丽的一天', price: '12.00' },
-        { name: '再回首', price: '12.00' },
-        { name: '姜育恒', price: '12.00' },
-        { name: '多年以后·再回首', price: '12.00' },
-        { name: '最熟悉的陌生人', price: '12.00' },
-        { name: '萧亚轩', price: '12.00' },
-        { name: '萧亚轩', price: '12.00' },
-        { name: '情书', price: '12.00' },
-        { name: '张学友', price: '12.00' },
-        { name: '友情歌', price: '12.00' },
-      ],
-      eventList: [],
-      currentSongPage: 1,
-      totalSongPage: 30,
+
+      list: [],
+      pageNo: 1,
+      pageSize: 10,
+      total: 0,
       loading: false,
       isShowModal: false,
+      eventId: ''
     };
   }
 
@@ -81,64 +43,60 @@ class MyEvent extends Component {
     console.log(this.props, nextProps);
   }
   componentDidMount() {
-    this.fetchEventList(1);
+
   }
-  fetchEventList(pageNo) {
-    this.setState({ loading: true });
+  fetchEventList() {
     Taro.showLoading({
       title: '加载中-活动',
     });
     // 向后端请求指定页码的数据
-    // return getArticles(pageNo)
-    //   .then(res => {
-    //     this.setState({
-    //       currentSongPage: pageNo, //当前的页号
-    //       totalSongPage: res.pages, //总页数
-    //       eventList: [],
-    //     });
-    //   })
-    //   .catch(err => {
-    //     console.log('==> [ERROR]', err);
-    //   })
-    //   .then(() => {
-    //     this.loading = false;
-    //   });
-    setTimeout(() => {
-      this.setState({
-        currentSongPage: pageNo, //当前的页号
-        totalSongPage: 8, //总页数
-        eventList: this.state.eventLists.slice(0, pageNo * 20),
-        loading: false,
-      });
-      Taro.hideLoading();
-    }, 1000);
+    const data = { id: this.props.user.id, pageSize: this.state.pageSize, pageNo: this.state.pageNo }
+
+    return getEventListById(data)
+      .then(res => {
+        this.setState({
+          list: this.state.list.concat(res.data.list),
+          total: res.data.total, //总页数
+          loading: false,
+        });
+      })
+      .catch(err => {
+        console.log('==> [ERROR]', err);
+      })
   }
 
-  onClickEdit() {
-    Taro.navigateTo({ url: "/pages/user/uploadEvent/uploadEvent?id='1234'" });
+  onClickEdit(id) {
+    goToPage(`/pages/user/uploadEvent/uploadEvent?id=${id}`)
   }
-  onClickDelete() {
-    this.setState({ isShowModal: true });
+  onClickDelete(id) {
+    this.setState({ isShowModal: true, eventId: id });
   }
-  // onOk() {
-  //   console.log('ok');
-  // }
-  // onCancel() {
-  //   this.setState({ isShowModal: false });
-  // }
-  onClickModal(e) {
+  onConfirmDelete(e) {
     if (e.detail.index === 0) {
       this.setState({ isShowModal: false });
+    } else {
+      deleteEvent({ id: this.state.eventId }).then(res => {
+        this.setState({ isShowModal: false });
+        this.fetchEventList()
+      })
     }
+
   }
-  componentWillUnmount() {}
 
-  componentDidShow() {}
 
-  componentDidHide() {}
+  componentWillUnmount() { }
+
+  componentDidShow() {
+    this.fetchEventList();
+  }
+
+  componentDidHide() { }
   onPullDownRefresh() {
     if (!this.state.loading) {
-      this.fetchEventList(1);
+      this.setState({ pageNo: 1 }, () => {
+        this.fetchEventList();
+      });
+
       // 处理完成后，终止下拉刷新
       Taro.stopPullDownRefresh();
     }
@@ -146,13 +104,15 @@ class MyEvent extends Component {
   onReachBottom() {
     if (
       !this.state.loading &&
-      this.state.currentSongPage < this.state.totalSongPage
+      this.state.pageNo < this.state.total
     ) {
-      this.fetchEventList(this.state.currentSongPage + 1);
+      this.setState({ pageNo: this.state.pageNo + 1 }, () => {
+        this.fetchEventList();
+      });
     }
   }
   render() {
-    const { eventList, isShowModal } = this.state;
+    const { list, isShowModal } = this.state;
     return (
       <View className='myEvent'>
         <i-modal
@@ -169,27 +129,27 @@ class MyEvent extends Component {
           visible={isShowModal}
           // onOk={this.onOk.bind(this)}
           // onCancel={this.onCancel.bind(this)}
-          onClick={this.onClickModal.bind(this)}>
+          onClick={this.onConfirmDelete.bind(this)}>
           <View>删除后无法恢复哦</View>
         </i-modal>
         <i-cell-group>
-          {eventList.map(item => {
+          {list.map(item => {
             return (
-              <i-cell title={item.name} key={item.name}>
+              <i-cell title={item.name} key={item.id}>
                 {/* <i-switch slot='footer' checked /> */}
 
                 <View className='button-wrapper' slot='footer'>
                   <Button
                     size='mini'
                     className='primary'
-                    onClick={this.onClickEdit.bind(this)}>
+                    onClick={this.onClickEdit.bind(this, item.id)}>
                     编辑
                   </Button>
                   <Button
                     size='mini'
                     className='error'
                     style='margin-left:10px'
-                    onClick={this.onClickDelete.bind(this)}>
+                    onClick={this.onClickDelete.bind(this, item.id)}>
                     删除
                   </Button>
                 </View>

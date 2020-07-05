@@ -4,7 +4,7 @@ let baseURL
 const env = process.env.NODE_ENV
 
 if (env === 'development') {
-    baseURL = 'http://localhost:3000'
+    baseURL = 'http://192.168.1.116:3000'
 }
 
 
