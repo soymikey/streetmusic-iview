@@ -8,8 +8,10 @@ import { myLogin } from '@/api/user';
 import { setUserInfo, logout } from '@/actions/user'
 
 import { goToPage } from '@/utils/tools.js';
+import {linkSocket,heartCheck} from '@/utils/heartbeatjuejin'
 
 import './user.scss';
+
 @connect(state => state, { setUserInfo, logout })
 
 
@@ -50,7 +52,20 @@ class User extends Component {
   }
   componentWillUnmount() { }
 
-  componentDidShow() { }
+  componentDidShow() {
+    Taro.onSocketMessage(res => {
+      //收到消息
+      if (res.data == 'pong') {
+        console.log('我是user, 收到服务器的pong',res);
+        heartCheck.reset().start();
+        Taro.sendSocketMessage({
+          data: JSON.stringify({type:'message',msg:'我是user，我来啦~'})
+       });
+      } else {
+        // 处理数据
+      }
+    });
+   }
 
   componentDidHide() { }
 
@@ -84,7 +99,8 @@ class User extends Component {
           <i-col span='4'>
             <i-avatar
               src={avatar}
-              size='large'></i-avatar>
+              size='large'
+            ></i-avatar>
           </i-col>
           <i-col span='20' i-class='col-class'>
             <View className='user-name'>
@@ -139,17 +155,20 @@ class User extends Component {
           {role === 'user' && <i-cell
             title='注册艺人'
             is-link
-            url='/pages/user/registerArtist/registerArtist'></i-cell>}
+            url='/pages/user/registerArtist/registerArtist'
+          ></i-cell>}
           {role === 'artist' && <View >
             <i-cell
               title='上传歌曲'
               is-link
-              url='/pages/user/uploadSong/uploadSong'></i-cell>
+              url='/pages/user/uploadSong/uploadSong'
+            ></i-cell>
             <i-cell title='我的歌曲' is-link url='/pages/user/mySong/mySong'></i-cell>
             <i-cell
               title='上传活动'
               is-link
-              url='/pages/user/uploadEvent/uploadEvent'></i-cell>
+              url='/pages/user/uploadEvent/uploadEvent'
+            ></i-cell>
             <i-cell title='我的活动' is-link url='/pages/user/myEvent/myEvent'></i-cell>
             <i-cell title='我的收益' is-link></i-cell>
             <i-cell title='收款二维码' is-link></i-cell>
@@ -161,7 +180,7 @@ class User extends Component {
         </i-cell-group>
 
         <View style='text-align:center;margin-top:40px;'>
-          {!id ? <Button size='mini' className='primary' open-type="getUserInfo" onGetUserInfo={this.login.bind(this)}>
+          {!id ? <Button size='mini' className='primary' open-type='getUserInfo' onGetUserInfo={this.login.bind(this)}>
             登录
           </Button> : <Button size='mini' className='error' onClick={this.logout.bind(this)}>
               退出

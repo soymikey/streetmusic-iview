@@ -19,11 +19,13 @@ import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import { setUserInfo } from '@/actions/user'
 import { getHotEventList } from '@/api/event';
+import {linkSocket,heartCheck} from '@/utils/heartbeatjuejin'
 
 import './index.scss';
 
 const post1_ = require('@/asset/images/poster1.png');
 const post2_ = require('@/asset/images/poster2.png');
+
 @connect(state => state, { setUserInfo })
 
 
@@ -94,6 +96,7 @@ class Index extends Component {
   }
 
   componentDidMount() {
+   
     this.fetchHotEventList(true)
     // 查看是否授权
     // Taro.getSetting({
@@ -112,7 +115,15 @@ class Index extends Component {
   componentWillUnmount() { }
 
   componentDidShow() {
-
+    Taro.onSocketMessage(res => {
+      //收到消息
+      if (res.data == 'pong') {
+        console.log('我是index, 收到服务器的pong',res);
+        heartCheck.reset().start();
+      } else {
+        // 处理数据
+      }
+    });
   }
   fetchHotEventList(override) {
     Taro.showLoading({
@@ -176,7 +187,8 @@ class Index extends Component {
           indicatorActiveColor='#333'
           circular
           indicatorDots
-          autoplay>
+          autoplay
+        >
           <SwiperItem>
             <Image src={post1} mode='aspectFit' style='width: 100%' />
           </SwiperItem>
