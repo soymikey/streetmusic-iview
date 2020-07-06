@@ -169,7 +169,6 @@ class Index extends Component {
     const { user } = this.props
     return (
       <View className='index pb50px'>
-        {user.role}
         <Swiper
           style='height:250px;'
           className='test-h'

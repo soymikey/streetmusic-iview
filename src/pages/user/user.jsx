@@ -46,7 +46,7 @@ class User extends Component {
   }
 
   componentDidMount() {
-    this.login()
+    // this.login()
   }
   componentWillUnmount() { }
 

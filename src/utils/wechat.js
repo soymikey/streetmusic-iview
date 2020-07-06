@@ -3,7 +3,7 @@ import Taro from '@tarojs/taro'
 import { baseURL } from '../config'
 import { get } from '@/utils/localStorage';
 import { myLogin } from '@/api/user';
-
+import { goToPage } from '@/utils/tools.js';
 class Wechat {
     /**
      * 登陆
@@ -144,6 +144,9 @@ class Wechat {
                     title: '您还未登录,请登录~',
                     duration: 2000,
                     icon: 'none',
+                    success: () => {
+                        goToPage('/pages/user/user')
+                    }
                 })
                 // myLogin();
 
