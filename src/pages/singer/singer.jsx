@@ -5,9 +5,11 @@ import post2 from '@/asset/images/poster2.png';
 import Tab3 from './tab3/tab3';
 import Tab1 from './tab1/tab1';
 import Tab2 from './tab2/tab2';
+
 import './singer.scss';
 import { getEventListById } from '@/api/event';
 import { getSongListById } from '@/api/song';
+import { createOrder, getOrderListById } from '@/api/order';
 
 const post1_ = require('@/asset/images/poster1.png');
 const post2_ = require('@/asset/images/poster2.png');
@@ -26,6 +28,8 @@ class Singer extends Component {
       'i-icon': '../../iView/icon/index',
       'i-tabs': '../../iView/tabs/index',
       'i-tab': '../../iView/tab/index',
+      'i-modal': '../../iView/modal/index',
+      'i-input': '../../iView/input/index'
     },
   };
   constructor() {
@@ -48,51 +52,7 @@ class Singer extends Component {
       totalOrderPage: 8,
       currentEventsPage: 1,
       totalEventsPage: 8,
-      songLists: [
-        { name: '阿桑-给你的爱一直很安静', price: '12.00' },
-        { name: '又是一个睡不着的夜晚', price: '12.00' },
-        { name: '疯人院', price: '12.00' },
-        { name: '无邪', price: '12.00' },
-        { name: '罪', price: '12.00' },
-        { name: '落霜', price: '12.00' },
-        { name: '背对背拥抱', price: '12.00' },
-        { name: '春夏秋冬失去了你', price: '12.00' },
-        { name: '江南（片段版）（翻自&nbsp;梁静茹）&nbsp;', price: '12.00' },
-        { name: '如果云知道', price: '12.00' },
-        { name: '领悟', price: '12.00' },
-        { name: '辛晓琪', price: '12.00' },
-        { name: '守候·辛晓琪', price: '12.00' },
-        { name: '心如刀割', price: '12.00' },
-        { name: '张学友', price: '12.00' },
-        { name: '友情歌', price: '12.00' },
-        { name: '无地自容', price: '12.00' },
-        { name: '黑豹乐队', price: '12.00' },
-        { name: '黑豹', price: '12.00' },
-        { name: '大海', price: '12.00' },
-        { name: '张雨生', price: '12.00' },
-        { name: '大海', price: '12.00' },
-        { name: '原谅', price: '12.00' },
-        { name: '张玉华', price: '12.00' },
-        { name: '张玉华', price: '12.00' },
-        { name: '水手', price: '12.00' },
-        { name: '郑智化', price: '12.00' },
-        { name: '私房歌', price: '12.00' },
-        { name: '雨一直下', price: '12.00' },
-        { name: '群星', price: '12.00' },
-        { name: '大人的情歌', price: '12.00' },
-        { name: '练习', price: '12.00' },
-        { name: '刘德华', price: '12.00' },
-        { name: '美丽的一天', price: '12.00' },
-        { name: '再回首', price: '12.00' },
-        { name: '姜育恒', price: '12.00' },
-        { name: '多年以后·再回首', price: '12.00' },
-        { name: '最熟悉的陌生人', price: '12.00' },
-        { name: '萧亚轩', price: '12.00' },
-        { name: '萧亚轩', price: '12.00' },
-        { name: '情书', price: '12.00' },
-        { name: '张学友', price: '12.00' },
-        { name: '友情歌', price: '12.00' },
-      ],
+
 
       orderLists: [
         { name: '阿桑-给你的爱一直很安静', price: '12.00' },
@@ -113,44 +73,7 @@ class Singer extends Component {
         { name: '私房歌', price: '12.00' },
       ],
       orderList: [],
-      eventLists: [
-        {
-          id: 1,
-          username: '网易云小秘书',
-          date: ' 昨天06：28',
-          content:
-            ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
-          posters: [post1_],
-          likes: '112',
-          shares: '223',
-          comments: '334',
-          collections: '445',
-        },
-        {
-          id: 2,
-          username: '网易云小秘书2',
-          date: ' 昨天06：28',
-          content:
-            ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
 
-          likes: '112',
-          shares: '223',
-          comments: '334',
-          collections: '445',
-        },
-        {
-          id: 2,
-          username: '网易云小秘书2',
-          date: ' 昨天06：28',
-          content:
-            ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
-          posters: [post2_],
-          likes: '112',
-          shares: '223',
-          comments: '334',
-          collections: '445',
-        },
-      ],
       //活动分页
       eventPageSize: 10,
       eventPageNo: 1,
@@ -162,6 +85,13 @@ class Singer extends Component {
       songPageNo: 1,
       songList: [],
       songTotal: 0,
+      //歌曲分页
+
+      orderListList: [],
+      orderListTotal: 0,
+      isShowModal: false,
+      content: '',//留言内容
+      selectedSong: {}
     };
   }
   iconHandler(icon) {
@@ -181,7 +111,7 @@ class Singer extends Component {
 
   componentDidMount() {
     this.fetchSongList(true);
-    this.fetchOrderList(true);
+    this.fetchOrderList();
     this.fetchEventList(true);
   }
   setSwiperHeight(value) {
@@ -191,7 +121,7 @@ class Singer extends Component {
     query
       .selectAll('#tab')
       .boundingClientRect(rec => {
-        height = rec[value].height;
+        height = rec[value].height + 48;
         this.setState({ swiperHeight: height });
       })
       .exec();
@@ -207,7 +137,9 @@ class Singer extends Component {
 
   componentWillUnmount() { }
 
-  componentDidShow() { }
+  componentDidShow() {
+
+  }
 
   componentDidHide() { }
   fetchSongList(override) {
@@ -219,6 +151,9 @@ class Singer extends Component {
 
     return getSongListById(data)
       .then(res => {
+        if (override) {
+          this.setSwiperHeight(0);
+        }
         this.setState({
           songList: override ? res.data.list : this.state.songList.concat(res.data.list),
           songTotal: res.data.total, //总页数
@@ -229,28 +164,26 @@ class Singer extends Component {
         console.log('==> [ERROR]', err);
       })
   }
-  fetchOrderList(override) {
-    this.setState({ loading: true });
+  fetchOrderList() {
     Taro.showLoading({
       title: '加载中-订单',
     });
+    // 向后端请求指定页码的数据
+    const data = { id: 'o2VHy5Fn3m8GlVISHmDgNS6y3WrM', pageSize: 50, pageNo: 1 }
 
-    setTimeout(() => {
-      this.setState(
-        {
-          currentOrderPage: pageNo, //当前的页号
-          totalOrderPage: 8, //总页数
-          orderList: this.state.orderLists.slice(0, pageNo * 3),
+    return getOrderListById(data)
+      .then(res => {
+
+        this.setState({
+          orderList: res.data.list,
           loading: false,
-        },
-        () => {
-          this.setSwiperHeight(this.state.currentTab);
-        }
-      );
-
-      Taro.hideLoading();
-    }, 1000);
+        });
+      })
+      .catch(err => {
+        console.log('==> [ERROR]', err);
+      })
   }
+
   fetchEventList(override) {
     Taro.showLoading({
       title: '加载中-活动',
@@ -275,6 +208,10 @@ class Singer extends Component {
       })
   }
 
+  onOpenModal(song) {
+    this.setState({ isShowModal: true, selectedSong: song });
+  }
+
   onPullDownRefresh() {
     const { currentTab } = this.state;
     if (currentTab === 0) {
@@ -292,9 +229,11 @@ class Singer extends Component {
     }
     if (currentTab === 1) {
       if (!this.state.loading) {
-        this.fetchOrderList(1);
-        // 处理完成后，终止下拉刷新
-        Taro.stopPullDownRefresh();
+        this.fetchOrderList().then(res => {
+          // 处理完成后，终止下拉刷新
+          Taro.stopPullDownRefresh();
+        });
+
       }
     }
     if (currentTab === 2) {
@@ -324,12 +263,12 @@ class Singer extends Component {
       }
     }
     if (currentTab === 1) {
-      if (
-        !this.state.loading &&
-        this.state.currentOrderPage < this.state.totalOrderPage
-      ) {
-        this.fetchOrderList(this.state.currentOrderPage + 1);
-      }
+      // if (
+      //   !this.state.loading &&
+      //   this.state.currentOrderPage < this.state.totalOrderPage
+      // ) {
+      //   this.fetchOrderList(this.state.currentOrderPage + 1);
+      // }
     }
     if (currentTab === 2) {
 
@@ -344,6 +283,38 @@ class Singer extends Component {
     }
   }
 
+  onConfirmComment(e) {
+    if (e.detail.index === 0) {
+      this.setState({ isShowModal: false });
+    } else {
+      if (!this.state.selectedSong.id) {
+        Taro.showToast({ title: '请选择歌曲', icon: 'none' })
+        return
+      }
+      const data = {
+        songId: this.state.selectedSong.id,
+        price: this.state.selectedSong.price,
+        name: this.state.selectedSong.name,
+
+        comment: this.state.content,
+        singerId: 'o2VHy5Fn3m8GlVISHmDgNS6y3WrM'
+      }
+      createOrder(data).then(res => {
+        this.setState({ isShowModal: false });
+        console.log('准备发送toSinger')
+        Taro.sendSocketMessage({
+          data: JSON.stringify({ type: 'toSinger', msg: 'fetchOrderList', id: 'o2VHy5Fn3m8GlVISHmDgNS6y3WrM' })
+        });
+        setTimeout(() => {
+          this.fetchOrderList()
+        }, 2000);
+      })
+    }
+  }
+  handleContent(e) {
+    this.setState({ content: e.detail.detail.value });
+  }
+
   render() {
     const {
       tagList,
@@ -353,15 +324,46 @@ class Singer extends Component {
       iconList,
       swiperHeight,
       scrollTop,
-      songList,
       orderList,
-      eventList,
       loading,
+      eventList,
+      eventTotal,
+      songList,
+      songTotal,
+      orderListList,
+      orderListTotal,
+      isShowModal
     } = this.state;
-    console.log(songList.length);
-    const count = songList.length;
     return (
       <View className='singer'>
+
+
+        <i-modal
+          title='留言'
+          actions={[
+            {
+              name: '取消',
+            },
+            {
+              name: '确定',
+              color: '#2d8cf0',
+              loading: false,
+            },
+          ]}
+          visible={isShowModal}
+
+          onClick={this.onConfirmComment.bind(this)}>
+          <View>
+
+            <i-input
+              placeholder='请输入你的留言...'
+              value={content}
+              maxlength={50}
+              onChange={this.handleContent.bind(this)}
+              type='textarea'
+            />
+          </View>
+        </i-modal>
         <View className='full-background'></View>
 
         <View className='singer-info'>
@@ -412,17 +414,7 @@ class Singer extends Component {
           className='tabs-container'
           style='position:sticky;position: -webkit-sticky;top:0;z-index: 999;'>
           <i-tabs current={currentTab} onChange={this.onChangeTab.bind(this)}>
-            {/* {tabList.map(item => {
-              return (
-                <i-tab
-                  key={item.key}
-                  title={item.label}
-                  type='border'
-                  count={count}
-                ></i-tab>
-              );
-            })} */}
-            <i-tab key={0} title='歌曲' type='border' count={count}></i-tab>
+            <i-tab key={0} title='歌曲' type='border' count={songTotal}></i-tab>
             <i-tab key={1} title='正在播放' type='border'></i-tab>
             <i-tab key={2} title='活动' type='border'></i-tab>
           </i-tabs>
@@ -438,7 +430,8 @@ class Singer extends Component {
           circular>
           <SwiperItem>
             <View className='tab1' id='tab'>
-              <Tab1 list={songList} />
+              <Tab1 list={songList}
+                onOpenModal_={this.onOpenModal.bind(this)} />
             </View>
           </SwiperItem>
           <SwiperItem>

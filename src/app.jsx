@@ -10,8 +10,6 @@ import './app.scss';
 // if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
 //   require('nerv-devtools')
 // }
-import Heartbeat from '@/utils/heartbeat'
-import {linkSocket,heartCheck} from '@/utils/heartbeatjuejin'
 
 const store = configStore();
 
@@ -24,10 +22,8 @@ class App extends Component {
     },
     pages: [
       'pages/index/index',
-
       'pages/user/user',
       'pages/event/event',
-
       'pages/user/uploadSong/uploadSong',
       'pages/user/uploadEvent/uploadEvent',
       'pages/user/mySong/mySong',
@@ -139,9 +135,9 @@ class App extends Component {
   }
 
   componentDidShow() {
-    linkSocket()
+
     // new Heartbeat('http://localhost:3001', 'taskId', 'userId', 'message')
-   }
+  }
 
   componentDidHide() { }
 

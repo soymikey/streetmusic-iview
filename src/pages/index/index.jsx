@@ -19,7 +19,7 @@ import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import { setUserInfo } from '@/actions/user'
 import { getHotEventList } from '@/api/event';
-import {linkSocket,heartCheck} from '@/utils/heartbeatjuejin'
+import { heartCheck } from '@/utils/heartbeatjuejin'
 
 import './index.scss';
 
@@ -96,7 +96,7 @@ class Index extends Component {
   }
 
   componentDidMount() {
-   
+
     this.fetchHotEventList(true)
     // 查看是否授权
     // Taro.getSetting({
@@ -117,8 +117,10 @@ class Index extends Component {
   componentDidShow() {
     Taro.onSocketMessage(res => {
       //收到消息
-      if (res.data == 'pong') {
-        console.log('我是index, 收到服务器的pong',res);
+      console.log('我是index, 收到服务器消息', res);
+      const data = JSON.parse(res.data)
+      if (data.type == 'pong') {
+
         heartCheck.reset().start();
       } else {
         // 处理数据

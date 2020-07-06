@@ -8,7 +8,6 @@ import { myLogin } from '@/api/user';
 import { setUserInfo, logout } from '@/actions/user'
 
 import { goToPage } from '@/utils/tools.js';
-import {linkSocket,heartCheck} from '@/utils/heartbeatjuejin'
 
 import './user.scss';
 
@@ -53,19 +52,8 @@ class User extends Component {
   componentWillUnmount() { }
 
   componentDidShow() {
-    Taro.onSocketMessage(res => {
-      //收到消息
-      if (res.data == 'pong') {
-        console.log('我是user, 收到服务器的pong',res);
-        heartCheck.reset().start();
-        Taro.sendSocketMessage({
-          data: JSON.stringify({type:'message',msg:'我是user，我来啦~'})
-       });
-      } else {
-        // 处理数据
-      }
-    });
-   }
+
+  }
 
   componentDidHide() { }
 

@@ -2,24 +2,25 @@ import Taro, { Component } from '@tarojs/taro';
 
 let lockReconnect = false;
 let limit = 0;
-let timer=null
+let timer = null
+let id = ''
 const heartCheck = {
   timeout: 10000,
   timeoutObj: null,
   serverTimeoutObj: null,
-  reset: function() {
-      console.log('reset',this.serverTimeoutObj);
-      
+  reset: function () {
+    console.log('reset', this.serverTimeoutObj);
+
     clearTimeout(this.timeoutObj);
     clearTimeout(this.serverTimeoutObj);
     return this;
   },
-  start: function() {
+  start: function () {
     this.timeoutObj = setTimeout(() => {
-     
+
       Taro.sendSocketMessage({
-        data: JSON.stringify({type:'ping'})
-     });
+        data: JSON.stringify({ type: 'ping' })
+      });
       this.serverTimeoutObj = setTimeout(() => {
         Taro.closeSocket();
       }, this.timeout);
@@ -27,11 +28,13 @@ const heartCheck = {
   },
 };
 
-const linkSocket=()=> {
+const linkSocket = (id) => {
+  id = id
   Taro.connectSocket({
     // url:
     //   app.globalData.wsUrl + 'websocket?' + this.data.taskId + '&' + this.data.userId,
-    url: 'ws://localhost:3001?id=335829832',
+
+    url: `ws://192.168.1.116:3001?id=${id}`,
     success() {
       console.log('连接成功');
       initEventHandle();
@@ -41,10 +44,9 @@ const linkSocket=()=> {
 
 function initEventHandle() {
   Taro.onSocketMessage(res => {
-      console.log('我是heartbeatjuejin,收到服务器的pong',res);
-      
-    //收到消息
-    if (res.data == 'pong') {
+    console.log('我是heartbeatjuejin,收到服务器的消息', res);
+    const data = JSON.parse(res.data)
+    if (data.type == 'pong') {
       heartCheck.reset().start();
     } else {
       // 处理数据
@@ -70,7 +72,7 @@ function reconnect() {
   clearTimeout(timer);
   if (limit < 12) {
     timer = setTimeout(() => {
-      linkSocket();
+      linkSocket(id);
       lockReconnect = false;
     }, 5000);
 
@@ -78,4 +80,4 @@ function reconnect() {
   }
 }
 
-export  {linkSocket,heartCheck}
+export { linkSocket, heartCheck }

@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text } from '@tarojs/components';
-
 import './tab1.scss';
 
 class Tab1 extends Component {
@@ -17,6 +16,7 @@ class Tab1 extends Component {
       'i-tag': '../../../iView/tag/index',
       'i-button': '../../../iView/button/index',
       'i-divider': '../../../iView/divider/index',
+      'i-modal': '../../../iView/modal/index'
     },
   };
   static defaultProps = {
@@ -24,29 +24,35 @@ class Tab1 extends Component {
   };
   constructor() {
     super(...arguments);
-    this.state = {};
-  }
+    this.state = {
+      isShowModal: true,
 
+    };
+  }
+  order(id) {
+    this.props.onOpenModal_(id)
+  }
   componentWillReceiveProps(nextProps) {
     // console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     const { list } = this.props;
-
     return (
       <View className='index'>
+
+
         <i-cell-group>
           {list.map(item => {
             return (
               <i-cell key={item.name} title={item.name} label={item.price}>
-                <Button slot='footer' size='mini' className='primary'>
+                <Button slot='footer' size='mini' className='primary' onClick={this.order.bind(this, item)} >
                   点歌
                 </Button>
               </i-cell>
@@ -54,7 +60,7 @@ class Tab1 extends Component {
           })}
         </i-cell-group>
         <i-divider content='加载已经完成,没有其他数据'></i-divider>
-      </View>
+      </View >
     );
   }
 }

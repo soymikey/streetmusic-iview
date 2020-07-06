@@ -27,11 +27,11 @@ class Tab2 extends Component {
     // console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     const { list } = this.props;
@@ -41,10 +41,10 @@ class Tab2 extends Component {
           {list.map(item => {
             return (
               <i-cell
-                key={item.name}
+                key={item.id}
                 title={item.name}
-                label='用户名:米高'
-                value='未开始'></i-cell>
+                label={'点歌用户:' + item.nickName}
+                value={item.state === '0' ? '未开始' : '进行中...'}></i-cell>
             );
           })}
         </i-cell-group>

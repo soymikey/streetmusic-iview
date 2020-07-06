@@ -1,7 +1,7 @@
 
 import Taro from '@tarojs/taro'
 import { baseURL } from '../config'
-import { get } from '@/utils/localStorage';
+import { get, clear } from '@/utils/localStorage';
 import { myLogin } from '@/api/user';
 import { goToPage } from '@/utils/tools.js';
 class Wechat {
@@ -116,7 +116,7 @@ class Wechat {
     };
     static sessionCheck(url) {
 
-        if (url === '/api/openid' || url === "/api/userinfo/detail") {
+        if (url === '/api/openid' || url === "/api/userinfo/detail" || url === '/api/event/hotList') {
             return true
         }
         return new Promise((resolve, reject) => {
@@ -133,7 +133,16 @@ class Wechat {
                     // session_key 过期
                     fail: () => {
                         // session_key过期，重新登录
-                        myLogin();
+                        // myLogin();
+                        clear()
+                        Taro.showToast({
+                            title: '登录过期,请重新登录~',
+                            duration: 2000,
+                            icon: 'none',
+                            success: () => {
+                                goToPage('/pages/user/user')
+                            }
+                        })
 
 
                     }

@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text } from '@tarojs/components';
 import FloatLayout from '@/components/FloatLayout/FloatLayout';
-
+import { createLike, createCollection } from '@/api/common';
 import './commentBarComp.scss';
 
 class CommentBarComp extends Component {
@@ -18,6 +18,8 @@ class CommentBarComp extends Component {
     super(...arguments);
     this.state = {
       isOpened: false,
+      liked: false,
+      collected: false,
     };
   }
   onOpen() {
@@ -27,7 +29,39 @@ class CommentBarComp extends Component {
     this.setState({ isOpened: false });
   }
   componentWillReceiveProps(nextProps) {
-    console.log('1', this.props, nextProps);
+    // console.log('1', this.props, nextProps);
+    this.setState({
+      liked: nextProps.liked,
+      collected: nextProps.collected,
+    })
+  }
+  onClickLike() {
+    const data = {
+      type: this.props.type,
+      id: this.props.id_
+    }
+    createLike(data).then(res => {
+
+      this.setState({
+        liked: !this.state.liked,
+      })
+    }).catch(e => {
+
+    })
+  }
+  onClickCollection() {
+    const data = {
+      type: this.props.type,
+      id: this.props.id_
+    }
+    createCollection(data).then(res => {
+
+      this.setState({
+        collected: !this.state.collected,
+      })
+    }).catch(e => {
+
+    })
   }
 
   componentWillUnmount() { }
@@ -37,7 +71,7 @@ class CommentBarComp extends Component {
   componentDidHide() { }
 
   render() {
-    const { isOpened } = this.state
+    const { isOpened, liked, collected } = this.state
     return (
       <View className='commentBarComp'>
         <View className=''>
@@ -59,10 +93,13 @@ class CommentBarComp extends Component {
 
             </i-col>
             <i-col span='3' i-class='col-class'>
-              <i-icon size="35" type="collection" />
+
+              <View className='like' onClick={this.onClickCollection.bind(this)}>{collected ? <i-icon size="35" type="collection_fill" color='#ed3f14' /> : <i-icon size="35" type="collection" />}</View>
             </i-col>
             <i-col span='3' i-class='col-class'>
-              <i-icon size="35" type="praise" />
+              <View className='like' onClick={this.onClickLike.bind(this)}> {liked ? <i-icon size="35" type="praise_fill" color='#ed3f14' />
+                : <i-icon size="35" type="praise" />
+              }</View>
             </i-col>
             <i-col span='3' i-class='col-class'>
               <i-icon size="35" type="accessory" />
@@ -88,5 +125,7 @@ export default CommentBarComp;
 
 CommentBarComp.defaultProps = {
   id_: '',
-  type: 0
+  type: 0,
+  liked: false,
+  collected: false,
 };

@@ -30,9 +30,9 @@ class SixBlockComp extends Component {
 
     goToPage('/pages/singer/singer')
   }
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   console.log(this.props, nextProps);
+  // }
 
   componentWillUnmount() { }
 

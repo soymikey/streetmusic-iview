@@ -2,7 +2,7 @@ import Taro from "@tarojs/taro"
 import Wechat from "@/utils/wechat.js"
 import { baseURL } from '@/config'
 import { set, clear } from '@/utils/localStorage';
-
+import { linkSocket, heartCheck } from '@/utils/heartbeatjuejin'
 // 小程序启动，通过wx.login()获取code
 // 开发者服务器需要提供一个登录的接口，参数就是小程序获取的code
 // 登录接口收到code后，调用微信提供的接口进行code的验证
@@ -34,6 +34,8 @@ export const myLogin = async () => {
             const val = await getUserInfo(info)//获取数据库用户信息，如果没有会自动注册然后返回注册过的用户信息
             if (val.errno === 0) {
                 set('token', val.data.token)
+
+                linkSocket(openId)
                 return Promise.resolve(val)
             } else {
                 Taro.showToast({ title: '登录失败', icon: 'none' })

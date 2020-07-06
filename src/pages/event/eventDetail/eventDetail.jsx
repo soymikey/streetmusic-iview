@@ -95,6 +95,7 @@ class EventDetail extends Component {
       pageSize: 10,
       pageNo: 1,
       total: 0,
+      liked: false
     };
   }
   iconHandler(icon) {
@@ -121,7 +122,7 @@ class EventDetail extends Component {
         region,
         regionCode,
         startTime,
-        avatar, nickName,
+        avatar, nickName, liked
       } = res.data
       let poster_ = []
       if (JSON.parse(poster).length) {
@@ -144,6 +145,7 @@ class EventDetail extends Component {
               city,
               region,]
         },
+        liked
       })
     })
   }
@@ -241,7 +243,7 @@ class EventDetail extends Component {
       address,
       poster,
       avatar, nickName,
-      provinceCityRegion, } = this.state;
+      provinceCityRegion, liked } = this.state;
     return (
       <View className='eventDetail'>
         <Swiper
@@ -381,7 +383,7 @@ class EventDetail extends Component {
         </View>
         <i-divider content='加载已经完成,没有其他数据'></i-divider>
         <View className='commentBarComp-wrapper'>
-          <CommentBarComp id_={this.$router.params.id} type={1} />
+          <CommentBarComp id_={this.$router.params.id} type={1} liked={liked} collected={false} />
         </View>
       </View>
     );
