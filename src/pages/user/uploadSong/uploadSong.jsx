@@ -1,7 +1,7 @@
 /* eslint-disable react/sort-comp */
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Picker } from '@tarojs/components';
-import { numberOrDecimal } from '@/utils/tools.js';
+
 import { createSong, getSongDetailById, updateSong } from '@/api/song';
 import validator from '@/utils/validator'
 import './uploadSong.scss';
@@ -139,9 +139,12 @@ class Uploadsong extends Component {
       data.id = this.state.id
       updateSong(data).then(res => {
         this.setState({ isDisabled: false });
+       
         Taro.showToast({
           title: '更新成功', icon: 'none', duration: 2000, success: () => {
-            Taro.navigateBack(-1)
+            setTimeout(() => {
+              Taro.navigateBack(-1)
+            }, 2000);
           }
         })
 
@@ -177,7 +180,7 @@ class Uploadsong extends Component {
   componentDidHide() { }
 
   render() {
-    const { name, introduction, duration, type, price, isEdit, id, disabled } = this.state;
+    const { name, introduction, duration, type, price, isEdit, id, isDisabled } = this.state;
     return (
       <View className='uploadSong'>
         <i-input
@@ -222,7 +225,8 @@ class Uploadsong extends Component {
               size='mini'
               className='success'
               disabled={isDisabled}
-              onClick={this.onClickUpload.bind(this)}>
+              onClick={this.onClickUpload.bind(this)}
+            >
               更新歌曲
             </Button>
           ) : (
@@ -230,7 +234,8 @@ class Uploadsong extends Component {
                 size='mini'
                 className='primary'
                 disabled={isDisabled}
-                onClick={this.onClickUpload.bind(this)}>
+                onClick={this.onClickUpload.bind(this)}
+              >
                 上传歌曲
               </Button>
             )}

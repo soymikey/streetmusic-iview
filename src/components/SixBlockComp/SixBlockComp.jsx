@@ -28,7 +28,7 @@ class SixBlockComp extends Component {
   }
   goToSingerPage() {
 
-    goToPage('/pages/singer/singer')
+    goToPage('/pages/singer/singer?id=o2VHy5Fn3m8GlVISHmDgNS6y3WrM')
   }
   // componentWillReceiveProps(nextProps) {
   //   console.log(this.props, nextProps);
@@ -64,7 +64,8 @@ class SixBlockComp extends Component {
               <View
                 className='container'
                 key={item}
-                onClick={this.goToSingerPage.bind(this)}>
+                onClick={this.goToSingerPage.bind(this)}
+              >
                 <View className='image-wrapper'>
                   <Image mode='aspectFill' className='image' src={item} />
                 </View>

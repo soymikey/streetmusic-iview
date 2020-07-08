@@ -10,6 +10,7 @@ import './singer.scss';
 import { getEventListById } from '@/api/event';
 import { getSongListById } from '@/api/song';
 import { createOrder, getOrderListById } from '@/api/order';
+import { set } from '@/utils/localStorage';
 
 const post1_ = require('@/asset/images/poster1.png');
 const post2_ = require('@/asset/images/poster2.png');
@@ -138,7 +139,8 @@ class Singer extends Component {
   componentWillUnmount() { }
 
   componentDidShow() {
-
+    const {path,params}=this.$router
+   set('page',path+'?id='+params.id)
   }
 
   componentDidHide() { }
@@ -147,7 +149,7 @@ class Singer extends Component {
       title: '加载中-歌曲',
     });
     // 向后端请求指定页码的数据
-    const data = { id: 'o2VHy5Fn3m8GlVISHmDgNS6y3WrM', pageSize: this.state.songPageSize, pageNo: this.state.songPageNo }
+    const data = { id: this.$router.params.id, pageSize: this.state.songPageSize, pageNo: this.state.songPageNo }
 
     return getSongListById(data)
       .then(res => {
@@ -169,7 +171,7 @@ class Singer extends Component {
       title: '加载中-订单',
     });
     // 向后端请求指定页码的数据
-    const data = { id: 'o2VHy5Fn3m8GlVISHmDgNS6y3WrM', pageSize: 50, pageNo: 1 }
+    const data = { id: this.$router.params.id, pageSize: 50, pageNo: 1 }
 
     return getOrderListById(data)
       .then(res => {
@@ -189,7 +191,7 @@ class Singer extends Component {
       title: '加载中-活动',
     });
     // 向后端请求指定页码的数据
-    const data = { id: 'o2VHy5Fn3m8GlVISHmDgNS6y3WrM', pageSize: this.state.eventPageSize, pageNo: this.state.eventPageNo }
+    const data = { id: this.$router.params.id, pageSize: this.state.eventPageSize, pageNo: this.state.eventPageNo }
     return getEventListById(data)
       .then(res => {
         console.log('res.data', res.data)
@@ -297,13 +299,13 @@ class Singer extends Component {
         name: this.state.selectedSong.name,
 
         comment: this.state.content,
-        singerId: 'o2VHy5Fn3m8GlVISHmDgNS6y3WrM'
+        singerId: this.$router.params.id
       }
       createOrder(data).then(res => {
         this.setState({ isShowModal: false });
         console.log('准备发送toSinger')
         Taro.sendSocketMessage({
-          data: JSON.stringify({ type: 'toSinger', msg: 'fetchOrderList', id: 'o2VHy5Fn3m8GlVISHmDgNS6y3WrM' })
+          data: JSON.stringify({ type: 'toSinger', msg: 'fetchOrderList', id: this.$router.params.id })
         });
         setTimeout(() => {
           this.fetchOrderList()
@@ -352,7 +354,8 @@ class Singer extends Component {
           ]}
           visible={isShowModal}
 
-          onClick={this.onConfirmComment.bind(this)}>
+          onClick={this.onConfirmComment.bind(this)}
+        >
           <View>
 
             <i-input
@@ -403,7 +406,8 @@ class Singer extends Component {
                 <i-tag
                   key={item}
                   color={colorList[Math.floor(Math.random() * 6)]}
-                  class='i-tags'>
+                  class='i-tags'
+                >
                   {item}
                 </i-tag>
               );
@@ -412,7 +416,8 @@ class Singer extends Component {
         </View>
         <View
           className='tabs-container'
-          style='position:sticky;position: -webkit-sticky;top:0;z-index: 999;'>
+          style='position:sticky;position: -webkit-sticky;top:0;z-index: 999;'
+        >
           <i-tabs current={currentTab} onChange={this.onChangeTab.bind(this)}>
             <i-tab key={0} title='歌曲' type='border' count={songTotal}></i-tab>
             <i-tab key={1} title='正在播放' type='border'></i-tab>
@@ -427,11 +432,13 @@ class Singer extends Component {
           indicatorColor='#999'
           indicatorActiveColor='#333'
           onChange={this.onChangeSwiper.bind(this)}
-          circular>
+          circular
+        >
           <SwiperItem>
             <View className='tab1' id='tab'>
               <Tab1 list={songList}
-                onOpenModal_={this.onOpenModal.bind(this)} />
+                onOpenModal_={this.onOpenModal.bind(this)}
+              />
             </View>
           </SwiperItem>
           <SwiperItem>

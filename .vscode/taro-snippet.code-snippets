@@ -12,8 +12,14 @@
   // 	],
   // 	"description": "Log output to console"
   // }
+  "stagt": {
+    "prefix": "showtoast and goto",
+    "body": [
+      "import { showToastAndGoto } from '@/utils/tools.js';    "
+    ]
+  },
   "gotopage": {
-    "prefix": "gotopage",
+    "prefix": "showtoast and goto",
     "body": [
       "import { goToPage } from '@/utils/tools.js';"
     ]

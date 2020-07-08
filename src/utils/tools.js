@@ -1,4 +1,5 @@
 import Taro from '@tarojs/taro';
+
 export const toolbox = { name: '123' };
 export const toolbox2 = { name: '123' };
 
@@ -7,8 +8,7 @@ export const toolbox2 = { name: '123' };
 
 //去某个页面
 export const goToPage = (url, checkAuth = false) => {
-  if (!checkAuth) {
-
+  if (checkAuth) {
   }
   if (['/pages/index/index',
     '/pages/event/event',
@@ -18,15 +18,15 @@ export const goToPage = (url, checkAuth = false) => {
   } else {
     Taro.navigateTo({ url });
   }
-
 };
 
-export const numberOrDecimal = value => {
-  const patternDecimal = /^\d+\.\d+$/;
-  const patternNumber = /^\d{1,}$/;
-  if (patternDecimal.test(value) || patternNumber.test(value)) {
-    return Number(value).toFixed(2);
-  } else {
-    return false;
-  }
-};
+//显示提示2秒 后去某个页面
+export const showToastAndGoto=({title,icon='none',duration=2000,url='/pages/user/user'})=>{
+  console.log('url``````````',url);
+  
+  Taro.showToast({ title, icon,success:()=>{
+    setTimeout(function() {
+        goToPage(url)
+      }, duration);
+} })
+}

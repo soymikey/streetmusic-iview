@@ -1,19 +1,17 @@
 /* eslint-disable react/sort-comp */
 import Taro, { Component } from '@tarojs/taro';
-import { connect } from '@tarojs/redux'
+import { connect } from '@tarojs/redux';
 
 import { View, Button, Text } from '@tarojs/components';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import { myLogin } from '@/api/user';
-import { setUserInfo, logout } from '@/actions/user'
+import { setUserInfo, logout } from '@/actions/user';
 
 import { goToPage } from '@/utils/tools.js';
 
 import './user.scss';
 
 @connect(state => state, { setUserInfo, logout })
-
-
 class User extends Component {
   config = {
     navigationBarTitleText: '我的',
@@ -33,14 +31,14 @@ class User extends Component {
   };
   async login() {
     myLogin().then(res => {
-      this.props.setUserInfo(res.data)
-    })
+      this.props.setUserInfo(res.data);
+    });
   }
   logout() {
-    this.props.logout()
+    this.props.logout();
   }
   goToEditMyInfo() {
-    goToPage('/pages/user/editMyInfo/editMyInfo')
+    goToPage('/pages/user/editMyInfo/editMyInfo');
   }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
@@ -49,13 +47,13 @@ class User extends Component {
   componentDidMount() {
     // this.login()
   }
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
   componentDidShow() {
 
   }
 
-  componentDidHide() { }
+  componentDidHide() {}
 
   render() {
     const {
@@ -79,16 +77,13 @@ class User extends Component {
       role,
       state,
       token,
-    } = this.props.user
-    console.log('this.props.user.avatar', this.props.user.avatar)
+    } = this.props.user;
+    console.log('this.props.user.avatar', this.props.user.avatar);
     return (
       <View className='user'>
         <i-row i-class='user-info'>
           <i-col span='4'>
-            <i-avatar
-              src={avatar}
-              size='large'
-            ></i-avatar>
+            <i-avatar src={avatar} size='large'></i-avatar>
           </i-col>
           <i-col span='20' i-class='col-class'>
             <View className='user-name'>
@@ -125,54 +120,71 @@ class User extends Component {
               <Text>323</Text>
             </View>
           </i-col>
-          <i-col span='6' i-class='col-class' >
+          <i-col span='6' i-class='col-class'>
             <View onClick={this.goToEditMyInfo.bind(this)}>
-
-              <View className='title' >
+              <View className='title'>
                 <Text>我的资料</Text>
               </View>
               <View className='content'>
                 <i-icon type='editor' />
               </View>
             </View>
-
           </i-col>
         </i-row>
         <i-divider i-class='divider' height={24}></i-divider>
         <i-cell-group>
-          {role === 'user' && <i-cell
-            title='注册艺人'
-            is-link
-            url='/pages/user/registerArtist/registerArtist'
-          ></i-cell>}
-          {role === 'artist' && <View >
+          {role === 'user' && (
             <i-cell
-              title='上传歌曲'
+              title='注册艺人'
               is-link
-              url='/pages/user/uploadSong/uploadSong'
+              url='/pages/user/registerArtist/registerArtist'
             ></i-cell>
-            <i-cell title='我的歌曲' is-link url='/pages/user/mySong/mySong'></i-cell>
-            <i-cell
-              title='上传活动'
-              is-link
-              url='/pages/user/uploadEvent/uploadEvent'
-            ></i-cell>
-            <i-cell title='我的活动' is-link url='/pages/user/myEvent/myEvent'></i-cell>
-            <i-cell title='我的收益' is-link></i-cell>
-            <i-cell title='收款二维码' is-link></i-cell>
-          </View>}
-
-
+          )}
+          {role === 'artist' && (
+            <View>
+              <i-cell
+                title='上传歌曲'
+                is-link
+                url='/pages/user/uploadSong/uploadSong'
+              ></i-cell>
+              <i-cell
+                title='我的歌曲'
+                is-link
+                url='/pages/user/mySong/mySong'
+              ></i-cell>
+              <i-cell
+                title='上传活动'
+                is-link
+                url='/pages/user/uploadEvent/uploadEvent'
+              ></i-cell>
+              <i-cell
+                title='我的活动'
+                is-link
+                url='/pages/user/myEvent/myEvent'
+              ></i-cell>
+              <i-cell title='我的收益' is-link></i-cell>
+              <i-cell title='收款二维码' is-link></i-cell>
+            </View>
+          )}
 
           <i-cell title='关于' is-link></i-cell>
         </i-cell-group>
 
         <View style='text-align:center;margin-top:40px;'>
-          {!id ? <Button size='mini' className='primary' open-type='getUserInfo' onGetUserInfo={this.login.bind(this)}>
-            登录
-          </Button> : <Button size='mini' className='error' onClick={this.logout.bind(this)}>
+          {!id ? (
+            <Button
+              size='mini'
+              className='primary'
+              open-type='getUserInfo'
+              onGetUserInfo={this.login.bind(this)}
+            >
+              登录
+            </Button>
+          ) : (
+            <Button size='mini' className='error' onClick={this.logout.bind(this)}>
               退出
-          </Button>}
+            </Button>
+          )}
         </View>
 
         <View className='tabbar-container'>

@@ -17,7 +17,7 @@ function _get(key) {
 function _set(key, value) {
 
     try {
-        Taro.setStorageSync(key, JSON.stringify(value))
+        Taro.setStorageSync(key, value)
     } catch (e) {
         // console.log(e);
     }

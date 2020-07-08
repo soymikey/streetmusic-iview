@@ -253,9 +253,12 @@ class UploadEvent extends Component {
       data.id = this.state.id
       updateEvent(data).then(res => {
         this.setState({ isDisabled: false });
+       
         Taro.showToast({
           title: '更新成功', icon: 'none', duration: 2000, success: () => {
-            Taro.navigateBack(-1)
+            setTimeout(() => {
+              Taro.navigateBack(-1)
+            }, 2000);
           }
         })
 
@@ -399,7 +402,8 @@ class UploadEvent extends Component {
               size='mini'
               className='success'
               disabled={isDisabled}
-              onClick={this.onClickUpload.bind(this)}>
+              onClick={this.onClickUpload.bind(this)}
+            >
               更新活动
             </Button>
           ) : (
@@ -407,7 +411,8 @@ class UploadEvent extends Component {
                 size='mini'
                 className='primary'
                 disabled={isDisabled}
-                onClick={this.onClickUpload.bind(this)}>
+                onClick={this.onClickUpload.bind(this)}
+              >
                 上传活动
               </Button>
             )}
