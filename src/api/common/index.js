@@ -6,6 +6,7 @@ export const createComment = (data) => { return Wechat.request('/api/comment/cre
 export const getCommentList = (data) => { return Wechat.request('/api/comment/list', data) }//获取留言列表
 export const createLike = (data) => { return Wechat.request('/api/like/create', data) }//点赞
 export const createCollection = (data) => { return Wechat.request('/api/collection/create', data) }//收藏
+export const createFollow = (data) => { return Wechat.request('/api/follow/create', data) }//关注
 
 export const uploadImage = (file, url) => {
     Taro.showLoading({

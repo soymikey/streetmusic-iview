@@ -6,6 +6,7 @@ import { getCommentList } from '@/api/common';
 import post1 from '@/asset/images/poster1.png';
 import post2 from '@/asset/images/poster2.png';
 import OneBlockComp from '@/components/OneBlockComp/OneBlockComp';
+import FollowButtonComp from '@/components/FollowButtonComp/FollowButtonComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
 import CommentSumaryComp from '@/components/commentSumaryComp/commentSumaryComp';
 import CommentBarComp from '@/components/commentBarComp/commentBarComp';
@@ -50,7 +51,8 @@ class EventDetail extends Component {
       address: '',
       poster: [],
       provinceCityRegion: { code: [], value: [] },
-      avatar: '', nickName: '',
+      avatar: '',
+      nickName: '',
       iconList: ['like', 'share', 'document', 'collection'],
       commentList: [
         {
@@ -95,7 +97,10 @@ class EventDetail extends Component {
       pageSize: 10,
       pageNo: 1,
       total: 0,
-      liked: false
+      liked: false,
+      collected: false,
+      followed: false,
+      userId:'',//活动创建者的id
     };
   }
   iconHandler(icon) {
@@ -109,7 +114,8 @@ class EventDetail extends Component {
   }
   getEventDetail() {
     getEventDetailById({ id: this.$router.params.id }).then(res => {
-      const { address,
+      const {
+        address,
         city,
         cityCode,
         date,
@@ -122,14 +128,22 @@ class EventDetail extends Component {
         region,
         regionCode,
         startTime,
-        avatar, nickName, liked
-      } = res.data
-      let poster_ = []
+        avatar,
+        nickName,
+        liked,
+        collected,
+        followed,
+        userId
+      } = res.data;
+      let poster_ = [];
       if (JSON.parse(poster).length) {
-        poster_ = JSON.parse(poster).map(item => { return { url: item } })
+        poster_ = JSON.parse(poster).map(item => {
+          return { url: item };
+        });
       }
       this.setState({
-        avatar, nickName,
+        avatar,
+        nickName,
         name,
         introduction,
         date,
@@ -138,16 +152,15 @@ class EventDetail extends Component {
         address,
         poster: poster_,
         provinceCityRegion: {
-          code: [provinceCode,
-            cityCode,
-            regionCode,], value: [
-              province,
-              city,
-              region,]
+          code: [provinceCode, cityCode, regionCode],
+          value: [province, city, region],
         },
-        liked
-      })
-    })
+        liked,
+        collected,
+        followed,
+        userId
+      });
+    });
   }
 
   // 热门活动
@@ -156,21 +169,20 @@ class EventDetail extends Component {
       title: '加载中-活动',
     });
     // 向后端请求指定页码的数据
-    const data = { pageSize: 5, pageNo: 1 }
+    const data = { pageSize: 5, pageNo: 1 };
 
     return getHotEventList(data)
       .then(res => {
         for (const item of res.data.list) {
-          item.poster = JSON.parse(item.poster)
+          item.poster = JSON.parse(item.poster);
         }
         this.setState({
           hotEventList: res.data.list,
-
         });
       })
       .catch(err => {
         console.log('==> [ERROR]', err);
-      })
+      });
   }
   // 留言列表
   fetchCommentList(override) {
@@ -179,71 +191,84 @@ class EventDetail extends Component {
     });
     // 向后端请求指定页码的数据
     // 向后端请求指定页码的数据
-    const data = { pageSize: this.state.pageSize, pageNo: this.state.pageNo, id: this.$router.params.id }
+    const data = {
+      pageSize: this.state.pageSize,
+      pageNo: this.state.pageNo,
+      id: this.$router.params.id,
+    };
     this.setState({ loading: true });
 
     return getCommentList(data)
       .then(res => {
-
         this.setState({
-          commentList: override ? res.data.list : this.state.commentList(res.data.list),
+          commentList: override
+            ? res.data.list
+            : this.state.commentList(res.data.list),
           total: res.data.total,
-          loading: false
+          loading: false,
         });
       })
       .catch(err => {
         console.log('==> [ERROR]', err);
-      })
+      });
+  }
+  //关注和取消关注
+  onClickFollow(value) {
+    this.setState({ followed: value });
   }
   init() {
-    this.getEventDetail()//活动详情
-    this.fetchHotEventList()//热门推荐活动
+    this.getEventDetail(); //活动详情
+    this.fetchHotEventList(); //热门推荐活动
     this.fetchCommentList(true).then(res => {
       // 处理完成后，终止下拉刷新
       Taro.stopPullDownRefresh();
-    })//留言列表
+    }); //留言列表
   }
   componentWillMount() {
-    this.init()
+    this.init();
   }
-  componentDidMount() {
-
-  }
+  componentDidMount() {}
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
-  componentDidShow() { }
+  componentDidShow() {}
 
-  componentDidHide() { }
+  componentDidHide() {}
   onPullDownRefresh() {
-
     this.init();
-
-
   }
   onReachBottom() {
-    if (
-      !this.state.loading &&
-      this.state.pageNo < this.state.total
-    ) {
+    if (!this.state.loading && this.state.pageNo < this.state.total) {
       this.setState({ pageNo: this.state.pageNo + 1 }, () => {
         this.fetchCommentList();
       });
     }
   }
   render() {
-    const { list, hotEventList, tagList, iconList, commentList, name,
+    const {
+      list,
+      hotEventList,
+      tagList,
+      iconList,
+      commentList,
+      name,
       introduction,
       date,
       startTime,
       endTime,
       address,
       poster,
-      avatar, nickName,
-      provinceCityRegion, liked } = this.state;
+      avatar,
+      nickName,
+      provinceCityRegion,
+      liked,
+      collected,
+      followed,
+      userId
+    } = this.state;
     return (
       <View className='eventDetail'>
         <Swiper
@@ -253,7 +278,8 @@ class EventDetail extends Component {
           indicatorActiveColor='#333'
           circular
           indicatorDots
-          autoplay>
+          autoplay
+        >
           {poster.map(item => {
             return (
               <SwiperItem key={item.url}>
@@ -266,9 +292,7 @@ class EventDetail extends Component {
           <i-row i-class='title-row'>
             <i-col span='24' i-class='col-class'>
               <View class='title ellipsis'>
-                <Text>
-                  {name}
-                </Text>
+                <Text>{name}</Text>
               </View>
             </i-col>
           </i-row>
@@ -289,35 +313,41 @@ class EventDetail extends Component {
           </View>
           <i-row i-class='time'>
             <i-col span='24' i-class='col-class'>
-              <View >
-                <Text>{date.slice(0, 10)}<Text decode="true">&nbsp;</Text>{startTime.slice(0, 5)}
-                  <Text decode="true">&nbsp;</Text>
-                到<Text decode="true">&nbsp;</Text>{date.slice(0, 10)}<Text decode="true">&nbsp;</Text>{endTime.slice(0, 5)}</Text>
+              <View>
+                <Text>
+                  {date.slice(0, 10)}
+                  <Text decode='true'>&nbsp;</Text>
+                  {startTime.slice(0, 5)}
+                  <Text decode='true'>&nbsp;</Text>到<Text decode='true'>&nbsp;</Text>
+                  {date.slice(0, 10)}
+                  <Text decode='true'>&nbsp;</Text>
+                  {endTime.slice(0, 5)}
+                </Text>
               </View>
             </i-col>
-
           </i-row>
           <View class='address-title'>
             <Text>活动地址</Text>
           </View>
           <i-row i-class='address'>
             <i-col span='24' i-class='col-class'>
-              <View >
-                <Text>{provinceCityRegion.value[0]}-{provinceCityRegion.value[1]}-{provinceCityRegion.value[2]}-{address}</Text>
+              <View>
+                <Text>
+                  {provinceCityRegion.value[0]}-{provinceCityRegion.value[1]}-
+                  {provinceCityRegion.value[2]}-{address}
+                </Text>
               </View>
             </i-col>
-
           </i-row>
           <View class='introduction-title'>
             <Text>活动介绍</Text>
           </View>
           <i-row i-class='introduction'>
             <i-col span='24' i-class='col-class'>
-              <View >
+              <View>
                 <Text>{introduction}</Text>
               </View>
             </i-col>
-
           </i-row>
 
           <View className='tag-container'>
@@ -346,17 +376,16 @@ class EventDetail extends Component {
           </i-row>
           <i-divider height={10} />
           <i-row i-class='user-row'>
-            <i-col span='20' i-class='col-class'>
-              <i-avatar
-                src={avatar}
-                size='large'
-              />
+            <i-col span='18' i-class='col-class'>
+              <i-avatar src={avatar} size='large' />
               <Text className='username'>{nickName}</Text>
             </i-col>
-            <i-col span='4' i-class='col-class follow-col'>
-              <Button size='mini' className='error'>
-                关注
-              </Button>
+            <i-col span='6' i-class='col-class follow-col'>
+              <FollowButtonComp
+                onClickFollow_={this.onClickFollow.bind(this)}
+                followed={followed}
+                userId={userId}
+              ></FollowButtonComp>
             </i-col>
           </i-row>
         </View>
@@ -383,7 +412,12 @@ class EventDetail extends Component {
         </View>
         <i-divider content='加载已经完成,没有其他数据'></i-divider>
         <View className='commentBarComp-wrapper'>
-          <CommentBarComp id_={this.$router.params.id} type={1} liked={liked} collected={false} />
+          <CommentBarComp
+            id_={this.$router.params.id}
+            type={1}
+            liked={liked}
+            collected={collected}
+          />
         </View>
       </View>
     );

@@ -32,7 +32,11 @@ class Wechat {
   // success:成功的回调函数
   // fail：失败的回调
   static async request(url, params, method = 'post', message = '加载中') {
-    if (url !== '/api/openid' && url !== '/api/userinfo/detail') {
+    if (
+      url !== '/api/openid' &&
+      url !== '/api/userinfo/login' &&
+      url !== '/api/event/hotList'
+    ) {
       await this.sessionAndTokenChecker();
     }
 
@@ -141,7 +145,7 @@ class Wechat {
         reject('您还未登录,请登录~');
         // 无skey，作为首次登录
         showToastAndGoto({ title: '您还未登录,请登录~' });
-      
+
         // myLogin();
       }
     });

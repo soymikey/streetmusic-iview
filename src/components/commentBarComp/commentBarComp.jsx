@@ -41,7 +41,6 @@ class CommentBarComp extends Component {
       id: this.props.id_
     }
     createLike(data).then(res => {
-
       this.setState({
         liked: !this.state.liked,
       })
@@ -79,7 +78,7 @@ class CommentBarComp extends Component {
           <i-row>
             <i-col span='12' i-class='searchBar-col'>
               <View className='searchBar' onClick={this.onOpen.bind(this)}>
-                <View className='content'><i-icon type="brush" size='20' />写评论</View>
+                <View className='content'><i-icon type='brush' size='20' />写评论</View>
 
               </View>
 
@@ -88,21 +87,21 @@ class CommentBarComp extends Component {
             <i-col span='3' i-class='col-class'>
               <View className='icon-wrapper'>
 
-                <i-icon size="35" type="message" />
+                <i-icon size='35' type='message' />
               </View>
 
             </i-col>
             <i-col span='3' i-class='col-class'>
 
-              <View className='like' onClick={this.onClickCollection.bind(this)}>{collected ? <i-icon size="35" type="collection_fill" color='#ed3f14' /> : <i-icon size="35" type="collection" />}</View>
+              <View className='like' onClick={this.onClickCollection.bind(this)}>{collected ? <i-icon size='35' type='collection_fill' color='#ed3f14' /> : <i-icon size='35' type='collection' />}</View>
             </i-col>
             <i-col span='3' i-class='col-class'>
-              <View className='like' onClick={this.onClickLike.bind(this)}> {liked ? <i-icon size="35" type="praise_fill" color='#ed3f14' />
-                : <i-icon size="35" type="praise" />
+              <View className='like' onClick={this.onClickLike.bind(this)}> {liked ? <i-icon size='35' type='praise_fill' color='#ed3f14' />
+                : <i-icon size='35' type='praise' />
               }</View>
             </i-col>
             <i-col span='3' i-class='col-class'>
-              <i-icon size="35" type="accessory" />
+              <i-icon size='35' type='accessory' />
             </i-col>
           </i-row>
           <View className='tabbar-block'></View>

@@ -136,7 +136,6 @@ class App extends Component {
 
   componentDidShow() {
 
-    // new Heartbeat('http://localhost:3001', 'taskId', 'userId', 'message')
   }
 
   componentDidHide() { }

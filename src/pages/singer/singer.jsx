@@ -1,20 +1,27 @@
 import Taro, { Component } from '@tarojs/taro';
+import { connect } from '@tarojs/redux';
 import { View, Button, Text, Image, Swiper, SwiperItem } from '@tarojs/components';
 import post1 from '@/asset/images/poster1.png';
 import post2 from '@/asset/images/poster2.png';
 import Tab3 from './tab3/tab3';
 import Tab1 from './tab1/tab1';
 import Tab2 from './tab2/tab2';
+import FollowButtonComp from '@/components/FollowButtonComp/FollowButtonComp';
 
-import './singer.scss';
+import { getUserInfo, getUserState } from '@/api/user';
+
 import { getEventListById } from '@/api/event';
 import { getSongListById } from '@/api/song';
 import { createOrder, getOrderListById } from '@/api/order';
 import { set } from '@/utils/localStorage';
+import { heartCheck } from '@/utils/heartbeatjuejin';
+import { showToastAndGoto } from '@/utils/tools.js';
+import './singer.scss';
 
 const post1_ = require('@/asset/images/poster1.png');
 const post2_ = require('@/asset/images/poster2.png');
 
+@connect(state => state)
 class Singer extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
@@ -30,12 +37,13 @@ class Singer extends Component {
       'i-tabs': '../../iView/tabs/index',
       'i-tab': '../../iView/tab/index',
       'i-modal': '../../iView/modal/index',
-      'i-input': '../../iView/input/index'
+      'i-input': '../../iView/input/index',
     },
   };
   constructor() {
     super(...arguments);
     this.state = {
+      userInfo: {},
       tabList: [
         { key: 0, label: '歌曲' },
         { key: 1, label: '正在播放' },
@@ -53,7 +61,6 @@ class Singer extends Component {
       totalOrderPage: 8,
       currentEventsPage: 1,
       totalEventsPage: 8,
-
 
       orderLists: [
         { name: '阿桑-给你的爱一直很安静', price: '12.00' },
@@ -91,8 +98,8 @@ class Singer extends Component {
       orderListList: [],
       orderListTotal: 0,
       isShowModal: false,
-      content: '',//留言内容
-      selectedSong: {}
+      content: '', //留言内容
+      selectedSong: {},
     };
   }
   iconHandler(icon) {
@@ -111,9 +118,12 @@ class Singer extends Component {
   }
 
   componentDidMount() {
-    this.fetchSongList(true);
-    this.fetchOrderList();
-    this.fetchEventList(true);
+    if (this.props.user.id) {
+      this.fetchUserDetail(true);
+      this.fetchSongList(true);
+      this.fetchOrderList();
+      this.fetchEventList(true);
+    }
   }
   setSwiperHeight(value) {
     let height = 0;
@@ -136,20 +146,23 @@ class Singer extends Component {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
-  componentDidShow() {
-    const {path,params}=this.$router
-   set('page',path+'?id='+params.id)
+  fetchUserDetail() {
+    getUserInfo({ id: this.$router.params.id }).then(res => {
+      this.setState({ userInfo: res.data });
+    });
   }
-
-  componentDidHide() { }
   fetchSongList(override) {
     Taro.showLoading({
       title: '加载中-歌曲',
     });
     // 向后端请求指定页码的数据
-    const data = { id: this.$router.params.id, pageSize: this.state.songPageSize, pageNo: this.state.songPageNo }
+    const data = {
+      id: this.$router.params.id,
+      pageSize: this.state.songPageSize,
+      pageNo: this.state.songPageNo,
+    };
 
     return getSongListById(data)
       .then(res => {
@@ -157,25 +170,26 @@ class Singer extends Component {
           this.setSwiperHeight(0);
         }
         this.setState({
-          songList: override ? res.data.list : this.state.songList.concat(res.data.list),
+          songList: override
+            ? res.data.list
+            : this.state.songList.concat(res.data.list),
           songTotal: res.data.total, //总页数
           loading: false,
         });
       })
       .catch(err => {
         console.log('==> [ERROR]', err);
-      })
+      });
   }
   fetchOrderList() {
     Taro.showLoading({
       title: '加载中-订单',
     });
     // 向后端请求指定页码的数据
-    const data = { id: this.$router.params.id, pageSize: 50, pageNo: 1 }
+    const data = { id: this.$router.params.id, pageSize: 50, pageNo: 1 };
 
     return getOrderListById(data)
       .then(res => {
-
         this.setState({
           orderList: res.data.list,
           loading: false,
@@ -183,7 +197,7 @@ class Singer extends Component {
       })
       .catch(err => {
         console.log('==> [ERROR]', err);
-      })
+      });
   }
 
   fetchEventList(override) {
@@ -191,23 +205,28 @@ class Singer extends Component {
       title: '加载中-活动',
     });
     // 向后端请求指定页码的数据
-    const data = { id: this.$router.params.id, pageSize: this.state.eventPageSize, pageNo: this.state.eventPageNo }
+    const data = {
+      id: this.$router.params.id,
+      pageSize: this.state.eventPageSize,
+      pageNo: this.state.eventPageNo,
+    };
     return getEventListById(data)
       .then(res => {
-        console.log('res.data', res.data)
+        console.log('res.data', res.data);
         for (const item of res.data.list) {
-          item.poster = JSON.parse(item.poster)
+          item.poster = JSON.parse(item.poster);
         }
         this.setState({
-          eventList: override ? res.data.list : this.state.songList.concat(res.data.list),
+          eventList: override
+            ? res.data.list
+            : this.state.songList.concat(res.data.list),
           eventTotal: res.data.total, //总页数
           loading: false,
         });
       })
       .catch(err => {
-
         console.log('==> [ERROR]', err);
-      })
+      });
   }
 
   onOpenModal(song) {
@@ -221,12 +240,10 @@ class Singer extends Component {
       if (!this.state.loading) {
         this.setState({ songPageNo: 1 }, () => {
           this.fetchSongList(true).then(res => {
-
             // 处理完成后，终止下拉刷新
             Taro.stopPullDownRefresh();
           });
         });
-
       }
     }
     if (currentTab === 1) {
@@ -235,30 +252,23 @@ class Singer extends Component {
           // 处理完成后，终止下拉刷新
           Taro.stopPullDownRefresh();
         });
-
       }
     }
     if (currentTab === 2) {
       if (!this.state.loading) {
         this.setState({ eventPageNo: 1 }, () => {
           this.fetchEventList(true).then(res => {
-
             // 处理完成后，终止下拉刷新
             Taro.stopPullDownRefresh();
           });
-
         });
-
       }
     }
   }
   onReachBottom() {
     const { currentTab } = this.state;
     if (currentTab === 0) {
-      if (
-        !this.state.loading &&
-        this.state.songPageNo < this.state.songTotal
-      ) {
+      if (!this.state.loading && this.state.songPageNo < this.state.songTotal) {
         this.setState({ songPageNo: this.state.songPageNo + 1 }, () => {
           this.fetchSongList();
         });
@@ -273,11 +283,7 @@ class Singer extends Component {
       // }
     }
     if (currentTab === 2) {
-
-      if (
-        !this.state.loading &&
-        this.state.eventPageNo < this.state.eventTotal
-      ) {
+      if (!this.state.loading && this.state.eventPageNo < this.state.eventTotal) {
         this.setState({ eventPageNo: this.state.eventPageNo + 1 }, () => {
           this.fetchEventList();
         });
@@ -285,36 +291,84 @@ class Singer extends Component {
     }
   }
 
+  //关注
+  onClickFollow(value) {
+    this.state.userInfo.followed = value;
+    this.setState({ userInfo: this.state.userInfo });
+  }
   onConfirmComment(e) {
     if (e.detail.index === 0) {
       this.setState({ isShowModal: false });
     } else {
       if (!this.state.selectedSong.id) {
-        Taro.showToast({ title: '请选择歌曲', icon: 'none' })
-        return
+        Taro.showToast({ title: '请选择歌曲', icon: 'none' });
+        return;
       }
       const data = {
         songId: this.state.selectedSong.id,
         price: this.state.selectedSong.price,
         name: this.state.selectedSong.name,
-
         comment: this.state.content,
-        singerId: this.$router.params.id
-      }
+        singerId: this.$router.params.id,
+      };
       createOrder(data).then(res => {
         this.setState({ isShowModal: false });
-        console.log('准备发送toSinger')
+        console.log('准备发送toArtist');
         Taro.sendSocketMessage({
-          data: JSON.stringify({ type: 'toSinger', msg: 'fetchOrderList', id: this.$router.params.id })
+          data: JSON.stringify({
+            type: 'createOrderOK',
+            id: this.$router.params.id,
+          }),
         });
         setTimeout(() => {
-          this.fetchOrderList()
+          this.fetchOrderList();
         }, 2000);
-      })
+      });
     }
   }
+
   handleContent(e) {
     this.setState({ content: e.detail.detail.value });
+  }
+  componentDidShow() {
+    const { path, params } = this.$router;
+    set('page', path + '?id=' + params.id);
+    if (!this.props.user.id) {
+      showToastAndGoto({ title: '请登录', url: '/pages/user/user' });
+      return;
+    }
+    Taro.sendSocketMessage({
+      data: JSON.stringify({
+        type: 'join',
+        roomId: params.id + '@@@' + this.props.user.id,
+      }),
+    });
+    Taro.onSocketMessage(res => {
+      //收到消息
+      console.log('我的歌手, 收到服务器消息', res);
+      const data = JSON.parse(res.data);
+      if (data.type == 'pong') {
+        heartCheck.reset().start();
+      } else if (data.type === 'goFetchUserState') {
+        console.log('我是歌手页面 收到 fetchUserState请求');
+        getUserState({ id: this.$router.params.id }).then(res => {
+          this.state.userInfo.state = res.data.state;
+          this.setState({ userInfo: this.state.userInfo });
+        });
+        // 处理数据
+      } else if (data.type === 'goFetchOrderList') {
+        console.log('我是歌手页面 收到 fetchOrderList请求');
+        this.fetchOrderList();
+      }
+    });
+  }
+  componentDidHide() {
+    Taro.sendSocketMessage({
+      data: JSON.stringify({
+        type: 'unJoin',
+        roomId: this.$router.params.id + '@@@' + this.props.user.id,
+      }),
+    });
   }
 
   render() {
@@ -334,12 +388,12 @@ class Singer extends Component {
       songTotal,
       orderListList,
       orderListTotal,
-      isShowModal
+      isShowModal,
+      followed,
+      userInfo,
     } = this.state;
     return (
       <View className='singer'>
-
-
         <i-modal
           title='留言'
           actions={[
@@ -353,11 +407,9 @@ class Singer extends Component {
             },
           ]}
           visible={isShowModal}
-
           onClick={this.onConfirmComment.bind(this)}
         >
           <View>
-
             <i-input
               placeholder='请输入你的留言...'
               value={content}
@@ -371,27 +423,43 @@ class Singer extends Component {
 
         <View className='singer-info'>
           <View class='background'>
-            <Image mode='aspectFill' src={post1} style='width: 100%;height: 100%;' />
+            <Image
+              mode='aspectFill'
+              src={userInfo.avatar}
+              style='width: 100%;height: 100%;'
+            />
           </View>
           <i-row i-class='row-top'>
-            <i-col span='17' i-class='col-class'>
-              <i-avatar
-                src='https://i.loli.net/2017/08/21/599a521472424.jpg'
-                size='large'
-              />
+            <i-col span='16' i-class='row-top-col'>
+              <i-avatar src={userInfo.avatar} size='large' />
             </i-col>
-            <i-col span='4' i-class='col-class'>
-              <Text className='follow-button'>+ 关注</Text>
+            <i-col span='5' i-class='row-top-col'>
+              <FollowButtonComp
+                onClickFollow_={this.onClickFollow.bind(this)}
+                followed={userInfo.followed}
+                userId={this.$router.params.id}
+              ></FollowButtonComp>
             </i-col>
-            <i-col span='3' i-class='col-class'>
+            <i-col span='1' i-class='row-top-col'>
               <i-icon size={40} type='message' />
             </i-col>
           </i-row>
           <i-row i-class='row-name'>
-            <i-col span='16' i-class='col-class username ellipsis'>
-              <Text>冷血刺客的三碗面</Text>
+            <i-col span='18' i-class='col-class username ellipsis'>
+              <Text>{userInfo.nickName}</Text>
+            </i-col>
+            <i-col span='6' i-class='col-class state'>
+              <Text className='title'>状态:</Text>
+              <Text className='content'>
+                {userInfo.state === '0'
+                  ? '下线'
+                  : userInfo.state === '1'
+                  ? '上线'
+                  : '休息中'}
+              </Text>
             </i-col>
           </i-row>
+
           <i-row i-class='row-followers-fans'>
             <i-col span='8' i-class='col-class'>
               关注:23423
@@ -436,8 +504,10 @@ class Singer extends Component {
         >
           <SwiperItem>
             <View className='tab1' id='tab'>
-              <Tab1 list={songList}
+              <Tab1
+                list={songList}
                 onOpenModal_={this.onOpenModal.bind(this)}
+                userState={userInfo.state}
               />
             </View>
           </SwiperItem>

@@ -29,7 +29,7 @@ export const myLogin = async () => {
     const getUserInfoResult = await Wechat.getUserInfo(); // 从微信后台获取用户信息传用户信息参数
     if (getUserInfoResult.errMsg === 'getUserInfo:ok') {
       const info = { ...getUserInfoResult.userInfo, id: openId };
-      const val = await getUserInfo(info); //获取数据库用户信息，如果没有会自动注册然后返回注册过的用户信息
+      const val = await login(info); //登录接口，返回数据库用户信息，如果没有会自动注册然后返回注册过的用户信息      
       if (val.errno === 0) {
         set('token', val.data.token);//配置本地token
         linkSocket(openId);//连接websocket
@@ -49,9 +49,18 @@ export const myLogin = async () => {
   }
 };
 
+export const login = data => {
+  return Wechat.request('/api/userinfo/login', data);
+}; //登录接口
 export const getUserInfo = data => {
   return Wechat.request('/api/userinfo/detail', data);
 }; //获取用户信息
+export const getUserState = data => {
+  return Wechat.request('/api/userinfo/state/get', data);
+}; //更新用户状态
+export const updateUserState = data => {
+  return Wechat.request('/api/userinfo/state/update', data);
+}; //更新用户状态
 
 export const createUser = data => {
   return Wechat.request('/api/userinfo/create', data);

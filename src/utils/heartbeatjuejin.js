@@ -17,7 +17,6 @@ const heartCheck = {
   },
   start: function () {
     this.timeoutObj = setTimeout(() => {
-
       Taro.sendSocketMessage({
         data: JSON.stringify({ type: 'ping' })
       });
@@ -34,7 +33,7 @@ const linkSocket = (id) => {
     // url:
     //   app.globalData.wsUrl + 'websocket?' + this.data.taskId + '&' + this.data.userId,
 
-    url: `ws://localhost:3001?id=${id}`,
+    url: `ws://192.168.1.116:3001?id=${id}`,
     success() {
       console.log('连接成功');
       initEventHandle();

@@ -31,10 +31,15 @@
     .row-top {
       height: 100px;
       line-height: 100px;
-
       width: 100%;
       box-sizing: border-box;
-
+      .row-top-col{
+          height: 100%;
+          text-align: center;
+          display: flex;
+          align-items: center;
+        
+      }
       .follow-button {
         width: 120px;
         height: 60px;
@@ -54,10 +59,25 @@
       }
     }
     .row-name {
+      height: 80px;
+      line-height: 80px;
       .username {
-        margin-top: 20px;
+        display:flex;
+        align-items: center;
         font-weight: bold;
       }
+      .state{
+        font-size: $size-s;
+        .title{
+
+        }
+        .content{
+
+        }
+        display:flex;
+        align-items: center;
+      }
+      
     }
     .row-followers-fans {
       margin-top: 20px;

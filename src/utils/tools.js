@@ -22,7 +22,7 @@ export const goToPage = (url, checkAuth = false) => {
 
 //显示提示2秒 后去某个页面
 export const showToastAndGoto=({title,icon='none',duration=2000,url='/pages/user/user'})=>{
-  console.log('url``````````',url);
+  console.log('showToastAndGoto',url);
   
   Taro.showToast({ title, icon,success:()=>{
     setTimeout(function() {
