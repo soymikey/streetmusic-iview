@@ -1,7 +1,7 @@
 import Taro from '@tarojs/taro';
 import Wechat from '@/utils/wechat.js';
 import { baseURL } from '@/config';
-import { get,set, clear } from '@/utils/localStorage';
+import { get, set, clear } from '@/utils/localStorage';
 import { linkSocket, heartCheck } from '@/utils/heartbeatjuejin';
 import { showToastAndGoto } from '@/utils/tools.js';
 // 小程序启动，通过wx.login()获取code
@@ -33,10 +33,8 @@ export const myLogin = async () => {
       if (val.errno === 0) {
         set('token', val.data.token);//配置本地token
         linkSocket(openId);//连接websocket
-        const currentPage=get('page')
-        console.log('page',currentPage);
-        
-        currentPage&& showToastAndGoto({ title: '登录成功',url:currentPage });//如果本地有currentpage 登录成功后跳转到currentpage
+        const currentPage = get('page')
+        currentPage && showToastAndGoto({ title: '登录成功', url: currentPage });//如果本地有currentpage 登录成功后跳转到currentpage
         return Promise.resolve(val);
       } else {
         showToastAndGoto({ title: '登录失败,无法获取用户信息~' });
@@ -88,10 +86,10 @@ export const uploadUserImage = files => {
       header: {
         'content-type': 'multipart/form-data',
       },
-      success: function(res) {
+      success: function (res) {
         resolve(res);
       },
-      fail: function(e) {
+      fail: function (e) {
         reject(e);
       },
     });
@@ -107,7 +105,7 @@ export const downloadAvatarUrl = url => {
           resolve(res.tempFilePath);
         }
       },
-      fail: function(e) {
+      fail: function (e) {
         reject(e);
       },
     });

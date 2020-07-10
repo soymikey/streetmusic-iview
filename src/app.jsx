@@ -21,6 +21,7 @@ class App extends Component {
       'i-message': './iView/message/index',
     },
     pages: [
+      'pages/login/login',
       'pages/index/index',
       'pages/user/user',
       'pages/event/event',
