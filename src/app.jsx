@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro';
 import { Provider } from '@tarojs/redux';
-
 import Index from './pages/index';
 import configStore from './store';
 import './app.scss';
@@ -13,32 +12,28 @@ import './app.scss';
 
 const store = configStore();
 
-
 class App extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
-    usingComponents: {
-      'i-message': './iView/message/index',
-    },
+
     pages: [
-      'pages/login/login',
+
       'pages/index/index',
+      'pages/index/search/search',
       'pages/user/user',
-      'pages/event/event',
       'pages/user/uploadSong/uploadSong',
       'pages/user/uploadEvent/uploadEvent',
       'pages/user/mySong/mySong',
       'pages/user/myEvent/myEvent',
       'pages/user/registerArtist/registerArtist',
       'pages/user/editMyInfo/editMyInfo',
-
-
+      'pages/user/userQrCode/userQrCode',
       'pages/event/eventDetail/eventDetail',
-
+      'pages/event/event',
       'pages/order/order',
       'pages/order/myOrder',
-
       'pages/singer/singer',
+      'pages/singer/singerList',
     ],
     window: {
       enablePullDownRefresh: true,
@@ -130,9 +125,11 @@ class App extends Component {
     },
   };
 
+  componentWillMount() {
+
+  }
   componentDidMount() {
     Taro.hideTabBar();
-
   }
 
   componentDidShow() {
@@ -148,8 +145,6 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-
-
         <Index />
       </Provider>
     );

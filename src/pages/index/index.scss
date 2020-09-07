@@ -7,6 +7,58 @@
   padding-top: 10px;
   padding-left: 10px;
   padding-right: 10px;
+  .search-wrapper{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    background-color: #fff;
+    z-index: 100;
+  }
+  .search {
+    margin: 15px 15px;
+    position: relative;
+    
+
+    input {
+        background-color: #F7F7F7;
+        padding: 10px 74px;
+        font-size: 28px;
+        border-radius: 50px;
+    }
+
+    .voice-icon {
+        width: 36px;
+        height: 36px;
+        padding: 16px 20px 16px 0;
+        position: absolute;
+        left: 16px;
+        top: 4px;
+        z-index: 10;
+    }
+
+    .search-left-icon {
+        width: 36px;
+        height: 36px;
+        padding: 16px 0 16px 20px;
+        position: absolute;
+        left: 0;
+        top: -2px;
+        z-index: 10;
+    }
+    .search-right-icon {
+        width: 36px;
+        height: 36px;
+        padding: 16px 20px 16px 0;
+        position: absolute;
+        right: 0;
+        top: -2px;
+        z-index: 10;
+    }
+}
+.swiper{
+  margin-top: 80px;
+}
   .sub-cate {
     margin-top: 20px;
   }

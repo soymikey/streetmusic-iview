@@ -2,10 +2,13 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
-import { getHotEventList } from '@/api/event'
+import {
+  getHotSongList,
+  getRecommendSongList
+} from '@/api/song'
 import { goToPage } from '@/utils/tools.js';
 
-import './event.scss'
+import './singerList.scss'
 
 
 let leftHeight = 0
@@ -13,7 +16,7 @@ let rightHeight = 0
 class Event extends Component {
 
   config = {
-    navigationBarTitleText: '活动',
+    navigationBarTitleText: '歌单',
     usingComponents: {
       'i-row': '../../iView/row/index',
       'i-col': '../../iView/col/index',
@@ -33,8 +36,20 @@ class Event extends Component {
       loading: false,
     }
   }
+  componentWillMount() {
+    if (this.$router.params.type === 'recommend') {
+      Taro.setNavigationBarTitle({
+        title: '推荐歌单'
+      })
+    }
+    if (this.$router.params.type === 'hot') {
+      Taro.setNavigationBarTitle({
+        title: '热门歌单'
+      })
+    }
+  }
   componentDidMount() {
-    this.fetchHotEventList(true)
+    this.getList(true)
 
   }
 
@@ -45,21 +60,24 @@ class Event extends Component {
       await this.getBoxHeight(leftList, rightList);
     }
   }
-  fetchHotEventList(override) {
+  getList(override) {
     Taro.showLoading({
-      title: '加载中-活动',
+      title: '加载中-热门歌曲',
     });
     // 向后端请求指定页码的数据
     const data = { pageSize: this.state.pageSize, pageNo: this.state.pageNo }
     this.setState({ loading: true });
-    return getHotEventList(data)
+    return getHotSongList(data)
       .then(res => {
+
         for (const item of res.data.list) {
           item.CoverWidth = ''
           item.CoverHeight = ''
-          item.poster = JSON.parse(item.poster)
-          item.Cover = item.poster[0]
+
+          item.Cover = item.avatar
         }
+        console.log('res.data.list', res.data.list)
+
         async function awaitAll(array) {
           const promises = array.map(item => Taro.getImageInfo({ src: item.Cover }).then((res) => {
             item.CoverWidth = res.width + 'px'
@@ -69,7 +87,6 @@ class Event extends Component {
           await Promise.all(promises)
         }
         awaitAll(res.data.list)
-        console.log('override', override)
         this.setState({
           list: override ? res.data.list : this.state.list.concat(res.data.list),
           total: res.data.total, //总页数
@@ -99,14 +116,14 @@ class Event extends Component {
       });
     })
   }
-  goToEventDetailPage(id) {
-    goToPage(`/pages/event/eventDetail/eventDetail?id=${id}`)
+  goToSingerDetailPage(id) {
+    goToPage(`/pages/singer/singer?id=${id}`)
   }
 
   onPullDownRefresh() {
     if (!this.state.loading) {
       this.setState({ pageNo: 1 }, () => {
-        this.fetchHotEventList(true).then(res => {
+        this.getList(true).then(res => {
           // 处理完成后，终止下拉刷新
           Taro.stopPullDownRefresh();
         });
@@ -121,7 +138,7 @@ class Event extends Component {
       this.state.pageNo * this.state.pageSize < this.state.total
     ) {
       this.setState({ pageNo: this.state.pageNo + 1 }, () => {
-        this.fetchHotEventList();
+        this.getList();
       });
     }
   }
@@ -139,23 +156,23 @@ class Event extends Component {
     const { leftList, rightList } = this.state;
     return (
       <View className='event pb50px'>
+
+
+
         <ScrollView
           enableFlex={true}
           className='content'>
           <View className='left' id="left" ref="left">
             {leftList.map((item, index) => {
-              return <View key={index} onClick={this.goToEventDetailPage.bind(this, item.id)} className='wrapper'>
+              return <View key={index} onClick={this.goToSingerDetailPage.bind(this, item.toUserId)}>
                 <Image lazyLoad mode="widthFix" className='pic' src={item.Cover}></Image>
-                <View className='title ellipsis'>{item.name}</View>
-
               </View>
             })}
           </View>
           <View className='right' id="right">
             {rightList.map((item, index) => {
-              return <View key={index} onClick={this.goToEventDetailPage.bind(this, item.id)} className='wrapper'>
+              return <View key={index} onClick={this.goToSingerDetailPage.bind(this, item.toUserId)}>
                 <Image lazyLoad mode="widthFix" className='pic' src={item.Cover}></Image>
-                <View className='title ellipsis'>{item.name}</View>
               </View>
             })}
           </View>
@@ -163,9 +180,7 @@ class Event extends Component {
 
         </ScrollView>
         <i-divider content='加载已经完成,没有其他数据'></i-divider>
-        <View className='tabbar-container'>
-          <TabbarComp currentTab='event' />
-        </View>
+
       </View>
 
     )

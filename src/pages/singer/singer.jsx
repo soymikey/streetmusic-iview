@@ -84,13 +84,13 @@ class Singer extends Component {
 
       //活动分页
       eventPageSize: 10,
-      eventPageNo: 1,
+      eventpageNo: 10,
       eventList: [],
       eventTotal: 0,
       loading: false,
       //歌曲分页
       songPageSize: 10,
-      songPageNo: 1,
+      songpageNo: 10,
       songList: [],
       songTotal: 0,
       //歌曲分页
@@ -118,14 +118,15 @@ class Singer extends Component {
   }
 
   componentDidMount() {
-    if (this.props.user.id) {
-      this.fetchUserDetail(true);
-      this.fetchSongList(true);
-      this.fetchOrderList();
-      this.fetchEventList(true);
-    }
+
+    this.fetchUserDetail(true);
+    this.fetchSongList(true);
+    this.fetchOrderList();
+    this.fetchEventList(true);
+
   }
   setSwiperHeight(value) {
+    console.log('setSwiperHeight', value)
     let height = 0;
     const query = Taro.createSelectorQuery();
 
@@ -146,7 +147,7 @@ class Singer extends Component {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
   fetchUserDetail() {
     getUserInfo({ id: this.$router.params.id }).then(res => {
@@ -166,16 +167,20 @@ class Singer extends Component {
 
     return getSongListById(data)
       .then(res => {
-        if (override) {
-          this.setSwiperHeight(0);
-        }
+
         this.setState({
           songList: override
             ? res.data.list
             : this.state.songList.concat(res.data.list),
           songTotal: res.data.total, //总页数
           loading: false,
+        }, () => {
+          if (override) {
+            this.setSwiperHeight(0);
+          }
         });
+
+
       })
       .catch(err => {
         console.log('==> [ERROR]', err);
@@ -333,10 +338,6 @@ class Singer extends Component {
   componentDidShow() {
     const { path, params } = this.$router;
     set('page', path + '?id=' + params.id);
-    if (!this.props.user.id) {
-      showToastAndGoto({ title: '请登录', url: '/pages/user/user' });
-      return;
-    }
     Taro.sendSocketMessage({
       data: JSON.stringify({
         type: 'join',
@@ -454,18 +455,18 @@ class Singer extends Component {
                 {userInfo.state === '0'
                   ? '下线'
                   : userInfo.state === '1'
-                  ? '上线'
-                  : '休息中'}
+                    ? '上线'
+                    : '休息中'}
               </Text>
             </i-col>
           </i-row>
 
           <i-row i-class='row-followers-fans'>
             <i-col span='8' i-class='col-class'>
-              关注:23423
+              关注:{userInfo.followCount}
             </i-col>
             <i-col span='8' i-class='col-class'>
-              粉丝:4324
+              粉丝:{userInfo.collectionCount}
             </i-col>
           </i-row>
           <View className='tag-container'>

@@ -4,7 +4,7 @@ import { connect } from '@tarojs/redux';
 
 import { View, Button, Text } from '@tarojs/components';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
-import { myLogin } from '@/api/user';
+import { myLogin, getUserInfo } from '@/api/user';
 import { setUserInfo, logout } from '@/actions/user';
 
 import { goToPage } from '@/utils/tools.js';
@@ -26,7 +26,6 @@ class User extends Component {
       'i-divider': '../../iView/divider/index',
       'i-avatar': '../../iView/avatar/index',
       'i-icon': '../../iView/icon/index',
-      'i-message': '../../iView/message/index',
     },
   };
   async login() {
@@ -47,13 +46,13 @@ class User extends Component {
   componentDidMount() {
     // this.login()
   }
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
   componentDidShow() {
 
   }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     const {
@@ -77,8 +76,10 @@ class User extends Component {
       role,
       state,
       token,
+      collectionCount,
+      followCount,
+      eventCount,
     } = this.props.user;
-    console.log('this.props.user.avatar', this.props.user.avatar);
     return (
       <View className='user'>
         <i-row i-class='user-info'>
@@ -101,7 +102,7 @@ class User extends Component {
               <Text>活动</Text>
             </View>
             <View className='content'>
-              <Text>323</Text>
+              <Text>{eventCount}</Text>
             </View>
           </i-col>
           <i-col span='6' i-class='col-class border-right'>
@@ -109,7 +110,7 @@ class User extends Component {
               <Text>关注</Text>
             </View>
             <View className='content'>
-              <Text>323</Text>
+              <Text>{followCount}</Text>
             </View>
           </i-col>
           <i-col span='6' i-class='col-class border-right'>
@@ -117,7 +118,7 @@ class User extends Component {
               <Text>粉丝</Text>
             </View>
             <View className='content'>
-              <Text>323</Text>
+              <Text>{collectionCount}</Text>
             </View>
           </i-col>
           <i-col span='6' i-class='col-class'>
@@ -162,8 +163,8 @@ class User extends Component {
                 is-link
                 url='/pages/user/myEvent/myEvent'
               ></i-cell>
-              <i-cell title='我的收益' is-link></i-cell>
-              <i-cell title='收款二维码' is-link></i-cell>
+              <i-cell title='我的收益' is-link ></i-cell>
+              <i-cell title='收款二维码' is-link url={'/pages/user/userQrCode/userQrCode?id=' + id}></i-cell>
             </View>
           )}
 
@@ -181,10 +182,10 @@ class User extends Component {
               登录
             </Button>
           ) : (
-            <Button size='mini' className='error' onClick={this.logout.bind(this)}>
-              退出
-            </Button>
-          )}
+              <Button size='mini' className='error' onClick={this.logout.bind(this)}>
+                退出
+              </Button>
+            )}
         </View>
 
         <View className='tabbar-container'>

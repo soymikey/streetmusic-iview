@@ -1,9 +1,8 @@
-import Taro from '@tarojs/taro';
+import Taro, { showToast } from '@tarojs/taro';
 import Wechat from '@/utils/wechat.js';
 import { baseURL } from '@/config';
 import { get, set, clear } from '@/utils/localStorage';
 import { linkSocket, heartCheck } from '@/utils/heartbeatjuejin';
-import { showToastAndGoto } from '@/utils/tools.js';
 // 小程序启动，通过wx.login()获取code
 // 开发者服务器需要提供一个登录的接口，参数就是小程序获取的code
 // 登录接口收到code后，调用微信提供的接口进行code的验证
@@ -32,18 +31,17 @@ export const myLogin = async () => {
       const val = await login(info); //登录接口，返回数据库用户信息，如果没有会自动注册然后返回注册过的用户信息      
       if (val.errno === 0) {
         set('token', val.data.token);//配置本地token
-        linkSocket(openId);//连接websocket
-        const currentPage = get('page')
-        currentPage && showToastAndGoto({ title: '登录成功', url: currentPage });//如果本地有currentpage 登录成功后跳转到currentpage
+        // linkSocket(openId);//连接websocket
+        showToast({ title: '登录成功', icon: 'none' })
         return Promise.resolve(val);
       } else {
-        showToastAndGoto({ title: '登录失败,无法获取用户信息~' });
+        showToast({ title: '登录失败,无法获取用户信息~', icon: 'none' })
       }
     } else {
-      showToastAndGoto({ title: '登录失败,无法获取用户授权~' });
+      showToast({ title: '登录失败,无法获取用户授权~', icon: 'none' })
     }
   } else {
-    showToastAndGoto({ title: '后端无法获取openId,请联系管理员~' });
+    showToast({ title: '后端无法获取小程序Id,请联系管理员~', icon: 'none' })
   }
 };
 
@@ -53,6 +51,9 @@ export const login = data => {
 export const getUserInfo = data => {
   return Wechat.request('/api/userinfo/detail', data);
 }; //获取用户信息
+export const getUserQrCode = data => {
+  return Wechat.request('/api/userinfo/qrCode', data);
+}; //获取用户二维码
 export const getUserState = data => {
   return Wechat.request('/api/userinfo/state/get', data);
 }; //更新用户状态
@@ -73,6 +74,7 @@ export const updateUserInfo = data => {
 export const getFullUserInfo = () => {
   return Wechat.request('/api/userinfo/fullDetail');
 }; //获取用户所有信息
+
 
 export const createArtist = data => {
   return Wechat.request('/api/userinfo/createArtist', data);

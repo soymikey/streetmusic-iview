@@ -16,10 +16,13 @@ import post2 from '@/asset/images/poster2.png';
 import SixBlockComp from '@/components/SixBlockComp/SixBlockComp';
 import OneBlockComp from '@/components/OneBlockComp/OneBlockComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
+import LoginComp from './login/login';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import { setUserInfo } from '@/actions/user'
 import { getHotEventList } from '@/api/event';
 import { heartCheck } from '@/utils/heartbeatjuejin'
+import { myLogin } from '@/api/user';
+import { goToPage } from '@/utils/tools.js';
 
 import './index.scss';
 
@@ -44,7 +47,6 @@ class Index extends Component {
   constructor() {
     super(...arguments);
     this.state = {
-      canIUse: Taro.canIUse('button.open-type.getUserInfo'),
       hotEventList: [
         {
           id: 1,
@@ -85,32 +87,40 @@ class Index extends Component {
       ],
       total: 0,
       pageSize: 1,
-      pageNo: 1,
+      pageNo: 10,
       loading: false,
+      isShowLoginComp: true,
+      themeClass: 'block',
+      hotList: ['栏目1', '栏目2', '栏目3', '栏目4']	//初始化推荐列表
     };
   }
-
-
+  async login() {
+    myLogin().then(res => {
+      this.props.setUserInfo(res.data);
+    });
+  }
+  componentWillMount() {
+    Taro.getSetting({
+      success: res => {
+        // 判断是否授权
+        if (res.authSetting['scope.userInfo']) {
+          this.setState({ isShowLoginComp: false })
+          this.login()
+          this.fetchHotEventList(true)
+        } else {
+          this.setState({ isShowLoginComp: true })
+        }
+      }
+    })
+  }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
 
   componentDidMount() {
 
-    this.fetchHotEventList(true)
-    // 查看是否授权
-    // Taro.getSetting({
-    //   success(res) {
-    //     if (res.authSetting['scope.userInfo']) {
-    //       // 已经授权，可以直接调用 getUserInfo 获取头像昵称
-    //       Taro.getUserInfo({
-    //         success: function (res) {
-    //           console.log(res.userInfo)
-    //         }
-    //       })
-    //     }
-    //   }
-    // })
+
+
   }
   componentWillUnmount() { }
 
@@ -156,6 +166,7 @@ class Index extends Component {
   }
   onPullDownRefresh() {
     if (!this.state.loading) {
+      console.log('onPullDownRefresh')
       this.setState({ pageNo: 1 }, () => {
         this.fetchHotEventList(true).then(res => {
           // 处理完成后，终止下拉刷新
@@ -169,85 +180,101 @@ class Index extends Component {
   onReachBottom() {
     if (
       !this.state.loading &&
-      this.state.pageNo < this.state.total
+      this.state.pageNo * this.state.pageSize < this.state.total
     ) {
       this.setState({ pageNo: this.state.pageNo + 1 }, () => {
         this.fetchHotEventList();
       });
     }
   }
+  goToSearch() {
+    goToPage('/pages/index/search/search')
+  }
 
   render() {
-    const { hotEventList, canIUse } = this.state;
+    const { hotEventList, isShowLoginComp, } = this.state;
     const { user } = this.props
+    console.log('isShowLoginComp', isShowLoginComp)
     return (
-      <View className='index pb50px'>
-        <Swiper
-          style='height:250px;'
-          className='test-h'
-          indicatorColor='#999'
-          indicatorActiveColor='#333'
-          circular
-          indicatorDots
-          autoplay
-        >
-          <SwiperItem>
-            <Image src={post1} mode='aspectFit' style='width: 100%' />
-          </SwiperItem>
-          <SwiperItem>
-            <Image src={post2} mode='aspectFit' style='width: 100%' />
-          </SwiperItem>
-          <SwiperItem>
-            <Image src={post1} mode='aspectFit' style='width: 100%' />
-          </SwiperItem>
-        </Swiper>
-        <i-row i-class='sub-cate'>
-          <i-col span='6' i-class='col-class'>
-            <View class='cate-wrapper'>
-              <View class='cate-icon'></View>
-              <View class='cate-title'>
-                <Text>私人FM</Text>
-              </View>
-            </View>
-          </i-col>
-          <i-col span='6' i-class='col-class'>
-            <View class='cate-wrapper'>
-              <View class='cate-icon'></View>
-              <View class='cate-title'>
-                <Text>私人FM</Text>
-              </View>
-            </View>
-          </i-col>
-          <i-col span='6' i-class='col-class'>
-            <View class='cate-wrapper'>
-              <View class='cate-icon'></View>
-              <View class='cate-title'>
-                <Text>私人FM</Text>
-              </View>
-            </View>
-          </i-col>
-          <i-col span='6' i-class='col-class'>
-            <View class='cate-wrapper'>
-              <View class='cate-icon'></View>
-              <View class='cate-title'>
-                <Text>私人FM</Text>
-              </View>
-            </View>
-          </i-col>
-        </i-row>
-        <i-divider height={24}></i-divider>
-        <SixBlockComp title='推荐歌单' />
-        <i-divider height={24}></i-divider>
-        <SixBlockComp title='热门歌单' />
-        <i-divider height={24}></i-divider>
-        {/* <OneBlockComp /> */}
+      <View>
+        {isShowLoginComp ? <LoginComp /> :
+          <View className='index pb50px'>
+            <View className='search-wrapper'>
 
-        <EventSumaryComp list={hotEventList} isShowIcons={false} />
-        <i-divider content='加载已经完成,没有其他数据'></i-divider>
-        <View className='tabbar-container'>
-          <TabbarComp currentTab='index' />
-        </View>
-      </View>
+              <View className="search" onClick={this.goToSearch.bind(this)} >
+                <Input maxLength="20" type="text" placeholder="请输入关键词搜索" />
+                <Image src={require("./static/search.svg")} mode="aspectFit" className="search-left-icon"></Image>
+              </View>
+
+            </View>
+            <Swiper
+              style='height:250px;'
+              className='swiper'
+              indicatorColor='#999'
+              indicatorActiveColor='#333'
+              circular
+              indicatorDots
+              autoplay
+            >
+              <SwiperItem>
+                <Image src={post1} mode='aspectFit' style='width: 100%' />
+              </SwiperItem>
+              <SwiperItem>
+                <Image src={post2} mode='aspectFit' style='width: 100%' />
+              </SwiperItem>
+              <SwiperItem>
+                <Image src={post1} mode='aspectFit' style='width: 100%' />
+              </SwiperItem>
+            </Swiper>
+            {/* 未开启功能 */}
+            {/* <i-row i-class='sub-cate'>
+              <i-col span='6' i-class='col-class'>
+                <View class='cate-wrapper'>
+                  <View class='cate-icon'></View>
+                  <View class='cate-title'>
+                    <Text>私人FM</Text>
+                  </View>
+                </View>
+              </i-col>
+              <i-col span='6' i-class='col-class'>
+                <View class='cate-wrapper'>
+                  <View class='cate-icon'></View>
+                  <View class='cate-title'>
+                    <Text>私人FM</Text>
+                  </View>
+                </View>
+              </i-col>
+              <i-col span='6' i-class='col-class'>
+                <View class='cate-wrapper'>
+                  <View class='cate-icon'></View>
+                  <View class='cate-title'>
+                    <Text>私人FM</Text>
+                  </View>
+                </View>
+              </i-col>
+              <i-col span='6' i-class='col-class'>
+                <View class='cate-wrapper'>
+                  <View class='cate-icon'></View>
+                  <View class='cate-title'>
+                    <Text>私人FM</Text>
+                  </View>
+                </View>
+              </i-col>
+            </i-row> */}
+            <i-divider height={24}></i-divider>
+            <SixBlockComp title='推荐歌单' />
+            <i-divider height={24}></i-divider>
+            <SixBlockComp title='热门歌单' />
+            <i-divider height={24}></i-divider>
+            {/* <OneBlockComp /> */}
+
+            <EventSumaryComp list={hotEventList} isShowIcons={false} />
+            <i-divider content='加载已经完成,没有其他数据'></i-divider>
+            <View className='tabbar-container'>
+              <TabbarComp currentTab='index' />
+            </View>
+          </View>
+        } </View>
     );
   }
 }

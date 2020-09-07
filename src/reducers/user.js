@@ -20,6 +20,9 @@ const INITIAL_STATE = {
   language: '',
   introduction: '',
   state: '',
+  collectionCount: 0,
+  followCount: 0,
+  eventCount: 0,
 
 }
 
@@ -54,6 +57,9 @@ export default function user(state = INITIAL_STATE, action) {
         language: '',
         introduction: '',
         state: '',
+        collectionCount: 0,
+        followCount: 0,
+        eventCount: 0,
       }
 
 

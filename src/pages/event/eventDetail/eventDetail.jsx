@@ -95,12 +95,12 @@ class EventDetail extends Component {
       hotEventList: [],
       loading: false,
       pageSize: 10,
-      pageNo: 1,
+      pageNo: 10,
       total: 0,
       liked: false,
       collected: false,
       followed: false,
-      userId:'',//活动创建者的id
+      userId: '',//活动创建者的id
     };
   }
   iconHandler(icon) {
@@ -227,21 +227,21 @@ class EventDetail extends Component {
   componentWillMount() {
     this.init();
   }
-  componentDidMount() {}
+  componentDidMount() { }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
   onPullDownRefresh() {
     this.init();
   }
   onReachBottom() {
-    if (!this.state.loading && this.state.pageNo < this.state.total) {
+    if (!this.state.loading && this.state.pageNo * this.state.pageSize < this.state.total) {
       this.setState({ pageNo: this.state.pageNo + 1 }, () => {
         this.fetchCommentList();
       });

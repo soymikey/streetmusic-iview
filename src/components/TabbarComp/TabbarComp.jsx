@@ -80,7 +80,7 @@ class TabbarComp extends Component {
             key='event'
             icon='remind'
             current-icon='remind_fill'
-            count='3'
+            // count='3'
             title='活动'></i-tab-bar-item>
           <i-tab-bar-item
             key='order'

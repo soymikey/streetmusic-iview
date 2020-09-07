@@ -2,7 +2,7 @@ import Taro from '@tarojs/taro';
 import { baseURL } from '../config';
 import { get, clear } from '@/utils/localStorage';
 import { myLogin } from '@/api/user';
-import { goToPage, showToastAndGoto } from '@/utils/tools.js';
+import { goToPage, showToastAndGoto, goToLogin } from '@/utils/tools.js';
 
 class Wechat {
   /**
@@ -46,7 +46,7 @@ class Wechat {
       });
     }
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       const token = get('token');
       const header = {
         'Content-Type': 'application/json',
@@ -70,7 +70,6 @@ class Wechat {
               if (res.data.message) {
                 Taro.showToast({ title: res.data.message, icon: 'none' });
               }
-
               resolve(res.data);
             } else {
               Taro.showToast({ title: res.data.message, icon: 'none' });
@@ -82,7 +81,7 @@ class Wechat {
             reject('错误1');
           }
         },
-        fail: function(res) {
+        fail: function (res) {
           if (message != '') {
             Taro.hideLoading();
           }
@@ -90,7 +89,7 @@ class Wechat {
 
           reject('错误2');
         },
-        complete: res => {},
+        complete: res => { },
       });
     });
   }
@@ -138,13 +137,22 @@ class Wechat {
             // session_key过期，重新登录
             // myLogin();
             clear();
-            showToastAndGoto({ title: '登录过期,请重新登录~' });
+            Taro.showToast({ title: '登录过期,请重新登录~', icon: 'none' })
+            setTimeout(() => {
+              // goToPage('/pages/index/index')
+              goToLogin()
+            }, 1500);
           },
         });
       } else {
         reject('您还未登录,请登录~');
         // 无skey，作为首次登录
-        showToastAndGoto({ title: '您还未登录,请登录~' });
+        Taro.showToast({
+          title: '您还未登录,请登录~', icon: 'none'
+        })
+        setTimeout(() => {
+          goToPage('/pages/index/index')
+        }, 1500);
 
         // myLogin();
       }

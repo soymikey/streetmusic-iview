@@ -43,7 +43,7 @@ class Tab1 extends Component {
   componentDidHide() { }
 
   render() {
-    const { list,userState } = this.props;
+    const { list, userState } = this.props;
     return (
       <View className='index'>
 
@@ -51,8 +51,8 @@ class Tab1 extends Component {
         <i-cell-group>
           {list.map(item => {
             return (
-              <i-cell key={item.name} title={item.name} label={item.price}>
-                <Button slot='footer' size='mini' className='primary' onClick={this.order.bind(this, item)} disabled={userState==='0'||userState==='2'} >
+              <i-cell key={item.name} title={item.name} label={item.price + '元'}>
+                <Button slot='footer' size='mini' className='primary' onClick={this.order.bind(this, item)} disabled={userState === '0' || userState === '2'} >
                   点歌
                 </Button>
               </i-cell>
@@ -66,7 +66,7 @@ class Tab1 extends Component {
 }
 
 export default Tab1;
-Tab1.defaultProps={
-  list:[],
-  userState:'0'
+Tab1.defaultProps = {
+  list: [],
+  userState: '0'
 }

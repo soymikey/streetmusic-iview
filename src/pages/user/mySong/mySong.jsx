@@ -28,7 +28,7 @@ class MySong extends Component {
     super(...arguments);
     this.state = {
       list: [],
-      pageNo: 1,
+      pageNo: 10,
       pageSize: 10,
       total: 0,
       loading: false,
@@ -108,7 +108,7 @@ class MySong extends Component {
   onReachBottom() {
     if (
       !this.state.loading &&
-      this.state.pageNo < this.state.total
+      this.state.pageNo * this.state.pageSize < this.state.total
     ) {
       this.setState({ pageNo: this.state.pageNo + 1 }, () => {
         this.fetchSongList();

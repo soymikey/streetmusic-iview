@@ -30,6 +30,9 @@ class SixBlockComp extends Component {
 
     goToPage('/pages/singer/singer?id=o2VHy5Fn3m8GlVISHmDgNS6y3WrM')
   }
+  goToSingerListPage() {
+    goToPage('/pages/singer/singerList?type=recommend')
+  }
   // componentWillReceiveProps(nextProps) {
   //   console.log(this.props, nextProps);
   // }
@@ -53,7 +56,7 @@ class SixBlockComp extends Component {
           </i-col>
 
           <i-col span='4' i-class='col-class'>
-            <View className='more'>
+            <View className='more' onClick={this.goToSingerListPage.bind(this)}>
               <Text>更多</Text>
             </View>
           </i-col>
