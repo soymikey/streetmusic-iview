@@ -28,7 +28,7 @@ class MySong extends Component {
     super(...arguments);
     this.state = {
       list: [],
-      pageNo: 10,
+      pageNo: 1,
       pageSize: 10,
       total: 0,
       loading: false,

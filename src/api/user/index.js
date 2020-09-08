@@ -1,8 +1,9 @@
 import Taro, { showToast } from '@tarojs/taro';
 import Wechat from '@/utils/wechat.js';
 import { baseURL } from '@/config';
-import { get, set, clear } from '@/utils/localStorage';
+import { get, set, clear, remove } from '@/utils/localStorage';
 import { linkSocket, heartCheck } from '@/utils/heartbeatjuejin';
+import { goToPage } from '../../utils/tools';
 // 小程序启动，通过wx.login()获取code
 // 开发者服务器需要提供一个登录的接口，参数就是小程序获取的code
 // 登录接口收到code后，调用微信提供的接口进行code的验证
@@ -30,9 +31,33 @@ export const myLogin = async () => {
       const info = { ...getUserInfoResult.userInfo, id: openId };
       const val = await login(info); //登录接口，返回数据库用户信息，如果没有会自动注册然后返回注册过的用户信息      
       if (val.errno === 0) {
+
         set('token', val.data.token);//配置本地token
         // linkSocket(openId);//连接websocket
         showToast({ title: '登录成功', icon: 'none' })
+
+        setTimeout(() => {
+          const routerObj = get('backToPage')
+          if (routerObj) {
+            const router = JSON.parse(routerObj)
+            let url = router.route
+            let query
+            if (router.query) {
+              query = '?'
+              console.log('router.query', router.query);
+
+              for (const key in router.query) {
+
+                const value = router.query[key];
+                query += `${key}=${value}&`
+
+              }
+              query = query.substr(0, query.length - 1);
+            }
+            goToPage(url + query)
+            remove('backToPage')
+          }
+        }, 2000);
         return Promise.resolve(val);
       } else {
         showToast({ title: '登录失败,无法获取用户信息~', icon: 'none' })
@@ -79,6 +104,9 @@ export const getFullUserInfo = () => {
 export const createArtist = data => {
   return Wechat.request('/api/userinfo/createArtist', data);
 }; // 更新用户信息和role变成艺人
+
+export const getProfitById = () => { return Wechat.request('/api/userinfo/profit') }//获取某个歌手的总金额
+
 export const uploadUserImage = files => {
   return new Promise((resolve, reject) => {
     Taro.uploadFile({

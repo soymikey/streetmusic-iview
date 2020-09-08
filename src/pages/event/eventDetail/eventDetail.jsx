@@ -95,7 +95,7 @@ class EventDetail extends Component {
       hotEventList: [],
       loading: false,
       pageSize: 10,
-      pageNo: 10,
+      pageNo: 1,
       total: 0,
       liked: false,
       collected: false,

@@ -86,8 +86,8 @@ class Index extends Component {
         },
       ],
       total: 0,
-      pageSize: 1,
-      pageNo: 10,
+      pageSize: 10,
+      pageNo: 1,
       loading: false,
       isShowLoginComp: true,
       themeClass: 'block',
@@ -262,9 +262,9 @@ class Index extends Component {
               </i-col>
             </i-row> */}
             <i-divider height={24}></i-divider>
-            <SixBlockComp title='推荐歌单' />
+            <SixBlockComp title='推荐歌曲' />
             <i-divider height={24}></i-divider>
-            <SixBlockComp title='热门歌单' />
+            <SixBlockComp title='热门歌曲' />
             <i-divider height={24}></i-divider>
             {/* <OneBlockComp /> */}
 

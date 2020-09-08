@@ -22,18 +22,18 @@ class Order extends Component {
     console.log(this.props, nextProps);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  componentDidShow() {}
+  componentDidShow() { }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     return (
       <View className='order'>
         <i-cell-group>
-          <i-cell title='最近订单' is-link url='/pages/order/myOrder'></i-cell>
-          <i-cell title='现在订单' is-link url='/pages/order/myOrder'></i-cell>
+          <i-cell title='历史订单' is-link url='/pages/order/myHistoryOrder'></i-cell>
+          <i-cell title='现在订单' is-link url='/pages/order/myCurrentOrder'></i-cell>
         </i-cell-group>
         <View className='tabbar-container'>
           <TabbarComp currentTab='order' />

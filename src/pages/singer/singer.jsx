@@ -84,13 +84,13 @@ class Singer extends Component {
 
       //活动分页
       eventPageSize: 10,
-      eventpageNo: 10,
+      eventpageNo: 1,
       eventList: [],
       eventTotal: 0,
       loading: false,
       //歌曲分页
       songPageSize: 10,
-      songpageNo: 10,
+      songpageNo: 1,
       songList: [],
       songTotal: 0,
       //歌曲分页
@@ -119,10 +119,8 @@ class Singer extends Component {
 
   componentDidMount() {
 
-    this.fetchUserDetail(true);
-    this.fetchSongList(true);
-    this.fetchOrderList();
-    this.fetchEventList(true);
+    this.fetchUserDetail();
+
 
   }
   setSwiperHeight(value) {
@@ -152,6 +150,9 @@ class Singer extends Component {
   fetchUserDetail() {
     getUserInfo({ id: this.$router.params.id }).then(res => {
       this.setState({ userInfo: res.data });
+      this.fetchSongList(true);
+      this.fetchOrderList();
+      this.fetchEventList(true);
     });
   }
   fetchSongList(override) {

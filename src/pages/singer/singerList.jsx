@@ -16,7 +16,7 @@ let rightHeight = 0
 class Event extends Component {
 
   config = {
-    navigationBarTitleText: '歌单',
+    navigationBarTitleText: '歌曲',
     usingComponents: {
       'i-row': '../../iView/row/index',
       'i-col': '../../iView/col/index',
@@ -32,19 +32,19 @@ class Event extends Component {
       list: [],
       total: 0,
       pageSize: 20,
-      pageNo: 10,
+      pageNo: 1,
       loading: false,
     }
   }
   componentWillMount() {
     if (this.$router.params.type === 'recommend') {
       Taro.setNavigationBarTitle({
-        title: '推荐歌单'
+        title: '推荐歌曲'
       })
     }
     if (this.$router.params.type === 'hot') {
       Taro.setNavigationBarTitle({
-        title: '热门歌单'
+        title: '热门歌曲'
       })
     }
   }
@@ -76,8 +76,6 @@ class Event extends Component {
 
           item.Cover = item.avatar
         }
-        console.log('res.data.list', res.data.list)
-
         async function awaitAll(array) {
           const promises = array.map(item => Taro.getImageInfo({ src: item.Cover }).then((res) => {
             item.CoverWidth = res.width + 'px'
@@ -91,6 +89,7 @@ class Event extends Component {
           list: override ? res.data.list : this.state.list.concat(res.data.list),
           total: res.data.total, //总页数
           loading: false,
+          leftList: [], rightList: []
         }, () => {
           this.isLeft()
         });
@@ -164,15 +163,17 @@ class Event extends Component {
           className='content'>
           <View className='left' id="left" ref="left">
             {leftList.map((item, index) => {
-              return <View key={index} onClick={this.goToSingerDetailPage.bind(this, item.toUserId)}>
+              return <View key={index} onClick={this.goToSingerDetailPage.bind(this, item.toUserId)} className='wrapper'>
                 <Image lazyLoad mode="widthFix" className='pic' src={item.Cover}></Image>
+                <View className='title ellipsis'>{item.name}</View>
               </View>
             })}
           </View>
           <View className='right' id="right">
             {rightList.map((item, index) => {
-              return <View key={index} onClick={this.goToSingerDetailPage.bind(this, item.toUserId)}>
+              return <View key={index} onClick={this.goToSingerDetailPage.bind(this, item.toUserId)} className='wrapper'>
                 <Image lazyLoad mode="widthFix" className='pic' src={item.Cover}></Image>
+                <View className='title ellipsis'>{item.name}</View>
               </View>
             })}
           </View>

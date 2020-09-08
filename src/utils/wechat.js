@@ -32,13 +32,6 @@ class Wechat {
   // success:成功的回调函数
   // fail：失败的回调
   static async request(url, params, method = 'post', message = '加载中') {
-    if (
-      url !== '/api/openid' &&
-      url !== '/api/userinfo/login' &&
-      url !== '/api/event/hotList'
-    ) {
-      await this.sessionAndTokenChecker();
-    }
 
     if (message != '') {
       Taro.showLoading({
@@ -50,7 +43,6 @@ class Wechat {
       const token = get('token');
       const header = {
         'Content-Type': 'application/json',
-        // 'content-type': 'application/x-www-form-urlencoded',
       };
       if (token) {
         header['Authorization'] = 'Bearer ' + token;
@@ -65,12 +57,16 @@ class Wechat {
             Taro.hideLoading();
           }
           if (res.statusCode == 200) {
-            //   success(res.data);
             if (res.data.errno === 0) {
               if (res.data.message) {
                 Taro.showToast({ title: res.data.message, icon: 'none' });
               }
               resolve(res.data);
+            } else if (res.data.errno === -2) {
+              Taro.showToast({ title: res.data.message, icon: 'none' });
+              setTimeout(() => {
+                goToLogin()
+              }, 2000);
             } else {
               Taro.showToast({ title: res.data.message, icon: 'none' });
               reject(res.data.message);
@@ -120,44 +116,7 @@ class Wechat {
   static getMyOpenid(jsCode) {
     return this.request('/api/openid', jsCode);
   }
-  static sessionAndTokenChecker() {
-    return new Promise((resolve, reject) => {
-      const token = get('token');
-      if (token) {
-        // 检查 session_key 是否过期
-        Taro.checkSession({
-          // session_key 有效(未过期)
-          success: () => {
-            // 业务逻辑处理
-            resolve(true);
-          },
 
-          // session_key 过期
-          fail: () => {
-            // session_key过期，重新登录
-            // myLogin();
-            clear();
-            Taro.showToast({ title: '登录过期,请重新登录~', icon: 'none' })
-            setTimeout(() => {
-              // goToPage('/pages/index/index')
-              goToLogin()
-            }, 1500);
-          },
-        });
-      } else {
-        reject('您还未登录,请登录~');
-        // 无skey，作为首次登录
-        Taro.showToast({
-          title: '您还未登录,请登录~', icon: 'none'
-        })
-        setTimeout(() => {
-          goToPage('/pages/index/index')
-        }, 1500);
-
-        // myLogin();
-      }
-    });
-  }
 }
 
 export default Wechat;

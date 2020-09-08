@@ -1,7 +1,8 @@
 import Wechat from "@/utils/wechat.js"
 
 export const createOrder = (data) => { return Wechat.request('/api/order/create', data) }//创建订单
-export const getOrderListById = (data) => { return Wechat.request('/api/order/list', data) }//获取某个歌手订单
+export const getOrderListById = (data) => { return Wechat.request('/api/order/list', data) }//获取某个歌手正在播放的订单
+export const getOrderHistoryListById = (data) => { return Wechat.request('/api/order/history', data) }//获取某个歌手订单历史
 export const updateOrder = (data) => { return Wechat.request('/api/order/update', data) }//更新订单
 
 // export const getSongDetailById = (data) => { return Wechat.request('/api/song/detail', data) }//获取某个歌手订单

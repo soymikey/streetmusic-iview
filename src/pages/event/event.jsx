@@ -29,7 +29,7 @@ class Event extends Component {
       list: [],
       total: 0,
       pageSize: 20,
-      pageNo: 10,
+      pageNo: 1,
       loading: false,
     }
   }
@@ -74,6 +74,8 @@ class Event extends Component {
           list: override ? res.data.list : this.state.list.concat(res.data.list),
           total: res.data.total, //总页数
           loading: false,
+          leftList: [],
+          rightList: []
         }, () => {
           this.isLeft()
         });

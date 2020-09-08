@@ -28,3 +28,17 @@
 .clear{
   clear: both;
 }
+.wrapper{
+  position: relative;
+  .title{
+    
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    background-color: black;
+    color:#fff;
+    opacity: 0.5;
+    font-size: $size-s;
+    text-align: center;
+  }
+}

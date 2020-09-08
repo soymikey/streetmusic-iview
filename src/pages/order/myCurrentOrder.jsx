@@ -8,12 +8,12 @@ import { heartCheck } from '@/utils/heartbeatjuejin';
 import { getOrderListById, updateOrder } from '@/api/order';
 import { updateUserState } from '@/api/user';
 
-import './myOrder.scss';
+import './myCurrentOrder.scss';
 
 @connect(state => state)
-class myOrder extends Component {
+class MyCurrentOrder extends Component {
   config = {
-    navigationBarTitleText: '我的订单',
+    navigationBarTitleText: '现在订单',
     usingComponents: {
       'i-row': '../../iView/row/index',
       'i-col': '../../iView/col/index',
@@ -53,7 +53,7 @@ class myOrder extends Component {
   componentDidMount() {
     this.fetchOrderList();
   }
-  componentWillUnmount() {}
+  componentWillUnmount() { }
   fetchOrderList() {
     Taro.showLoading({
       title: '加载中-订单',
@@ -136,8 +136,8 @@ class myOrder extends Component {
   }
   confirmStart() {
     const id = this.state.selectedOrder.id;
-    if(!id){
-      Taro.showToast({title:'歌曲id不能为空',icon:'none'})
+    if (!id) {
+      Taro.showToast({ title: '歌曲id不能为空', icon: 'none' })
       return
     }
     updateOrder({ orderId: id, state: '1' })
@@ -165,11 +165,11 @@ class myOrder extends Component {
   }
   confirmFinish() {
     const id = this.state.selectedOrder.id;
-    if(!id){
-      Taro.showToast({title:'歌曲id不能为空',icon:'none'})
+    if (!id) {
+      Taro.showToast({ title: '歌曲id不能为空', icon: 'none' })
       return
     }
-    updateOrder({ orderId: id, state: '3' })
+    updateOrder({ orderId: id, state: '2' })
       .then(res => {
         const actions_ = [...this.state.actions];
         actions_[1].loading = false;
@@ -177,7 +177,7 @@ class myOrder extends Component {
           actions: actions_,
           isShowModal: false,
           orderList: this.state.orderList.map(item =>
-            item.id === id ? { ...item, state: '3' } : item
+            item.id === id ? { ...item, state: '2' } : item
           ),
         });
         this.fetchOrderList()
@@ -217,7 +217,7 @@ class myOrder extends Component {
     });
   }
 
-  componentDidHide() {}
+  componentDidHide() { }
 
   render() {
     const { orderList, isShowModal, selectedOrder, actions } = this.state;
@@ -246,7 +246,7 @@ class myOrder extends Component {
             </AtList>
           </Picker>
         </i-row>
-        {orderList.map(item => {
+        {orderList.map((item, index) => {
           return (
             <View className='order-item-wrapper' key={item.id}>
               <i-row i-class='left'>
@@ -279,19 +279,21 @@ class myOrder extends Component {
                         <Button
                           size='mini'
                           className='primary'
+                          disabled={index !== 0}
                           onClick={this.start.bind(this, item)}
                         >
                           开始
                         </Button>
                       ) : (
-                        <Button
-                          size='mini'
-                          className='error'
-                          onClick={this.finish.bind(this, item)}
-                        >
-                          完成
-                        </Button>
-                      )}
+                          <Button
+                            disabled={index !== 0}
+                            size='mini'
+                            className='error'
+                            onClick={this.finish.bind(this, item)}
+                          >
+                            完成
+                          </Button>
+                        )}
                     </i-col>
                   </i-row>
                 </i-col>
@@ -306,4 +308,4 @@ class myOrder extends Component {
   }
 }
 
-export default myOrder;
+export default MyCurrentOrder;

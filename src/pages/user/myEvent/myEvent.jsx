@@ -30,7 +30,7 @@ class MyEvent extends Component {
     this.state = {
 
       list: [],
-      pageNo: 10,
+      pageNo: 1,
       pageSize: 10,
       total: 0,
       loading: false,

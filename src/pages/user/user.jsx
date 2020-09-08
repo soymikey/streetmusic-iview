@@ -163,7 +163,7 @@ class User extends Component {
                 is-link
                 url='/pages/user/myEvent/myEvent'
               ></i-cell>
-              <i-cell title='我的收益' is-link ></i-cell>
+              <i-cell title='我的收益' is-link url='/pages/user/profit/profit'></i-cell>
               <i-cell title='收款二维码' is-link url={'/pages/user/userQrCode/userQrCode?id=' + id}></i-cell>
             </View>
           )}
