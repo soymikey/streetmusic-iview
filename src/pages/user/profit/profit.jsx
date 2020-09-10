@@ -64,7 +64,7 @@ class Profit extends Component {
           <i-cell
             title='提现'
             is-link
-            url='/pages/user/withdraw/create'
+            url='/pages/user/profit/withdraw/withdraw'
           >  </i-cell>
           <i-cell
             title='提现记录'
