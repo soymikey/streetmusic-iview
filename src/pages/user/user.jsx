@@ -37,7 +37,10 @@ class User extends Component {
     this.props.logout();
   }
   goToEditMyInfo() {
-    goToPage('/pages/user/editMyInfo/editMyInfo');
+    if (this.props.user.id) {
+
+      goToPage('/pages/user/editMyInfo/editMyInfo');
+    }
   }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);

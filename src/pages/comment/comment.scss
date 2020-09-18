@@ -1,0 +1,19 @@
+@import '@/styles/variables.scss';
+
+.index {
+  flex-direction: column;
+  width: 100%;
+}
+.comment{
+  background-color: #fff;
+}
+.recommend-row {
+  height: 40px;
+  line-height: 40px;
+  font-size: $size-s;
+  font-weight: bold;
+  padding: 10px;
+}
+.CommentSumaryCompWrapper {
+  padding: 20px;
+}

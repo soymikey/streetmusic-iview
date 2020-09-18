@@ -91,7 +91,7 @@ class Eventsumarycomp extends Component {
                       </i-col>
                     )}
                   </View>
-                  {isShowIcons ? (
+                  {/* {isShowIcons ? (
                     <i-row i-class='icon-row'>
                       <i-col span='6' i-class='col-class icon-wrapper'>
                         <View onClick={this.iconHandler.bind(this, 'like')}>
@@ -126,7 +126,7 @@ class Eventsumarycomp extends Component {
                         </View>
                       </i-col>
                     </i-row>
-                  ) : null}
+                  ) : null} */}
                 </i-row>
               </i-col>
               {list.length - 1 === index ? null : <i-divider i-class='divider' height={24}></i-divider>}

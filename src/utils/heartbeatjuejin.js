@@ -1,4 +1,5 @@
 import Taro, { Component } from '@tarojs/taro';
+import { baseWsURL } from '@/config'
 
 let lockReconnect = false;
 let limit = 0;
@@ -28,12 +29,13 @@ const heartCheck = {
 };
 
 const linkSocket = (id) => {
-  id = id
+
   Taro.connectSocket({
     // url:
     //   app.globalData.wsUrl + 'websocket?' + this.data.taskId + '&' + this.data.userId,
 
-    url: `ws://192.168.1.117:3001?id=${id}`,
+    // url: `ws://192.168.1.117:3101?id=${id}`,
+    url: `${baseWsURL}?id=${id}`,
     success() {
       console.log('连接成功');
       initEventHandle();

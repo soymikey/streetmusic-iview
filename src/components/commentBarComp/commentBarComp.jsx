@@ -2,6 +2,8 @@ import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text } from '@tarojs/components';
 import FloatLayout from '@/components/FloatLayout/FloatLayout';
 import { createLike, createCollection } from '@/api/common';
+import { goToPage } from '../../utils/tools';
+
 import './commentBarComp.scss';
 
 class CommentBarComp extends Component {
@@ -34,6 +36,9 @@ class CommentBarComp extends Component {
       liked: nextProps.liked,
       collected: nextProps.collected,
     })
+  }
+  onClickComment() {
+    goToPage('/pages/comment/comment?id=' + this.props.id_)
   }
   onClickLike() {
     const data = {
@@ -85,8 +90,7 @@ class CommentBarComp extends Component {
             </i-col>
 
             <i-col span='3' i-class='col-class'>
-              <View className='icon-wrapper'>
-
+              <View className='icon-wrapper' onClick={this.onClickComment.bind(this)} >
                 <i-icon size='35' type='message' />
               </View>
 

@@ -65,7 +65,7 @@ class CommentSumaryComp extends Component {
                     </i-col>
                     <i-col span='8' i-class='col-class'>
                       <View className='date' onClick={this.onClickReply.bind(this)}>
-                        回复
+                        {/* 回复 */}
                       </View>
                     </i-col>
                     {/* {item.posters.length && (

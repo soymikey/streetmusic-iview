@@ -17,8 +17,9 @@ class App extends Component {
   config = {
 
     pages: [
-      'pages/user/user',
+
       'pages/index/index',
+      'pages/user/user',
       'pages/index/search/search',
 
       'pages/user/uploadSong/uploadSong',
@@ -29,10 +30,12 @@ class App extends Component {
       'pages/user/editMyInfo/editMyInfo',
       'pages/user/profit/profit',
       'pages/user/profit/withdraw/withdraw',
+      'pages/user/profit/withdrawHistory/withdrawHistory',
       'pages/user/userQrCode/userQrCode',
 
       'pages/event/eventDetail/eventDetail',
       'pages/event/event',
+      'pages/comment/comment',
       'pages/order/order',
       'pages/order/myHistoryOrder',
       'pages/order/myCurrentOrder',

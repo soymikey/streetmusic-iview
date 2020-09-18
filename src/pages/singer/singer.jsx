@@ -50,7 +50,7 @@ class Singer extends Component {
         { key: 2, label: '活动' },
       ],
       tagList: ['15后', 'Lv.6', '北京', '白羊座'],
-      colorList: ['blue', 'green', 'red', 'yellow', 'default'],
+      colorList: ['blue', 'green', 'yellow', 'default'],
       currentTab: 0,
       iconList: ['like', 'share', 'document', 'collection'],
       swiperHeight: 0,
@@ -189,7 +189,7 @@ class Singer extends Component {
   }
   fetchOrderList() {
     Taro.showLoading({
-      title: '加载中-订单',
+      title: '加载中-歌曲',
     });
     // 向后端请求指定页码的数据
     const data = { id: this.$router.params.id, pageSize: 50, pageNo: 1 };
@@ -200,6 +200,10 @@ class Singer extends Component {
           orderList: res.data.list,
           loading: false,
         });
+
+        Taro.showToast({
+          title: '更新播放列表', icon: 'none'
+        })
       })
       .catch(err => {
         console.log('==> [ERROR]', err);
@@ -411,7 +415,7 @@ class Singer extends Component {
           visible={isShowModal}
           onClick={this.onConfirmComment.bind(this)}
         >
-          <View>
+          {isShowModal && <View>
             <i-input
               placeholder='请输入你的留言...'
               value={content}
@@ -419,7 +423,7 @@ class Singer extends Component {
               onChange={this.handleContent.bind(this)}
               type='textarea'
             />
-          </View>
+          </View>}
         </i-modal>
         <View className='full-background'></View>
 
@@ -432,19 +436,19 @@ class Singer extends Component {
             />
           </View>
           <i-row i-class='row-top'>
-            <i-col span='16' i-class='row-top-col'>
+            <i-col span='18' i-class='row-top-col'>
               <i-avatar src={userInfo.avatar} size='large' />
             </i-col>
-            <i-col span='5' i-class='row-top-col'>
+            <i-col span='6' i-class='row-top-col-right'>
               <FollowButtonComp
                 onClickFollow_={this.onClickFollow.bind(this)}
                 followed={userInfo.followed}
                 userId={this.$router.params.id}
               ></FollowButtonComp>
             </i-col>
-            <i-col span='1' i-class='row-top-col'>
+            {/* <i-col span='1' i-class='row-top-col'>
               <i-icon size={40} type='message' />
-            </i-col>
+            </i-col> */}
           </i-row>
           <i-row i-class='row-name'>
             <i-col span='18' i-class='col-class username ellipsis'>
@@ -464,18 +468,25 @@ class Singer extends Component {
 
           <i-row i-class='row-followers-fans'>
             <i-col span='8' i-class='col-class'>
-              关注:{userInfo.followCount}
+              <Text className='row-followers-fans'>
+
+                关注:{userInfo.followCount}
+              </Text>
+
             </i-col>
             <i-col span='8' i-class='col-class'>
-              粉丝:{userInfo.collectionCount}
+              <Text className='row-followers-fans'>
+                粉丝:{userInfo.collectionCount}
+
+              </Text>
             </i-col>
           </i-row>
           <View className='tag-container'>
-            {tagList.map(item => {
+            {tagList.map((item, index) => {
               return (
                 <i-tag
                   key={item}
-                  color={colorList[Math.floor(Math.random() * 6)]}
+                  color={colorList[index]}
                   class='i-tags'
                 >
                   {item}

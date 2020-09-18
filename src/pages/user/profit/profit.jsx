@@ -17,16 +17,8 @@ class Profit extends Component {
   config = {
     navigationBarTitleText: '我的收益',
     usingComponents: {
-      'i-row': '../../../iView/row/index',
-      'i-col': '../../../iView/col/index',
       'i-cell-group': '../../../iView/cell-group/index',
       'i-cell': '../../../iView/cell/index',
-      'i-switch': '../../../iView/switch/index',
-      'i-tag': '../../../iView/tag/index',
-      'i-button': '../../../iView/button/index',
-      'i-divider': '../../../iView/divider/index',
-      'i-avatar': '../../../iView/avatar/index',
-      'i-icon': '../../../iView/icon/index',
     },
   }
   constructor() {
@@ -40,7 +32,7 @@ class Profit extends Component {
     console.log(this.props, nextProps)
   }
   componentDidMount() {
-    this.getProfit()
+
   }
   componentWillUnmount() { }
   getProfit() {
@@ -48,7 +40,9 @@ class Profit extends Component {
       this.setState({ profit: res.data.profit })
     })
   }
-  componentDidShow() { }
+  componentDidShow() {
+    this.getProfit()
+  }
 
   componentDidHide() { }
 
@@ -69,7 +63,7 @@ class Profit extends Component {
           <i-cell
             title='提现记录'
             is-link
-            url='/pages/user/withdraw/history'
+            url='/pages/user/profit/withdrawHistory/withdrawHistory'
           >  </i-cell>
         </i-cell-group>
 

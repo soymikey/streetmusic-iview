@@ -119,7 +119,7 @@ class myHistoryOrder extends Component {
                       状态:已完成
                     </i-col>
                     <i-col span='24' i-class='col-class date'>
-                      订单日期:{item.createdDate}
+                      订单日期:  {item.createdDate && <Text><Text>{item.createdDate.slice(0, 10)}</Text><Text decode="true">&nbsp;</Text> <Text>{item.createdDate.slice(11, 16)}</Text></Text>}
                     </i-col>
                     <i-divider height={10}></i-divider>
                     <i-col span='18' i-class='col-class name ellipsis'>

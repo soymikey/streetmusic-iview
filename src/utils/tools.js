@@ -20,7 +20,6 @@ export const goToPage = (url, checkAuth = false) => {
 export const goToLogin = () => {
   // 存当前页面的地址
 
-  console.log('Taro.getCurrentPages()', Taro.getCurrentPages());
   const currentPage = Taro.getCurrentPages()[Taro.getCurrentPages().length - 1];
   const params = {};
   console.log('currentPage', currentPage);

@@ -100,6 +100,7 @@ class Index extends Component {
     });
   }
   componentWillMount() {
+
     Taro.getSetting({
       success: res => {
         // 判断是否授权

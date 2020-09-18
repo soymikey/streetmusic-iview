@@ -190,7 +190,6 @@ class EventDetail extends Component {
       title: '加载中-留言',
     });
     // 向后端请求指定页码的数据
-    // 向后端请求指定页码的数据
     const data = {
       pageSize: this.state.pageSize,
       pageNo: this.state.pageNo,
@@ -359,11 +358,10 @@ class EventDetail extends Component {
               );
             })}
           </View>
-          <i-row i-class='icon-row'>
+          {/* <i-row i-class='icon-row'>
             {iconList.map(item => {
               return (
                 <i-col key={item} span='6' i-class='col-class icon-wrapper'>
-                  {/* <i-icon size={30} type='like_fill' /> */}
                   <View onClick={this.iconHandler.bind(this, item)}>
                     <i-icon size={30} type={item} />
                   </View>
@@ -373,7 +371,7 @@ class EventDetail extends Component {
                 </i-col>
               );
             })}
-          </i-row>
+          </i-row> */}
           <i-divider height={10} />
           <i-row i-class='user-row'>
             <i-col span='18' i-class='col-class'>
