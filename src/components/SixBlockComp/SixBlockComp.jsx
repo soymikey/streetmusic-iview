@@ -26,9 +26,8 @@ class SixBlockComp extends Component {
       // list: [square1, square2, square3, square4, square5, square6],
     };
   }
-  goToSingerPage() {
-
-    goToPage('/pages/singer/singer?id=o2VHy5Fn3m8GlVISHmDgNS6y3WrM')
+  goToSingerPage(id) {
+    goToPage(`/pages/singer/singer?id=${id}`)
   }
   goToSingerListPage() {
     goToPage('/pages/singer/singerList?type=recommend')
@@ -66,7 +65,7 @@ class SixBlockComp extends Component {
               <View
                 className='container'
                 key={item}
-                onClick={this.goToSingerPage.bind(this)}
+                onClick={this.goToSingerPage.bind(this,item.toUserId)}
               >
                 <View className='image-wrapper'>
                   <Image mode='aspectFill' className='image' src={item.avatar} />

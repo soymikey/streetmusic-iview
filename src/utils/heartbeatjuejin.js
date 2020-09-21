@@ -31,7 +31,7 @@ const linkSocket = (id) => {
     // url:
     //   app.globalData.wsUrl + 'websocket?' + this.data.taskId + '&' + this.data.userId,
 
-    // url: `ws://192.168.1.117:3101?id=${id}`,
+    // url: `ws://localhost:3101?id=${id}`,
     url: `${baseWsURL}?id=${id}`,
     success() {
       console.log('ws连接成功');

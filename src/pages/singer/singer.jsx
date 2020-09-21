@@ -136,10 +136,7 @@ class Singer extends Component {
   }
 
   componentDidMount() {
-
     this.fetchUserDetail();
-
-
   }
   setSwiperHeight(value) {
     console.log('setSwiperHeight', value)

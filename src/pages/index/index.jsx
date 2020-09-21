@@ -62,21 +62,24 @@ class Index extends Component {
     });
   }
   componentWillMount() {
+    this.fetchHotEventList(true)
+    this.fetchHotSongList(true)
+    this.fetchRecommendList(true)
 
-    Taro.getSetting({
-      success: res => {
-        // 判断是否授权
-        if (res.authSetting['scope.userInfo']) {
-          this.setState({ isShowLoginComp: false })
-          this.login()
-          this.fetchHotEventList(true)
-          this.fetchHotSongList(true)
-          this.fetchRecommendList(true)
-        } else {
-          this.setState({ isShowLoginComp: true })
-        }
-      }
-    })
+    // Taro.getSetting({
+    //   success: res => {
+    //     // 判断是否授权
+    //     if (res.authSetting['scope.userInfo']) {
+    //       this.setState({ isShowLoginComp: false })
+    //       this.login()
+    //       this.fetchHotEventList(true)
+    //       this.fetchHotSongList(true)
+    //       this.fetchRecommendList(true)
+    //     } else {
+    //       this.setState({ isShowLoginComp: true })
+    //     }
+    //   }
+    // })
   }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
@@ -204,38 +207,38 @@ class Index extends Component {
 
     return (
       <View>
-        {isShowLoginComp ? <LoginComp /> :
-          <View className='index pb50px'>
-            <View className='search-wrapper'>
 
-              <View className="search" onClick={this.goToSearch.bind(this)} >
-                <Input maxLength="20" type="text" placeholder="请输入关键词搜索" />
-                <Image src={require("./static/search.svg")} mode="aspectFit" className="search-left-icon"></Image>
-              </View>
+        <View className='index pb50px'>
+          <View className='search-wrapper'>
 
+            <View className="search" onClick={this.goToSearch.bind(this)} >
+              <Input maxLength="20" type="text" placeholder="请输入关键词搜索" />
+              <Image src={require("./static/search.svg")} mode="aspectFit" className="search-left-icon"></Image>
             </View>
-            <Swiper
-              style='height:250px;'
-              className='swiper'
-              indicatorColor='#999'
-              indicatorActiveColor='#333'
-              circular
-              indicatorDots
-              autoplay
-            >
-              {hotEventList.length ? hotEventList.map(item => {
-                return <SwiperItem>
-                  <View className='image-wrapper' onClick={this.goToEventDetailPage.bind(this, item.id)}>
-                    <Image src={item.poster[0]} mode='aspectFit' style='width: 100%' />
 
-                  </View>
+          </View>
+          <Swiper
+            style='height:250px;'
+            className='swiper'
+            indicatorColor='#999'
+            indicatorActiveColor='#333'
+            circular
+            indicatorDots
+            autoplay
+          >
+            {hotEventList.length ? hotEventList.map(item => {
+              return <SwiperItem>
+                <View className='image-wrapper' onClick={this.goToEventDetailPage.bind(this, item.id)}>
+                  <Image src={item.poster[0]} mode='aspectFit' style='width: 100%' />
 
-                </SwiperItem>
-              }) : null}
+                </View>
 
-            </Swiper>
-            {/* 未开启功能 */}
-            {/* <i-row i-class='sub-cate'>
+              </SwiperItem>
+            }) : null}
+
+          </Swiper>
+          {/* 未开启功能 */}
+          {/* <i-row i-class='sub-cate'>
               <i-col span='6' i-class='col-class'>
                 <View class='cate-wrapper'>
                   <View class='cate-icon'></View>
@@ -269,20 +272,20 @@ class Index extends Component {
                 </View>
               </i-col>
             </i-row> */}
-            <i-divider height={24}></i-divider>
-            <SixBlockComp title='推荐歌曲' list={this.state.recommendList} />
-            <i-divider height={24}></i-divider>
-            <SixBlockComp title='热门歌曲' list={this.state.hotList} />
-            <i-divider height={24}></i-divider>
-            {/* <OneBlockComp /> */}
+          <i-divider height={24}></i-divider>
+          <SixBlockComp title='推荐歌曲' list={this.state.recommendList} />
+          <i-divider height={24}></i-divider>
+          <SixBlockComp title='热门歌曲' list={this.state.hotList} />
+          <i-divider height={24}></i-divider>
+          {/* <OneBlockComp /> */}
 
-            <EventSumaryComp list={hotEventList} isShowIcons={false} />
-            <i-divider content='加载已经完成,没有其他数据'></i-divider>
-            <View className='tabbar-container'>
-              <TabbarComp currentTab='index' />
-            </View>
+          <EventSumaryComp list={hotEventList} isShowIcons={false} />
+          <i-divider content='加载已经完成,没有其他数据'></i-divider>
+          <View className='tabbar-container'>
+            <TabbarComp currentTab='index' />
           </View>
-        } </View>
+        </View>
+      </View>
     );
   }
 }

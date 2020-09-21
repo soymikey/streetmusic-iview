@@ -27,11 +27,10 @@ class Order extends Component {
   componentDidHide() { }
 
   render() {
-    const { role } = this.props.user
     return (
       <View className='order'>
         <i-cell-group>
-          {role === 'artist' && <i-cell title='现在订单' is-link url='/pages/order/myCurrentOrder'></i-cell>}
+          {this.props.user.role === 'artist' && <i-cell title='现在订单' is-link url='/pages/order/myCurrentOrder'></i-cell>}
           <i-cell title='历史订单' is-link url='/pages/order/myHistoryOrder'></i-cell>
         </i-cell-group>
         <View className='tabbar-container'>
