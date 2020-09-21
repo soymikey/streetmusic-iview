@@ -16,6 +16,8 @@ import { createOrder, getOrderListById } from '@/api/order';
 import { set } from '@/utils/localStorage';
 import { heartCheck } from '@/utils/heartbeatjuejin';
 import { showToastAndGoto } from '@/utils/tools.js';
+
+
 import './singer.scss';
 
 const post1_ = require('@/asset/images/poster1.png');
@@ -38,6 +40,8 @@ class Singer extends Component {
       'i-tab': '../../iView/tab/index',
       'i-modal': '../../iView/modal/index',
       'i-input': '../../iView/input/index',
+      'i-panel': '../../iView/panel/index',
+      "i-tag": "../../iView/tag/index"
     },
   };
   constructor() {
@@ -100,6 +104,20 @@ class Singer extends Component {
       isShowModal: false,
       content: '', //留言内容
       selectedSong: {},
+      tips: 0,
+      tipsList: [
+        1, 2, 5, 10, 20, 50,
+      ],
+      actions: [
+        {
+          name: '取消',
+        },
+        {
+          name: '确定',
+          color: '#2d8cf0',
+          loading: false,
+        },
+      ]
     };
   }
   iconHandler(icon) {
@@ -306,7 +324,7 @@ class Singer extends Component {
     this.state.userInfo.followed = value;
     this.setState({ userInfo: this.state.userInfo });
   }
-  onConfirmComment(e) {
+  pay(e) {
     if (e.detail.index === 0) {
       this.setState({ isShowModal: false });
     } else {
@@ -314,15 +332,35 @@ class Singer extends Component {
         Taro.showToast({ title: '请选择歌曲', icon: 'none' });
         return;
       }
+      const loadingTrue = [{
+        name: '取消',
+      },
+      {
+        name: '确定',
+        color: '#2d8cf0',
+        loading: true,
+      }]
+      const loadingFalse = [{
+        name: '取消',
+      },
+      {
+        name: '确定',
+        color: '#2d8cf0',
+        loading: false,
+      }]
+      this.setState({
+        actions: loadingTrue
+      })
       const data = {
         songId: this.state.selectedSong.id,
         price: this.state.selectedSong.price,
+        tips: this.state.tips.toFixed(2),
         name: this.state.selectedSong.name,
         comment: this.state.content,
         singerId: this.$router.params.id,
       };
       createOrder(data).then(res => {
-        this.setState({ isShowModal: false });
+        this.setState({ actions: loadingFalse, isShowModal: false });
         console.log('准备发送toArtist');
         Taro.sendSocketMessage({
           data: JSON.stringify({
@@ -333,7 +371,9 @@ class Singer extends Component {
         setTimeout(() => {
           this.fetchOrderList();
         }, 2000);
-      });
+      }).catch(err => {
+        this.setState({ actions: loadingFalse });
+      })
     }
   }
 
@@ -351,7 +391,7 @@ class Singer extends Component {
     });
     Taro.onSocketMessage(res => {
       //收到消息
-      console.log('我的歌手, 收到服务器消息', res);
+      console.log('我的歌手页面, 收到服务器消息', res);
       const data = JSON.parse(res.data);
       if (data.type == 'pong') {
         heartCheck.reset().start();
@@ -376,6 +416,13 @@ class Singer extends Component {
       }),
     });
   }
+  tip(item) {
+    if (item !== this.state.tips) {
+      this.setState({ tips: item });
+    } else {
+      this.setState({ tips: 0 });
+    }
+  }
 
   render() {
     const {
@@ -397,33 +444,48 @@ class Singer extends Component {
       isShowModal,
       followed,
       userInfo,
+      tipsList, actions
     } = this.state;
     return (
       <View className='singer'>
+
         <i-modal
-          title='留言'
-          actions={[
-            {
-              name: '取消',
-            },
-            {
-              name: '确定',
-              color: '#2d8cf0',
-              loading: false,
-            },
-          ]}
+          i-class='my-modal'
+          title='确认订单'
+          actions={actions}
           visible={isShowModal}
-          onClick={this.onConfirmComment.bind(this)}
+          onClick={this.pay.bind(this)}
         >
-          {isShowModal && <View>
-            <i-input
-              placeholder='请输入你的留言...'
-              value={content}
-              maxlength={50}
-              onChange={this.handleContent.bind(this)}
-              type='textarea'
-            />
-          </View>}
+          {/* {isShowModal &&
+            <View> */}
+          <View className='song-info' >
+            <View className='song-name'> 歌曲:{this.state.selectedSong.name}</View>
+            <View className='song-price'> ￥{this.state.selectedSong.price}</View>
+          </View>
+          <View className='song-info' >
+            <View className='song-name'>{this.state.tips ? '打赏:￥' + this.state.tips : ' '} </View>
+
+            <View className='song-name' style='text-align:right'  > 总计:￥{this.state.tips + this.state.selectedSong.price}</View>
+          </View>
+
+          <View className='tip-wrapper'>
+            {
+              tipsList.map(item => {
+                return <View className='button-wrapper' style='width:33.33%;padding-top: 10px;text-align:center' onClick={this.tip.bind(this, item)} >
+                  <Button
+                    size='mini'
+                    className={item === this.state.tips ? 'primary' : ''}
+                  >{item}元</Button>
+                </View>
+              })
+            }
+
+          </View>
+
+          {isShowModal ? <i-panel>
+            <i-input value={content} title="留言" left mode="wrapped" placeholder="请输入你的留言..." maxlength={50} onChange={this.handleContent.bind(this)} />
+          </i-panel> : null
+          }
         </i-modal>
         <View className='full-background'></View>
 

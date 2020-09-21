@@ -21,6 +21,9 @@ class Eventsumarycomp extends Component {
   goToEventDetailPage(id) {
     goToPage(`/pages/event/eventDetail/eventDetail?id=${id}`)
   }
+  goToSingerDetailPage(id) {
+    goToPage(`/pages/singer/singer?id=${id}`)
+  }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
@@ -54,11 +57,15 @@ class Eventsumarycomp extends Component {
         {list.map((item, index) => {
           return (
             <i-row i-class='row-tab3' key={item.id}>
-              <i-col span='3' i-class='col-class avatar'>
-                <i-avatar
-                  src={item.avatar}
-                  size='large'
-                />
+              <i-col span='3' i-class='col-class avatar'  >
+                <View className='avtar-wrapper' onClick={this.goToSingerDetailPage.bind(this, item.userId)}>
+
+                  <i-avatar
+                    src={item.avatar}
+                    size='large'
+                  />
+                </View>
+
               </i-col>
               <i-col span='21' i-class='col-class'>
                 <i-row i-class='row-title'>

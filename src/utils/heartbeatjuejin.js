@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro';
 import { baseWsURL } from '@/config'
-
 let lockReconnect = false;
 let limit = 0;
 let timer = null
@@ -10,8 +9,6 @@ const heartCheck = {
   timeoutObj: null,
   serverTimeoutObj: null,
   reset: function () {
-    console.log('reset', this.serverTimeoutObj);
-
     clearTimeout(this.timeoutObj);
     clearTimeout(this.serverTimeoutObj);
     return this;
@@ -37,17 +34,19 @@ const linkSocket = (id) => {
     // url: `ws://192.168.1.117:3101?id=${id}`,
     url: `${baseWsURL}?id=${id}`,
     success() {
-      console.log('连接成功');
-      initEventHandle();
+      console.log('ws连接成功');
+
+      initEventHandle(id);
     },
   });
 }
 
-function initEventHandle() {
+function initEventHandle(id) {
   Taro.onSocketMessage(res => {
     console.log('我是heartbeatjuejin,收到服务器的消息', res);
     const data = JSON.parse(res.data)
     if (data.type == 'pong') {
+      console.log('receive pong-initEventHandle');
       heartCheck.reset().start();
     } else {
       // 处理数据
@@ -63,11 +62,11 @@ function initEventHandle() {
   });
   Taro.onSocketClose(res => {
     console.log('WebSocket 已关闭！');
-    reconnect();
+    reconnect(id);
   });
 }
 
-function reconnect() {
+function reconnect(id) {
   if (lockReconnect) return;
   lockReconnect = true;
   clearTimeout(timer);

@@ -11,8 +11,6 @@ import {
   Input,
   Textarea,
 } from '@tarojs/components';
-import post1 from '@/asset/images/poster1.png';
-import post2 from '@/asset/images/poster2.png';
 import SixBlockComp from '@/components/SixBlockComp/SixBlockComp';
 import OneBlockComp from '@/components/OneBlockComp/OneBlockComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
@@ -20,14 +18,12 @@ import LoginComp from './login/login';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import { setUserInfo } from '@/actions/user'
 import { getHotEventList } from '@/api/event';
+import { getHotSongList, getRecommendSongList } from '@/api/song';
 import { heartCheck } from '@/utils/heartbeatjuejin'
 import { myLogin } from '@/api/user';
 import { goToPage } from '@/utils/tools.js';
-
 import './index.scss';
 
-const post1_ = require('@/asset/images/poster1.png');
-const post2_ = require('@/asset/images/poster2.png');
 
 @connect(state => state, { setUserInfo })
 
@@ -48,42 +44,7 @@ class Index extends Component {
     super(...arguments);
     this.state = {
       hotEventList: [
-        {
-          id: 1,
-          username: '网易云小秘书',
-          date: ' 昨天06：28',
-          content:
-            ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
-          posters: [post1_],
-          likes: '112',
-          shares: '223',
-          comments: '334',
-          collections: '445',
-        },
-        {
-          id: 2,
-          username: '网易云小秘书2',
-          date: ' 昨天06：28',
-          content:
-            ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
 
-          likes: '112',
-          shares: '223',
-          comments: '334',
-          collections: '445',
-        },
-        {
-          id: 2,
-          username: '网易云小秘书2',
-          date: ' 昨天06：28',
-          content:
-            ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
-          posters: [post2_],
-          likes: '112',
-          shares: '223',
-          comments: '334',
-          collections: '445',
-        },
       ],
       total: 0,
       pageSize: 10,
@@ -91,7 +52,8 @@ class Index extends Component {
       loading: false,
       isShowLoginComp: true,
       themeClass: 'block',
-      hotList: ['栏目1', '栏目2', '栏目3', '栏目4']	//初始化推荐列表
+      hotList: [],	//热门歌曲
+      recommendList: [],//推荐歌曲
     };
   }
   async login() {
@@ -108,6 +70,8 @@ class Index extends Component {
           this.setState({ isShowLoginComp: false })
           this.login()
           this.fetchHotEventList(true)
+          this.fetchHotSongList(true)
+          this.fetchRecommendList(true)
         } else {
           this.setState({ isShowLoginComp: true })
         }
@@ -126,17 +90,16 @@ class Index extends Component {
   componentWillUnmount() { }
 
   componentDidShow() {
-    Taro.onSocketMessage(res => {
-      //收到消息
-      console.log('我是index, 收到服务器消息', res);
-      const data = JSON.parse(res.data)
-      if (data.type == 'pong') {
-
-        heartCheck.reset().start();
-      } else {
-        // 处理数据
-      }
-    });
+    // Taro.onSocketMessage(res => {
+    //   //收到消息
+    //   console.log('我是index, 收到服务器消息', res);
+    //   const data = JSON.parse(res.data)
+    //   if (data.type == 'pong') {
+    //     heartCheck.reset().start();
+    //   } else {
+    //     // 处理数据
+    //   }
+    // });
   }
   fetchHotEventList(override) {
     Taro.showLoading({
@@ -160,6 +123,44 @@ class Index extends Component {
         console.log('==> [ERROR]', err);
       })
   }
+  fetchHotSongList(override) {
+    Taro.showLoading({
+      title: '加载中-热门歌曲',
+    });
+    // 向后端请求指定页码的数据
+    const data = { pageSize: 6, pageNo: 1 }
+    this.setState({ loading: true });
+    return getHotSongList(data)
+      .then(res => {
+        this.setState({
+          hotList: override ? res.data.list : this.state.hotList.concat(res.data.list),
+          total: res.data.total, //总页数
+          loading: false,
+        });
+      })
+      .catch(err => {
+        console.log('==> [ERROR]', err);
+      })
+  }
+  fetchRecommendList(override) {
+    Taro.showLoading({
+      title: '加载中-推荐歌曲',
+    });
+    // 向后端请求指定页码的数据
+    const data = { pageSize: 6, pageNo: 1 }
+    this.setState({ loading: true });
+    return getRecommendSongList(data)
+      .then(res => {
+        this.setState({
+          recommendList: override ? res.data.list : this.state.recommendList.concat(res.data.list),
+          total: res.data.total, //总页数
+          loading: false,
+        });
+      })
+      .catch(err => {
+        console.log('==> [ERROR]', err);
+      })
+  }
 
   componentDidHide() { }
   clickHandler() {
@@ -171,6 +172,8 @@ class Index extends Component {
       this.setState({ pageNo: 1 }, () => {
         this.fetchHotEventList(true).then(res => {
           // 处理完成后，终止下拉刷新
+          this.fetchHotSongList(true)
+          this.fetchRecommendList(true)
           Taro.stopPullDownRefresh();
         });
       });
@@ -191,11 +194,14 @@ class Index extends Component {
   goToSearch() {
     goToPage('/pages/index/search/search')
   }
+  goToEventDetailPage(id) {
+    goToPage(`/pages/event/eventDetail/eventDetail?id=${id}`)
+  }
 
   render() {
-    const { hotEventList, isShowLoginComp, } = this.state;
+    const { hotEventList, isShowLoginComp, hotList, recommendList } = this.state;
     const { user } = this.props
-    console.log('isShowLoginComp', isShowLoginComp)
+
     return (
       <View>
         {isShowLoginComp ? <LoginComp /> :
@@ -217,15 +223,16 @@ class Index extends Component {
               indicatorDots
               autoplay
             >
-              <SwiperItem>
-                <Image src={post1} mode='aspectFit' style='width: 100%' />
-              </SwiperItem>
-              <SwiperItem>
-                <Image src={post2} mode='aspectFit' style='width: 100%' />
-              </SwiperItem>
-              <SwiperItem>
-                <Image src={post1} mode='aspectFit' style='width: 100%' />
-              </SwiperItem>
+              {hotEventList.length ? hotEventList.map(item => {
+                return <SwiperItem>
+                  <View className='image-wrapper' onClick={this.goToEventDetailPage.bind(this, item.id)}>
+                    <Image src={item.poster[0]} mode='aspectFit' style='width: 100%' />
+
+                  </View>
+
+                </SwiperItem>
+              }) : null}
+
             </Swiper>
             {/* 未开启功能 */}
             {/* <i-row i-class='sub-cate'>
@@ -263,9 +270,9 @@ class Index extends Component {
               </i-col>
             </i-row> */}
             <i-divider height={24}></i-divider>
-            <SixBlockComp title='推荐歌曲' />
+            <SixBlockComp title='推荐歌曲' list={this.state.recommendList} />
             <i-divider height={24}></i-divider>
-            <SixBlockComp title='热门歌曲' />
+            <SixBlockComp title='热门歌曲' list={this.state.hotList} />
             <i-divider height={24}></i-divider>
             {/* <OneBlockComp /> */}
 

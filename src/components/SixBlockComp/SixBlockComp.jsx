@@ -1,13 +1,13 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Image } from '@tarojs/components';
 import { goToPage } from '@/utils/tools.js';
-import square1 from '@/asset/images/square1.png';
+// import square1 from '@/asset/images/square1.png';
 
-import square2 from '@/asset/images/square2.png';
-import square3 from '@/asset/images/square3.png';
-import square4 from '@/asset/images/square4.png';
-import square5 from '@/asset/images/square5.png';
-import square6 from '@/asset/images/square6.png';
+// import square2 from '@/asset/images/square2.png';
+// import square3 from '@/asset/images/square3.png';
+// import square4 from '@/asset/images/square4.png';
+// import square5 from '@/asset/images/square5.png';
+// import square6 from '@/asset/images/square6.png';
 
 import './SixBlockComp.scss';
 
@@ -23,7 +23,7 @@ class SixBlockComp extends Component {
   constructor() {
     super(...arguments);
     this.state = {
-      list: [square1, square2, square3, square4, square5, square6],
+      // list: [square1, square2, square3, square4, square5, square6],
     };
   }
   goToSingerPage() {
@@ -44,8 +44,7 @@ class SixBlockComp extends Component {
   componentDidHide() { }
 
   render() {
-    const { list } = this.state;
-    const { title } = this.props;
+    const { title, list } = this.props;
     return (
       <View className='SixBlockComp'>
         <i-row i-class='title-row'>
@@ -70,9 +69,9 @@ class SixBlockComp extends Component {
                 onClick={this.goToSingerPage.bind(this)}
               >
                 <View className='image-wrapper'>
-                  <Image mode='aspectFill' className='image' src={item} />
+                  <Image mode='aspectFill' className='image' src={item.avatar} />
                 </View>
-                <View className='title'>{item}</View>
+                <View className='title'>{item.name}</View>
               </View>
             );
           })}

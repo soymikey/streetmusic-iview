@@ -18,29 +18,25 @@ class Withdraw extends Component {
   constructor() {
     super(...arguments);
     this.state = {
-      total: ''
+      total: '',
+      disabled: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps)
   }
-  withdrawClick() {
-    const { total } = this.state
-    if (total < 999 && total > 0) {
-      console.log('ok')
-    } else {
-      Taro.showToast({ title: '0-999元之间', icon: 'none' });
-    }
-  }
+
   withdraw() {
     if (!Number(this.state.total)) {
       Taro.showToast({ title: '请输入大于0的金额', icon: 'none' });
       return
     }
+    this.setState({ disabled: true })
     withdrawByUserId({ amount: this.state.total }).then(res => {
-      console.log('res--', res)
-      this.setState({ total: 0 })
+      this.setState({ total: 0, disabled: false })
+    }).catch(e => {
+      this.setState({ disabled: false })
     })
   }
   onChangeTotal(e) {
@@ -53,12 +49,12 @@ class Withdraw extends Component {
   componentDidHide() { }
 
   render() {
-    const { total } = this.state
+    const { total, disabled } = this.state
     return (
       <View className='withdraw'>
         <i-input value={total} right title="提现(元):" maxlength={3} mode="wrapped" placeholder="一次提现金额不能超过999元" onChange={this.onChangeTotal.bind(this)} type='number' />
         <View style='text-align:center'>
-          <Button className='primary' size='mini' onClick={this.withdraw.bind(this)} >
+          <Button className='primary' size='mini' onClick={this.withdraw.bind(this)} disabled={disabled} >
             提现 </Button>
         </View>
 

@@ -33,6 +33,7 @@ export const myLogin = async () => {
       if (val.errno === 0) {
 
         set('token', val.data.token);//配置本地token
+        console.log('连接ws用的openid', openId);
         linkSocket(openId);//连接websocket
         showToast({ title: '登录成功', icon: 'none' })
 

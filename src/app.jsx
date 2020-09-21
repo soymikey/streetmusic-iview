@@ -79,6 +79,7 @@ class App extends Component {
       ],
     },
     usingComponents: {
+
       // "i-action-sheet": "./iview/action-sheet/index",
       // "i-alert": "./iview/alert/index",
       // "i-avatar": "./iview/avatar/index",

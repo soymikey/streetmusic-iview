@@ -7,7 +7,7 @@ import { AtList, AtListItem } from 'taro-ui';
 import { heartCheck } from '@/utils/heartbeatjuejin';
 import { getOrderListById, updateOrder } from '@/api/order';
 import { updateUserState } from '@/api/user';
-
+const { $Message } = require('../../iView/base/index');
 import './myCurrentOrder.scss';
 
 @connect(state => state)
@@ -24,6 +24,7 @@ class MyCurrentOrder extends Component {
       'i-divider': '../../iView/divider/index',
       'i-icon': '../../iView/icon/index',
       'i-modal': '../../iView/modal/index',
+      "i-message": "../../iView/message/index"
     },
   };
 
@@ -51,6 +52,7 @@ class MyCurrentOrder extends Component {
     // console.log(this.props, nextProps);
   }
   componentDidMount() {
+
     this.fetchOrderList();
   }
   componentWillUnmount() { }
@@ -205,12 +207,15 @@ class MyCurrentOrder extends Component {
   componentDidShow() {
     Taro.onSocketMessage(res => {
       //收到消息
-      console.log('我的订单, 收到服务器消息', res);
+      console.log('我的订单页面, 收到服务器消息', res);
 
       const data = JSON.parse(res.data);
       if (data.type == 'pong') {
         heartCheck.reset().start();
       } else if (data.type === 'goFetchOrderList') {
+        $Message({
+          content: '您有新订单~'
+        });
         this.fetchOrderList();
         // 处理数据
       }
@@ -223,6 +228,7 @@ class MyCurrentOrder extends Component {
     const { orderList, isShowModal, selectedOrder, actions } = this.state;
     return (
       <View className='order'>
+        <i-message id="message" />
         <i-modal
           title={selectedOrder.state === '0' ? '确认开始' : '确认结束'}
           visible={isShowModal}
@@ -266,15 +272,24 @@ class MyCurrentOrder extends Component {
                       {item.createdDate && <Text><Text>{item.createdDate.slice(0, 10)}</Text><Text decode="true">&nbsp;</Text> <Text>{item.createdDate.slice(11, 16)}</Text></Text>}
                     </i-col>
                     <i-divider height={10}></i-divider>
-                    <i-col span='18' i-class='col-class name ellipsis'>
+                    {/* <i-col span='18' i-class='col-class name ellipsis'>
                       用户名:{item.nickName}
                     </i-col>
                     <i-col span='6' i-class='col-class bold price'>
                       ￥{item.price}
+                    </i-col> */}
+                    <i-col span='18' i-class='col-class name date'>
+                      <Text>用户名:{item.nickName}</Text>
+                      <View>歌曲价格:￥{item.price}</View>
+                      <View>打赏:￥{item.tips}</View>
+                    </i-col>
+                    <i-col span='24' i-class='col-class bold price'>
+                      合计:￥{item.price + item.tips}
                     </i-col>
                     <i-col span='24' i-class='col-class comment'>
-                      {item.comment}
+                      {item.comment ? '留言:' + item.comment : null}
                     </i-col>
+
                     <i-col span='24' i-class='col-class button'>
                       {item.state === '0' ? (
                         <Button

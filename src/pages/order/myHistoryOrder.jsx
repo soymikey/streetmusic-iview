@@ -122,14 +122,18 @@ class myHistoryOrder extends Component {
                       订单日期:  {item.createdDate && <Text><Text>{item.createdDate.slice(0, 10)}</Text><Text decode="true">&nbsp;</Text> <Text>{item.createdDate.slice(11, 16)}</Text></Text>}
                     </i-col>
                     <i-divider height={10}></i-divider>
-                    <i-col span='18' i-class='col-class name ellipsis'>
-                      用户名:{item.nickName}
+                    <i-col span='18' i-class='col-class name date'>
+                      <Text>用户名:{item.nickName}</Text>
+                      <View>歌曲价格:￥{item.price}</View>
+                      <View>打赏:￥{item.tips}</View>
                     </i-col>
-                    <i-col span='6' i-class='col-class bold price'>
-                      ￥{item.price}
+                    <i-col span='24' i-class='col-class bold price'>
+                      合计:￥{item.price + item.tips}
                     </i-col>
+
                     <i-col span='24' i-class='col-class comment'>
-                      {item.comment}
+
+                      {item.comment ? '留言:' + item.comment : null}
                     </i-col>
 
                   </i-row>
