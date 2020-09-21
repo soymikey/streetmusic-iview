@@ -62,8 +62,6 @@ class Comment extends Component {
           Taro.stopPullDownRefresh();
         });
       });
-
-
     }
   }
   onReachBottom() {
@@ -79,7 +77,6 @@ class Comment extends Component {
 
   render() {
     const { list } = this.state
-    console.log('list11', list)
     return (
       <View className='comment'>
         <i-row i-class='recommend-row'>

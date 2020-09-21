@@ -1,9 +1,9 @@
-import Taro, { Component } from '@tarojs/taro';
+import Taro, { Component, showToast } from '@tarojs/taro';
 import { View, Image, Input, Textarea, Button } from '@tarojs/components';
 import closeImg from '@/asset/images/poster1.png';
 import { AtTextarea } from 'taro-ui'
 import { createComment } from '@/api/common';
-
+// import {sensitiveFilter} from '@/utils/keywordFilter'
 import './FloatLayout.scss';
 
 class FloatLayout extends Component {
@@ -30,6 +30,14 @@ class FloatLayout extends Component {
   }
 
   commit() {
+    
+    if(!this.state.content){
+      Taro.showToast({
+        title: '发布内容不能为空'
+      })
+      return
+    }
+    
     const data = {
       content: this.state.content,
       type: this.props.type,
@@ -38,6 +46,9 @@ class FloatLayout extends Component {
     createComment(data).then(res => {
       this.setState({ isDisabled: false, content: '', });
       this.props.onClose();
+      Taro.showToast({
+        title: '评论成功'
+      })
     }).catch(e => {
       this.setState({ isDisabled: false });
     })

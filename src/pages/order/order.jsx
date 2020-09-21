@@ -1,9 +1,12 @@
 /* eslint-disable react/sort-comp */
 import Taro, { Component } from '@tarojs/taro';
+import { connect } from '@tarojs/redux';
+
 import { View, Button, Text } from '@tarojs/components';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 
 import './order.scss';
+@connect(state => state)
 class Order extends Component {
   config = {
     navigationBarTitleText: '订单',

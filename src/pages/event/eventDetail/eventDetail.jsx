@@ -55,42 +55,6 @@ class EventDetail extends Component {
       nickName: '',
       iconList: ['like', 'share', 'document', 'collection'],
       commentList: [
-        {
-          id: 1,
-          username: '网易云小秘书',
-          date: ' 昨天06：28',
-          content:
-            ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
-          posters: [post1_],
-          likes: '112',
-          shares: '223',
-          comments: '334',
-          collections: '445',
-        },
-        {
-          id: 2,
-          username: '网易云小秘书2',
-          date: ' 昨天06：28',
-          content:
-            ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
-
-          likes: '112',
-          shares: '223',
-          comments: '334',
-          collections: '445',
-        },
-        {
-          id: 2,
-          username: '网易云小秘书2',
-          date: ' 昨天06：28',
-          content:
-            ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
-          posters: [post2_],
-          likes: '112',
-          shares: '223',
-          comments: '334',
-          collections: '445',
-        },
       ],
       hotEventList: [],
       loading: false,

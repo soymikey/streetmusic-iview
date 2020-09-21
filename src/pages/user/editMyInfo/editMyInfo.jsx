@@ -231,7 +231,7 @@ class EditMyInfo extends Component {
       if (item.url.includes('http://qiniu.migaox.com')) {
         avatar_.push(item.url)
       } else {
-        const isUploaded = await uploadImage(item.url, '/api/event/image/upload')
+        const isUploaded = await uploadImage(item.url, '/api/userinfo/avatar/upload')
         const isUploaded_ = JSON.parse(isUploaded)
         if (isUploaded_.errno !== 0) {
           Taro.showToast({ title: '上传失败', icon: 'none' })
