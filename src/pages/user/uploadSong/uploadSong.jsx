@@ -112,13 +112,13 @@ class Uploadsong extends Component {
             msg: '歌曲时间不能为空'
           }]
         },
-        {
-          value: type,
-          rules: [{
-            rule: 'required',
-            msg: '歌曲类型不能为空'
-          }]
-        },
+        // {
+        //   value: type,
+        //   rules: [{
+        //     rule: 'required',
+        //     msg: '歌曲类型不能为空'
+        //   }]
+        // },
         {
           value: price,
           rules: [{
@@ -139,7 +139,7 @@ class Uploadsong extends Component {
       data.id = this.state.id
       updateSong(data).then(res => {
         this.setState({ isDisabled: false });
-       
+
         Taro.showToast({
           title: '更新成功', icon: 'none', duration: 2000, success: () => {
             setTimeout(() => {

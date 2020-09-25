@@ -34,6 +34,7 @@ class Event extends Component {
       pageSize: 20,
       pageNo: 1,
       loading: false,
+      type: ''
     }
   }
   componentWillMount() {
@@ -41,12 +42,14 @@ class Event extends Component {
       Taro.setNavigationBarTitle({
         title: '推荐歌曲'
       })
+
     }
     if (this.$router.params.type === 'hot') {
       Taro.setNavigationBarTitle({
         title: '热门歌曲'
       })
     }
+    this.setState({ type: this.$router.params.type })
   }
   componentDidMount() {
     this.getList(true)
@@ -67,7 +70,8 @@ class Event extends Component {
     // 向后端请求指定页码的数据
     const data = { pageSize: this.state.pageSize, pageNo: this.state.pageNo }
     this.setState({ loading: true });
-    return getHotSongList(data)
+    const requestApi = this.state.type === 'hot' ? getHotSongList : getRecommendSongList
+    return requestApi(data)
       .then(res => {
 
         for (const item of res.data.list) {
@@ -87,7 +91,7 @@ class Event extends Component {
         awaitAll(res.data.list)
         this.setState({
           list: override ? res.data.list : this.state.list.concat(res.data.list),
-          total: res.data.total, //总页数
+          total: res.data.count, //总页数
           loading: false,
           leftList: [], rightList: []
         }, () => {
@@ -132,10 +136,15 @@ class Event extends Component {
     }
   }
   onReachBottom() {
+    console.log('this.state.loading', this.state.loading)
+    console.log('this.state.total', this.state.total)
+    console.log('this.state.pageNo', this.state.pageNo)
+    console.log('this.state.pageSize', this.state.pageSize)
     if (
       !this.state.loading &&
       this.state.pageNo * this.state.pageSize < this.state.total
     ) {
+      console.log('reach bottom')
       this.setState({ pageNo: this.state.pageNo + 1 }, () => {
         this.getList();
       });

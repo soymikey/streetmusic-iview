@@ -54,6 +54,8 @@ class Index extends Component {
       themeClass: 'block',
       hotList: [],	//热门歌曲
       recommendList: [],//推荐歌曲
+      path: ''
+
     };
   }
   async login() {
@@ -61,10 +63,25 @@ class Index extends Component {
       this.props.setUserInfo(res.data);
     });
   }
+  // onLoad(options) {
+  //   console.log(options)
+  //   if (options.scene) {
+  //     let qrId = decodeURIComponent(options.scene)
+  //     console.log('qrId', qrId)
+  //   }
+  // }
   componentWillMount() {
+
+
     this.fetchHotEventList(true)
     this.fetchHotSongList(true)
     this.fetchRecommendList(true)
+    if (this.$router.params.q) {
+      let qrUrl = decodeURIComponent(this.$router.params.q)
+      let id = qrUrl.split('id=')[1]
+      goToPage(`/pages/singer/singer?id=${id}`)
+
+    }
 
     // Taro.getSetting({
     //   success: res => {
@@ -202,9 +219,8 @@ class Index extends Component {
   }
 
   render() {
-    const { hotEventList, isShowLoginComp, hotList, recommendList } = this.state;
+    const { hotEventList, isShowLoginComp, hotList, recommendList, path } = this.state;
     const { user } = this.props
-
     return (
       <View>
 
@@ -237,6 +253,8 @@ class Index extends Component {
             }) : null}
 
           </Swiper>
+          {path}
+
           {/* 未开启功能 */}
           {/* <i-row i-class='sub-cate'>
               <i-col span='6' i-class='col-class'>

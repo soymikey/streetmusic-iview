@@ -215,6 +215,7 @@ class Registerartist extends Component {
           placeholder='手机号码'
           value={phone}
           maxlength={11}
+          type="number"
           onChange={this.onChangePhone.bind(this)}
         />
         <i-input
@@ -222,6 +223,7 @@ class Registerartist extends Component {
           placeholder='身份证号码'
           value={residentId}
           maxlength={18}
+          type="number"
           onChange={this.onChangeResidentId.bind(this)}
         />
 

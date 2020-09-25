@@ -228,7 +228,7 @@ class UploadEvent extends Component {
         console.log('isUploaded', isUploaded)
         const isUploaded_ = JSON.parse(isUploaded)
         if (isUploaded_.errno !== 0) {
-          Taro.showToast({ title: '上传失败', icon: 'none' })
+          Taro.showToast({ title: '图片上传失败', icon: 'none' })
           this.setState({ isDisabled: false });
           return
         } else {
@@ -253,7 +253,7 @@ class UploadEvent extends Component {
       data.id = this.state.id
       updateEvent(data).then(res => {
         this.setState({ isDisabled: false });
-       
+
         Taro.showToast({
           title: '更新成功', icon: 'none', duration: 2000, success: () => {
             setTimeout(() => {

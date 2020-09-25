@@ -34,7 +34,7 @@ export const myLogin = async () => {
 
         set('token', val.data.token);//配置本地token
         console.log('连接ws用的openid', openId);
-        linkSocket(openId);//连接websocket
+        // linkSocket(openId);//连接websocket
         showToast({ title: '登录成功', icon: 'none' })
 
         setTimeout(() => {
@@ -109,6 +109,7 @@ export const createArtist = data => {
 export const getProfitById = () => { return Wechat.request('/api/userinfo/profit') }//获取某个歌手的总金额
 export const withdrawByUserId = (data) => { return Wechat.request('/api/userinfo/withdraw/create', data) }
 export const getWithdrawList = (data) => { return Wechat.request('/api/userinfo/withdraw/history', data) }
+export const createPay = (data) => { return Wechat.request('/api/userinfo/pay/create', data) }
 
 export const uploadUserImage = files => {
   return new Promise((resolve, reject) => {

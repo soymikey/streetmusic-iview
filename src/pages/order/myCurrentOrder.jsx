@@ -36,11 +36,13 @@ class MyCurrentOrder extends Component {
       totalOrderPage: 30,
       loading: false,
       stateList: [
-        { value: '0', label: '下线' },
+
         { value: '1', label: '上线' },
+
         { value: '2', label: '休息中' },
+        { value: '0', label: '下线' },
       ],
-      stateRange: ['下线', '上线', '休息中'],
+      stateRange: ['上线', '休息中', '下线',],
       state: '下线',
       selectedOrder: {},
       isShowModal: false,
@@ -61,7 +63,7 @@ class MyCurrentOrder extends Component {
       title: '加载中-订单',
     });
     // 向后端请求指定页码的数据
-    const data = { id: 'o2VHy5Fn3m8GlVISHmDgNS6y3WrM', pageSize: 50, pageNo: 1 };
+    const data = { pageSize: 50, pageNo: 1 };
 
     return getOrderListById(data)
       .then(res => {

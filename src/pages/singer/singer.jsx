@@ -1,14 +1,12 @@
 import Taro, { Component } from '@tarojs/taro';
 import { connect } from '@tarojs/redux';
 import { View, Button, Text, Image, Swiper, SwiperItem } from '@tarojs/components';
-import post1 from '@/asset/images/poster1.png';
-import post2 from '@/asset/images/poster2.png';
 import Tab3 from './tab3/tab3';
 import Tab1 from './tab1/tab1';
 import Tab2 from './tab2/tab2';
 import FollowButtonComp from '@/components/FollowButtonComp/FollowButtonComp';
 
-import { getUserInfo, getUserState } from '@/api/user';
+import { getUserInfo, getUserState, createPay } from '@/api/user';
 
 import { getEventListById } from '@/api/event';
 import { getSongListById } from '@/api/song';
@@ -139,7 +137,6 @@ class Singer extends Component {
     this.fetchUserDetail();
   }
   setSwiperHeight(value) {
-    console.log('setSwiperHeight', value)
     let height = 0;
     const query = Taro.createSelectorQuery();
 
@@ -172,7 +169,7 @@ class Singer extends Component {
   }
   fetchSongList(override) {
     Taro.showLoading({
-      title: '加载中-歌曲',
+      title: '加载中-歌单',
     });
     // 向后端请求指定页码的数据
     const data = {
@@ -321,6 +318,9 @@ class Singer extends Component {
     this.state.userInfo.followed = value;
     this.setState({ userInfo: this.state.userInfo });
   }
+  wxPay() {
+
+  }
   pay(e) {
     if (e.detail.index === 0) {
       this.setState({ isShowModal: false });
@@ -348,29 +348,65 @@ class Singer extends Component {
       this.setState({
         actions: loadingTrue
       })
-      const data = {
-        songId: this.state.selectedSong.id,
-        price: this.state.selectedSong.price,
-        tips: this.state.tips.toFixed(2),
-        name: this.state.selectedSong.name,
-        comment: this.state.content,
-        singerId: this.$router.params.id,
-      };
-      createOrder(data).then(res => {
-        this.setState({ actions: loadingFalse, isShowModal: false });
-        console.log('准备发送toArtist');
-        Taro.sendSocketMessage({
-          data: JSON.stringify({
-            type: 'createOrderOK',
-            id: this.$router.params.id,
-          }),
-        });
-        setTimeout(() => {
-          this.fetchOrderList();
-        }, 2000);
-      }).catch(err => {
-        this.setState({ actions: loadingFalse });
+      const amount = (Number(this.state.selectedSong.price) + Number(this.state.tips)) * 100
+      createPay({ amount }).then(res => {
+        Taro.requestPayment({
+          timeStamp: res.data.timeStamp,
+          nonceStr: res.data.nonceStr,
+          package: res.data.package,
+          signType: res.data.signType,
+          paySign: res.data.paySign,
+          success: (errmsg) => {
+            console.log('errmsg', errmsg)
+            if (errmsg.errMsg == 'requestPayment:ok') {
+              Taro.showToast({
+                title: '支付成功',
+                icon: 'success'
+              });
+              const data = {
+                songId: this.state.selectedSong.id,
+                price: this.state.selectedSong.price,
+                tips: this.state.tips,
+                name: this.state.selectedSong.name,
+                comment: this.state.content,
+                singerId: this.$router.params.id,
+              };
+              createOrder(data).then(res => {
+                this.setState({ actions: loadingFalse, isShowModal: false, tips: 0 });
+                console.log('准备发送toArtist');
+                Taro.sendSocketMessage({
+                  data: JSON.stringify({
+                    type: 'createOrderOK',
+                    id: this.$router.params.id,
+                  }),
+                });
+                setTimeout(() => {
+                  this.fetchOrderList();
+                  this.onChangeTab({ detail: { key: 1 } })
+
+                }, 2000);
+              }).catch(err => {
+                this.setState({ actions: loadingFalse });
+              })
+            }
+          },
+          fail: function (res) {
+            this.setState({ actions: loadingFalse });
+            if (res.errMsg == 'requestPayment:fail cancel') {
+              Taro.showToast({
+                title: '支付取消',
+                icon: 'none'
+              });
+            } else {
+              Taro.showToast({
+                title: res.errmsg,
+                icon: 'none'
+              });
+            }
+          }
+        })
       })
+
     }
   }
 
@@ -453,8 +489,7 @@ class Singer extends Component {
           visible={isShowModal}
           onClick={this.pay.bind(this)}
         >
-          {/* {isShowModal &&
-            <View> */}
+
           <View className='song-info' >
             <View className='song-name'> 歌曲:{this.state.selectedSong.name}</View>
             <View className='song-price'> ￥{this.state.selectedSong.price}</View>
@@ -484,6 +519,7 @@ class Singer extends Component {
           </i-panel> : null
           }
         </i-modal>
+
         <View className='full-background'></View>
 
         <View className='singer-info'>
@@ -560,7 +596,7 @@ class Singer extends Component {
         >
           <i-tabs current={currentTab} onChange={this.onChangeTab.bind(this)}>
             <i-tab key={0} title='歌曲' type='border' count={songTotal}></i-tab>
-            <i-tab key={1} title='正在播放' type='border'></i-tab>
+            <i-tab key={1} title='正在播放' type='border' ></i-tab>
             <i-tab key={2} title='活动' type='border'></i-tab>
           </i-tabs>
         </View>
@@ -585,7 +621,7 @@ class Singer extends Component {
           </SwiperItem>
           <SwiperItem>
             <View className='tab2' id='tab'>
-              <Tab2 list={orderList} />
+              <Tab2 list={orderList} userInfo={userInfo} />
             </View>
           </SwiperItem>
           <SwiperItem>

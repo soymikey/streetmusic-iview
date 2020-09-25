@@ -29,8 +29,15 @@ class SixBlockComp extends Component {
   goToSingerPage(id) {
     goToPage(`/pages/singer/singer?id=${id}`)
   }
-  goToSingerListPage() {
-    goToPage('/pages/singer/singerList?type=recommend')
+  goToSingerListPage(title) {
+    let type
+    if (title === '热门歌曲') {
+      type = 'hot'
+    }
+    if (title === '推荐歌曲') {
+      type = 'recommend'
+    }
+    goToPage(`/pages/singer/singerList?type=${type}`)
   }
   // componentWillReceiveProps(nextProps) {
   //   console.log(this.props, nextProps);
@@ -54,7 +61,7 @@ class SixBlockComp extends Component {
           </i-col>
 
           <i-col span='4' i-class='col-class'>
-            <View className='more' onClick={this.goToSingerListPage.bind(this)}>
+            <View className='more' onClick={this.goToSingerListPage.bind(this, title)}>
               <Text>更多</Text>
             </View>
           </i-col>
@@ -65,7 +72,7 @@ class SixBlockComp extends Component {
               <View
                 className='container'
                 key={item}
-                onClick={this.goToSingerPage.bind(this,item.toUserId)}
+                onClick={this.goToSingerPage.bind(this, item.toUserId)}
               >
                 <View className='image-wrapper'>
                   <Image mode='aspectFill' className='image' src={item.avatar} />

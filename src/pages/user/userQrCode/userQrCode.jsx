@@ -40,8 +40,7 @@ class Userqrcode extends Component {
     return (
       <View className='userQrCode'>
         <View className='image-wrapper'>
-
-          <Image mode='aspectFill' className='image' src={qrCode} />
+          <Image className='image' src={qrCode} />
         </View>
 
 

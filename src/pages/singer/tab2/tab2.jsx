@@ -34,7 +34,7 @@ class Tab2 extends Component {
   componentDidHide() { }
 
   render() {
-    const { list } = this.props;
+    const { list, userInfo } = this.props;
     return (
       <View className='index'>
         <i-cell-group>
@@ -44,7 +44,10 @@ class Tab2 extends Component {
                 key={item.id}
                 title={item.name}
                 label={'点歌用户:' + item.nickName}
-                value={item.state === '0' ? '未开始' : '进行中...'}></i-cell>
+                value={item.state === '0' ? '未开始' : '进行中...'}>
+                {item.nickName === userInfo.nickName ? <View style='text-align:center;font-weight:bold'>{userInfo.nickName}点的歌曲</View> : null
+                }
+              </i-cell>
             );
           })}
         </i-cell-group>

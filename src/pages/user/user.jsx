@@ -4,8 +4,8 @@ import { connect } from '@tarojs/redux';
 
 import { View, Button, Text } from '@tarojs/components';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
-import { myLogin, getUserInfo } from '@/api/user';
-import { setUserInfo, logout } from '@/actions/user';
+import { myLogin, getUserInfo, createPay } from '@/api/user';
+import { setUserInfo, logout, } from '@/actions/user';
 
 import { goToPage } from '@/utils/tools.js';
 
@@ -42,6 +42,7 @@ class User extends Component {
       goToPage('/pages/user/editMyInfo/editMyInfo');
     }
   }
+
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
@@ -86,6 +87,7 @@ class User extends Component {
     return (
       <View className='user'>
         <i-row i-class='user-info'>
+          {nickName}
           <i-col span='4'>
             <i-avatar src={avatar} size='large'></i-avatar>
           </i-col>

@@ -325,6 +325,7 @@ class EditMyInfo extends Component {
         />
         <i-input
           title='手机'
+          type="number"
           placeholder='手机号码'
           value={phone}
           maxlength={11}
