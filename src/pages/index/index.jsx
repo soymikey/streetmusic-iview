@@ -1,4 +1,4 @@
-import Taro, { Component } from '@tarojs/taro';
+ximport Taro, { Component } from '@tarojs/taro';
 import { connect } from '@tarojs/redux'
 
 import {
@@ -11,17 +11,15 @@ import {
   Input,
   Textarea,
 } from '@tarojs/components';
-import SixBlockComp from '@/components/SixBlockComp/SixBlockComp';
-import OneBlockComp from '@/components/OneBlockComp/OneBlockComp';
+xiuimport SixBlockComp from '@/components/SixBlockComp/SixBlockComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
-import LoginComp from './login/login';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import { setUserInfo } from '@/actions/user'
 import { getHotEventList } from '@/api/event';
 import { getHotSongList, getRecommendSongList } from '@/api/song';
-import { heartCheck } from '@/utils/heartbeatjuejin'
-import { myLogin } from '@/api/user';
+import { getMyOpenid } from '@/api/user';
 import { goToPage } from '@/utils/tools.js';
+import { get, set, clear, remove } from '@/utils/localStorage';
 import './index.scss';
 
 
@@ -58,20 +56,8 @@ class Index extends Component {
 
     };
   }
-  async login() {
-    myLogin().then(res => {
-      this.props.setUserInfo(res.data);
-    });
-  }
-  // onLoad(options) {
-  //   console.log(options)
-  //   if (options.scene) {
-  //     let qrId = decodeURIComponent(options.scene)
-  //     console.log('qrId', qrId)
-  //   }
-  // }
-  componentWillMount() {
 
+  componentWillMount() {
 
     this.fetchHotEventList(true)
     this.fetchHotSongList(true)
@@ -82,32 +68,7 @@ class Index extends Component {
       goToPage(`/pages/singer/singer?id=${id}`)
 
     }
-
-    // Taro.getSetting({
-    //   success: res => {
-    //     // 判断是否授权
-    //     if (res.authSetting['scope.userInfo']) {
-    //       this.setState({ isShowLoginComp: false })
-    //       this.login()
-    //       this.fetchHotEventList(true)
-    //       this.fetchHotSongList(true)
-    //       this.fetchRecommendList(true)
-    //     } else {
-    //       this.setState({ isShowLoginComp: true })
-    //     }
-    //   }
-    // })
   }
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
-  }
-
-  componentDidMount() {
-
-
-
-  }
-  componentWillUnmount() { }
 
   componentDidShow() {
     // Taro.onSocketMessage(res => {
@@ -140,6 +101,7 @@ class Index extends Component {
         });
       })
       .catch(err => {
+        this.setState({ loading: false })
         console.log('==> [ERROR]', err);
       })
   }
@@ -159,6 +121,7 @@ class Index extends Component {
         });
       })
       .catch(err => {
+        this.setState({ loading: false })
         console.log('==> [ERROR]', err);
       })
   }
@@ -178,6 +141,7 @@ class Index extends Component {
         });
       })
       .catch(err => {
+        this.setState({ loading: false })
         console.log('==> [ERROR]', err);
       })
   }
@@ -295,8 +259,6 @@ class Index extends Component {
           <i-divider height={24}></i-divider>
           <SixBlockComp title='热门歌曲' list={this.state.hotList} />
           <i-divider height={24}></i-divider>
-          {/* <OneBlockComp /> */}
-
           <EventSumaryComp list={hotEventList} isShowIcons={false} />
           <i-divider content='加载已经完成,没有其他数据'></i-divider>
           <View className='tabbar-container'>

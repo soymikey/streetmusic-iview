@@ -5,6 +5,7 @@ import {
 
 } from '@/api/user';
 import './withdraw.scss'
+import validator from '@/utils/validator'
 
 class Withdraw extends Component {
 
@@ -28,9 +29,25 @@ class Withdraw extends Component {
   }
 
   withdraw() {
-    if (!Number(this.state.total)) {
-      Taro.showToast({ title: '请输入大于0的金额', icon: 'none' });
+    if (!(Number(this.state.total) > 0 && Number(this.state.total) < 1000)) {
+      Taro.showToast({ title: '金额不能小于0或者大于999', icon: 'none' });
       return
+    }
+
+    const isValid = validator(
+      [
+        {
+          value: this.state.total,
+          rules: [{
+            rule: 'isPrice',
+            msg: '提现格式错误'
+          }]
+        },
+      ]
+    )
+    if (!isValid.status) {
+      Taro.showToast({ title: isValid.msg, icon: 'none' });
+      return;
     }
     this.setState({ disabled: true })
     withdrawByUserId({ amount: this.state.total }).then(res => {

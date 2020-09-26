@@ -1,8 +1,7 @@
 import Taro from '@tarojs/taro';
 import { baseURL } from '../config';
 import { get, clear } from '@/utils/localStorage';
-import { myLogin } from '@/api/user';
-import { goToPage, showToastAndGoto, goToLogin } from '@/utils/tools.js';
+import { goToLogin } from '@/utils/tools.js';
 
 class Wechat {
   /**

@@ -41,6 +41,7 @@ export default function user(state = INITIAL_STATE, action) {
         ...action.payload
       }
     case LOGOUT:
+      console.log('logout reduce');
       remove('token')
       Taro.showToast({ title: '退出成功', icon: 'none' })
       return {

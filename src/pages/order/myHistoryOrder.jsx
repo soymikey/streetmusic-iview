@@ -3,8 +3,6 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Picker } from '@tarojs/components';
 import { connect } from '@tarojs/redux';
-import { AtList, AtListItem } from 'taro-ui';
-import { heartCheck } from '@/utils/heartbeatjuejin';
 import { getOrderHistoryListById, updateOrder } from '@/api/order';
 import { updateUserState } from '@/api/user';
 

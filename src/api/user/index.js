@@ -2,15 +2,10 @@ import Taro, { showToast } from '@tarojs/taro';
 import Wechat from '@/utils/wechat.js';
 import { baseURL } from '@/config';
 import { get, set, clear, remove } from '@/utils/localStorage';
-import { linkSocket, heartCheck } from '@/utils/heartbeatjuejin';
 import { goToPage } from '../../utils/tools';
-// 小程序启动，通过wx.login()获取code
-// 开发者服务器需要提供一个登录的接口，参数就是小程序获取的code
-// 登录接口收到code后，调用微信提供的接口进行code的验证
-// 得到验证结果，成功后能得到一个session_key和openid
-// 生成一个自定义的key, 将session_key和openid跟自定义的key关联起来
-// 将自定义的key返回给小程序
-// 每次请求都带上key, 后端根据key获取openid识别当前用户身份
+// 小程序启动，本地如果没有token, 通过wx.login()获取jscode,并且请求后端 获取openid保存到本地
+//用户点击登录的时候 用本地的openid 获取用户的信息(后端-如果没有就注册 返回用户信息,并且保存用户信息里面的token到本地)
+// 登录接口收到code后，保存到本地. 调用微信提供的接口进行code的验证
 function setCookie(cookie) {
   if (cookie) {
     const formatedCookie =
@@ -19,61 +14,12 @@ function setCookie(cookie) {
   }
 }
 
-// }// 登录
-
-export const myLogin = async () => {
-  const jsCode = await Wechat.getCryptoData(); //获取jscode
-  const openIdResult = await Wechat.getMyOpenid({ jsCode }); //传jscode 给后台 返回openId session 和iopenId+session的token
-  if (openIdResult.errno === 0) {
-    const openId = openIdResult.data.openid;
-    const getUserInfoResult = await Wechat.getUserInfo(); // 从微信后台获取用户信息传用户信息参数
-    if (getUserInfoResult.errMsg === 'getUserInfo:ok') {
-      const info = { ...getUserInfoResult.userInfo, id: openId };
-      const val = await login(info); //登录接口，返回数据库用户信息，如果没有会自动注册然后返回注册过的用户信息      
-      if (val.errno === 0) {
-
-        set('token', val.data.token);//配置本地token
-        console.log('连接ws用的openid', openId);
-        // linkSocket(openId);//连接websocket
-        showToast({ title: '登录成功', icon: 'none' })
-
-        setTimeout(() => {
-          const routerObj = get('backToPage')
-          if (routerObj) {
-            const router = JSON.parse(routerObj)
-            let url = router.route
-            let query
-            if (router.query) {
-              query = '?'
-              console.log('router.query', router.query);
-
-              for (const key in router.query) {
-
-                const value = router.query[key];
-                query += `${key}=${value}&`
-
-              }
-              query = query.substr(0, query.length - 1);
-            }
-            goToPage(url + query)
-            remove('backToPage')
-          }
-        }, 2000);
-        return Promise.resolve(val);
-      } else {
-        showToast({ title: '登录失败,无法获取用户信息~', icon: 'none' })
-      }
-    } else {
-      showToast({ title: '登录失败,无法获取用户授权~', icon: 'none' })
-    }
-  } else {
-    showToast({ title: '后端无法获取小程序Id,请联系管理员~', icon: 'none' })
-  }
-};
-
 export const login = data => {
   return Wechat.request('/api/userinfo/login', data);
 }; //登录接口
+export const getMyOpenid = data => {
+  return Wechat.request('/api/openid', data);
+}
 export const getUserInfo = data => {
   return Wechat.request('/api/userinfo/detail', data);
 }; //获取用户信息

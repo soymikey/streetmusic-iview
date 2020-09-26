@@ -123,7 +123,7 @@ class Uploadsong extends Component {
           value: price,
           rules: [{
             rule: 'isPrice',
-            msg: '歌曲价格只能是整数或者两位小数'
+            msg: '歌曲价格格式错误'
           }]
         },
       ]

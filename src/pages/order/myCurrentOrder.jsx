@@ -24,7 +24,7 @@ class MyCurrentOrder extends Component {
       'i-divider': '../../iView/divider/index',
       'i-icon': '../../iView/icon/index',
       'i-modal': '../../iView/modal/index',
-      "i-message": "../../iView/message/index"
+      "i-message": "../../iView/message/index",
     },
   };
 
@@ -223,13 +223,19 @@ class MyCurrentOrder extends Component {
       }
     });
   }
-
+  refresh() {
+    this.fetchOrderList();
+  }
   componentDidHide() { }
 
   render() {
     const { orderList, isShowModal, selectedOrder, actions } = this.state;
     return (
       <View className='order'>
+        <View className='refresh' onClick={this.refresh.bind(this)} >
+          <i-icon type="refresh" size="30" color="#fff" />
+        </View>
+
         <i-message id="message" />
         <i-modal
           title={selectedOrder.state === '0' ? '确认开始' : '确认结束'}

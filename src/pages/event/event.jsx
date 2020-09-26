@@ -81,6 +81,7 @@ class Event extends Component {
         });
       })
       .catch(err => {
+        this.setState({ loading: false })
         console.log('==> [ERROR]', err);
       })
   }

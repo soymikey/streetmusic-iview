@@ -4,10 +4,12 @@ import { connect } from '@tarojs/redux';
 
 import { View, Button, Text } from '@tarojs/components';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
-import { myLogin, getUserInfo, createPay } from '@/api/user';
+import { getMyOpenid, login } from '@/api/user';
 import { setUserInfo, logout, } from '@/actions/user';
 
 import { goToPage } from '@/utils/tools.js';
+import { get, set, remove } from '@/utils/localStorage';
+import { linkSocket, heartCheck } from '@/utils/heartbeatjuejin';
 
 import './user.scss';
 
@@ -28,36 +30,61 @@ class User extends Component {
       'i-icon': '../../iView/icon/index',
     },
   };
-  async login() {
-    myLogin().then(res => {
+
+  componentDidMount() {
+    this.getSession();
+
+  }
+  // 获取登录的code
+  getSession() {
+    Taro.login({
+      success: (res) => {
+        if (res.code) {
+          return getMyOpenid({ jsCode: res.code }).then(res1 => {
+            set('openId', res1.data.openid)
+          })
+        }
+      },
+      fail: (err) => {
+        Taro.showToast({ title: '获取openId失败,联系管理员~', icon: 'none' })
+        return
+      }
+    })
+  }
+  getUserInfo(e) {
+    let userInfo = e.detail.userInfo;
+    if (!get('openId')) {
+      Taro.showToast({ title: '无法获取openId', icon: 'none' })
+      return
+    }
+    userInfo.openid = get('openId');
+    return login(userInfo).then(res => {
+      set('token', res.data.token)
       this.props.setUserInfo(res.data);
-    });
+      linkSocket(userInfo.openid);//连接websocket
+      Taro.showToast({ title: '登录成功', icon: 'none' })
+      remove('openId')
+      const backToPage = get('backToPage')
+      if (backToPage) {
+        setTimeout(() => {
+          goToPage(backToPage)
+          remove('backToPage')
+        }, 2000);
+      }
+
+    })
   }
   logout() {
     this.props.logout();
+    setTimeout(() => {
+      Taro.reLaunch({ url: '/pages/index/index' })
+    }, 2000);
   }
   goToEditMyInfo() {
     if (this.props.user.id) {
-
       goToPage('/pages/user/editMyInfo/editMyInfo');
     }
   }
-
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
-  }
-
-  componentDidMount() {
-    // this.login()
-  }
-  componentWillUnmount() { }
-
-  componentDidShow() {
-
-  }
-
-  componentDidHide() { }
-
   render() {
     const {
       address,
@@ -182,7 +209,7 @@ class User extends Component {
               size='mini'
               className='primary'
               open-type='getUserInfo'
-              onGetUserInfo={this.login.bind(this)}
+              onGetUserInfo={this.getUserInfo.bind(this)}
             >
               登录
             </Button>

@@ -149,6 +149,13 @@ const strategies = {
     if (!pattern.test(val)) {
       return errMsg || '金额格式错误'
     }
+  },
+  isPriceWith0: function (val, errMsg) {
+    // 可以是0的正整数，正小数（小数位不超过2位）
+    const pattern = /((^[1-9]\d*)|^0)(\.\d{0,2}){0,1}$/
+    if (!pattern.test(val)) {
+      return errMsg || '金额格式错误'
+    }
   }
 
 }

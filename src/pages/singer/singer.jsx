@@ -11,10 +11,11 @@ import { getUserInfo, getUserState, createPay } from '@/api/user';
 import { getEventListById } from '@/api/event';
 import { getSongListById } from '@/api/song';
 import { createOrder, getOrderListById } from '@/api/order';
-import { set } from '@/utils/localStorage';
 import { heartCheck } from '@/utils/heartbeatjuejin';
-import { showToastAndGoto } from '@/utils/tools.js';
+import { goToLogin } from '@/utils/tools.js';
+import validator from '@/utils/validator'
 
+const { $Message } = require('../../iView/base/index');
 
 import './singer.scss';
 
@@ -39,7 +40,8 @@ class Singer extends Component {
       'i-modal': '../../iView/modal/index',
       'i-input': '../../iView/input/index',
       'i-panel': '../../iView/panel/index',
-      "i-tag": "../../iView/tag/index"
+      "i-tag": "../../iView/tag/index",
+      "i-message": "../../iView/message/index"
     },
   };
   constructor() {
@@ -134,7 +136,15 @@ class Singer extends Component {
   }
 
   componentDidMount() {
-    this.fetchUserDetail();
+    if (this.props.user.id) {
+      this.fetchUserDetail();
+    } else {
+      Taro.showToast({ title: '您还未登录,请登录~', icon: 'none' })
+      setTimeout(() => {
+        goToLogin()
+      }, 2000);
+
+    }
   }
   setSwiperHeight(value) {
     let height = 0;
@@ -348,6 +358,31 @@ class Singer extends Component {
       this.setState({
         actions: loadingTrue
       })
+      const isValid = validator(
+        [
+          {
+            value: this.state.selectedSong.price,
+            rules: [{
+              rule: 'isPrice',
+              msg: '歌曲价格格式错误'
+            }]
+          },
+        ],
+        [
+          {
+            value: this.state.tips,
+            rules: [{
+              rule: 'isPriceWith0',
+              msg: '打赏价格格式错误'
+            }]
+          },
+        ]
+      )
+      if (!isValid.status) {
+        Taro.showToast({ title: isValid.msg, icon: 'none' });
+        return;
+      }
+
       const amount = (Number(this.state.selectedSong.price) + Number(this.state.tips)) * 100
       createPay({ amount }).then(res => {
         Taro.requestPayment({
@@ -378,13 +413,14 @@ class Singer extends Component {
                   data: JSON.stringify({
                     type: 'createOrderOK',
                     id: this.$router.params.id,
+                    songName: this.state.selectedSong.name,
+                    userName: this.props.user.nickName,
                   }),
                 });
                 setTimeout(() => {
                   this.fetchOrderList();
                   this.onChangeTab({ detail: { key: 1 } })
-
-                }, 2000);
+                }, 1000);
               }).catch(err => {
                 this.setState({ actions: loadingFalse });
               })
@@ -415,7 +451,6 @@ class Singer extends Component {
   }
   componentDidShow() {
     const { path, params } = this.$router;
-    set('page', path + '?id=' + params.id);
     Taro.sendSocketMessage({
       data: JSON.stringify({
         type: 'join',
@@ -438,6 +473,10 @@ class Singer extends Component {
       } else if (data.type === 'goFetchOrderList') {
         console.log('我是歌手页面 收到 fetchOrderList请求');
         this.fetchOrderList();
+        console.log('data', data)
+        $Message({
+          content: `${data.data.userName}点了:${data.data.songName}`
+        });
       }
     });
   }
@@ -481,7 +520,7 @@ class Singer extends Component {
     } = this.state;
     return (
       <View className='singer'>
-
+        <i-message id="message" />
         <i-modal
           i-class='my-modal'
           title='确认订单'
