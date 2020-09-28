@@ -214,12 +214,19 @@ class MyCurrentOrder extends Component {
       const data = JSON.parse(res.data);
       if (data.type == 'pong') {
         heartCheck.reset().start();
-      } else if (data.type === 'goFetchOrderList') {
+      }
+      else if (data.type === 'goFetchOrderList') {
         $Message({
           content: '您有新订单~'
         });
         this.fetchOrderList();
         // 处理数据
+      }
+      else if (data.type === 'createTipsOKBack') {
+        $Message({
+          content: `${data.data.userName}打赏了${data.data.tips}元~`
+        });
+
       }
     });
   }

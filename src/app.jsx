@@ -17,6 +17,7 @@ class App extends Component {
   config = {
 
     pages: [
+
       'pages/index/index',
       'pages/user/profit/withdraw/withdraw',
       'pages/user/userQrCode/qr/qrinner/index',
@@ -39,6 +40,7 @@ class App extends Component {
       'pages/event/event',
       'pages/comment/comment',
       'pages/order/order',
+      'pages/tips/history',
       'pages/order/myHistoryOrder',
       'pages/order/myCurrentOrder',
       'pages/singer/singer',

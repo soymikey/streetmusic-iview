@@ -16,4 +16,15 @@
     height: 50px;
 
   }
+  .share-button{
+    height: 35PX;
+    width: 35PX;
+    padding: 0px;
+    background: white;
+  }
+  
+  .share-button::after {
+   border:0px
+  }
+  
 }

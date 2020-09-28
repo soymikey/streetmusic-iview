@@ -1,4 +1,4 @@
-ximport Taro, { Component } from '@tarojs/taro';
+import Taro, { Component } from '@tarojs/taro';
 import { connect } from '@tarojs/redux'
 
 import {
@@ -11,7 +11,7 @@ import {
   Input,
   Textarea,
 } from '@tarojs/components';
-xiuimport SixBlockComp from '@/components/SixBlockComp/SixBlockComp';
+import SixBlockComp from '@/components/SixBlockComp/SixBlockComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import { setUserInfo } from '@/actions/user'
@@ -58,7 +58,7 @@ class Index extends Component {
   }
 
   componentWillMount() {
-
+    // goToPage(`/pages/singer/singer?id=oUf6_4hX68zrrbvSKwFCNadg-OMU`)
     this.fetchHotEventList(true)
     this.fetchHotSongList(true)
     this.fetchRecommendList(true)
@@ -207,7 +207,7 @@ class Index extends Component {
             autoplay
           >
             {hotEventList.length ? hotEventList.map(item => {
-              return <SwiperItem>
+              return <SwiperItem key={item.id} >
                 <View className='image-wrapper' onClick={this.goToEventDetailPage.bind(this, item.id)}>
                   <Image src={item.poster[0]} mode='aspectFit' style='width: 100%' />
 

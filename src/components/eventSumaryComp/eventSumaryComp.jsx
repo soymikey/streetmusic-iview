@@ -56,49 +56,51 @@ class Eventsumarycomp extends Component {
       <View className='eventSumaryComp'>
         {list.map((item, index) => {
           return (
-            <i-row i-class='row-tab3' key={item.id}>
-              <i-col span='3' i-class='col-class avatar'  >
-                <View className='avtar-wrapper' onClick={this.goToSingerDetailPage.bind(this, item.userId)}>
+            <View key={item.id}>
 
-                  <i-avatar
-                    src={item.avatar}
-                    size='large'
-                  />
-                </View>
+              <i-row i-class='row-tab3' >
+                <i-col span='3' i-class='col-class avatar'  >
+                  <View className='avtar-wrapper' onClick={this.goToSingerDetailPage.bind(this, item.userId)}>
 
-              </i-col>
-              <i-col span='21' i-class='col-class'>
-                <i-row i-class='row-title'>
-                  <View onClick={this.goToEventDetailPage.bind(this, item.id)}>
-                    <i-col span='24' i-class='col-class'>
-                      <View className='username'>
-                        <Text>{item.nickName}</Text>
-                      </View>
-                    </i-col>
-                    <i-col span='24' i-class='col-class'>
-                      <View className='date'>
-                        {item.createdDate ? <View > <Text>{item.createdDate.slice(0, 10)}</Text><Text decode="true">&nbsp; &nbsp;</Text> <Text>{item.createdDate.slice(11, 19)}</Text></View>
-                          : null}
-                      </View>
-                    </i-col>
-                    <i-col span='24' i-class='col-class'>
-                      <View className='content'>
-                        <Text>{item.introduction}</Text>
-                      </View>
-                    </i-col>
-                    {item.poster.length && (
+                    <i-avatar
+                      src={item.avatar}
+                      size='large'
+                    />
+                  </View>
+
+                </i-col>
+                <i-col span='21' i-class='col-class'>
+                  <i-row i-class='row-title'>
+                    <View onClick={this.goToEventDetailPage.bind(this, item.id)}>
                       <i-col span='24' i-class='col-class'>
-                        <View className='image'>
-                          <Image
-                            mode='aspectFit'
-                            src={item.poster[0]}
-                            style='width: 100%;height:150px'
-                          />
+                        <View className='username'>
+                          <Text>{item.nickName}</Text>
                         </View>
                       </i-col>
-                    )}
-                  </View>
-                  {/* {isShowIcons ? (
+                      <i-col span='24' i-class='col-class'>
+                        <View className='date'>
+                          {item.createdDate ? <View > <Text>{item.createdDate.slice(0, 10)}</Text><Text decode="true">&nbsp; &nbsp;</Text> <Text>{item.createdDate.slice(11, 19)}</Text></View>
+                            : null}
+                        </View>
+                      </i-col>
+                      <i-col span='24' i-class='col-class'>
+                        <View className='content'>
+                          <Text>{item.introduction}</Text>
+                        </View>
+                      </i-col>
+                      {item.poster.length && (
+                        <i-col span='24' i-class='col-class'>
+                          <View className='image'>
+                            <Image
+                              mode='aspectFit'
+                              src={item.poster[0]}
+                              style='width: 100%;height:150px'
+                            />
+                          </View>
+                        </i-col>
+                      )}
+                    </View>
+                    {/* {isShowIcons ? (
                     <i-row i-class='icon-row'>
                       <i-col span='6' i-class='col-class icon-wrapper'>
                         <View onClick={this.iconHandler.bind(this, 'like')}>
@@ -134,10 +136,10 @@ class Eventsumarycomp extends Component {
                       </i-col>
                     </i-row>
                   ) : null} */}
-                </i-row>
-              </i-col>
-              {list.length - 1 === index ? null : <i-divider i-class='divider' height={24}></i-divider>}
-            </i-row>
+                  </i-row>
+                </i-col>
+                {list.length - 1 === index ? null : <i-divider i-class='divider' height={24}></i-divider>}
+              </i-row></View>
           );
         })}
       </View>

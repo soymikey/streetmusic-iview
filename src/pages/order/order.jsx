@@ -9,6 +9,7 @@ import './order.scss';
 @connect(state => state)
 class Order extends Component {
   config = {
+    enablePullDownRefresh: false,
     navigationBarTitleText: '订单',
     usingComponents: {
       'i-row': '../../iView/row/index',
@@ -34,7 +35,8 @@ class Order extends Component {
       <View className='order'>
         <i-cell-group>
           {this.props.user.role === 'artist' && <i-cell title='现在订单' is-link url='/pages/order/myCurrentOrder'></i-cell>}
-          <i-cell title='历史订单' is-link url='/pages/order/myHistoryOrder'></i-cell>
+          <i-cell title='打赏历史' is-link url='/pages/tips/history'></i-cell>
+          <i-cell title='订单历史' is-link url='/pages/order/myHistoryOrder'></i-cell>
         </i-cell-group>
         <View className='tabbar-container'>
           <TabbarComp currentTab='order' />

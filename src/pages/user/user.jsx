@@ -16,6 +16,7 @@ import './user.scss';
 @connect(state => state, { setUserInfo, logout })
 class User extends Component {
   config = {
+    enablePullDownRefresh: false,
     navigationBarTitleText: '我的',
     usingComponents: {
       'i-row': '../../iView/row/index',

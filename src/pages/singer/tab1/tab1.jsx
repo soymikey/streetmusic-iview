@@ -51,7 +51,7 @@ class Tab1 extends Component {
         <i-cell-group>
           {list.map(item => {
             return (
-              <i-cell key={item.name} title={item.name} label={item.price + '元'}>
+              <i-cell key={item.id} title={item.name} label={item.price + '元'}>
                 <Button slot='footer' size='mini' className='primary' onClick={this.order.bind(this, item)} disabled={userState === '0' || userState === '2'} >
                   点歌
                 </Button>

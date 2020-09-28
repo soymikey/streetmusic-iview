@@ -67,7 +67,12 @@ class CommentBarComp extends Component {
 
     })
   }
-
+  onShareAppMessage() {
+    return {
+      from: 'button',
+      path: `/pages/event/eventDetail/eventDetail?id=${this.props.id_}`
+    }
+  }
   componentWillUnmount() { }
 
   componentDidShow() { }
@@ -104,8 +109,15 @@ class CommentBarComp extends Component {
                 : <i-icon size='35' type='praise' />
               }</View>
             </i-col>
-            <i-col span='3' i-class='col-class'>
-              <i-icon size='35' type='accessory' />
+            <i-col span='3' i-class='col-class' >
+              {/* <i-icon size='35' type='accessory' /> */}
+              <Button
+                size='mini'
+                className='share-button'
+                open-type='share'
+              >
+                <i-icon size='35' type='accessory' />
+              </Button>
             </i-col>
           </i-row>
           <View className='tabbar-block'></View>
