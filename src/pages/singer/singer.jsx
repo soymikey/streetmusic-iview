@@ -5,6 +5,8 @@ import Tab3 from './tab3/tab3';
 import Tab1 from './tab1/tab1';
 import Tab2 from './tab2/tab2';
 import FollowButtonComp from '@/components/FollowButtonComp/FollowButtonComp';
+import Ball from '@/components/ball/ball';
+import TipsComp from '@/components/tipsComp/tipsComp';
 
 import { getUserInfo, getUserState, createPay } from '@/api/user';
 
@@ -16,6 +18,7 @@ import { createTips } from '@/api/tips';
 import { heartCheck } from '@/utils/heartbeatjuejin';
 import { goToLogin } from '@/utils/tools.js';
 import validator from '@/utils/validator'
+import tipsPNG from '@/asset/icon/tips.png';
 
 const { $Message } = require('../../iView/base/index');
 
@@ -578,8 +581,12 @@ class Singer extends Component {
     return (
       <View className='singer'>
         <i-message id="message" />
-        <View className='tip-wrapper' style='position:fixed;bottom:5%;right:5%;' onClick={() => { this.setState({ isShowTipsModal: true, tips: 1 }) }}>
-          <i-avatar src={userInfo.avatar} size='large' />
+        <Ball imageUrl={userInfo.avatar}/>
+        <View className='tip-wrapper' style='position:fixed;right:3%;bottom:3%;' onClick={() => { this.setState({ isShowTipsModal: true, tips: 1 }) }}>
+          <i-avatar src={tipsPNG} size='large' />
+         {/*  <View className='text' style='position: absolute;'>赏</View> */}
+          {/* <TipsComp imageUrl={userInfo.avatar}/> */}
+          
         </View>
 
         <i-pop-up

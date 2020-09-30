@@ -187,7 +187,7 @@ class Index extends Component {
     const { user } = this.props
     return (
       <View>
-
+       
         <View className='index pb50px'>
           <View className='search-wrapper'>
 
