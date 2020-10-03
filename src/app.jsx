@@ -17,13 +17,14 @@ class App extends Component {
   config = {
 
     pages: [
+      // 'pages/user/about/about',
 
       'pages/index/index',
       'pages/user/profit/withdraw/withdraw',
       'pages/user/userQrCode/qr/qrinner/index',
       'pages/user/userQrCode/qr/components/Qrcode/index',
       'pages/user/userQrCode/userQrCode',
-
+      'pages/user/userQrCode/userQrCodeOrder',
       'pages/user/user',
       'pages/index/search/search',
 
@@ -81,6 +82,11 @@ class App extends Component {
           text: '我的',
         },
       ],
+    },
+    permission: {
+      "scope.userLocation": {
+        "desc": "你的位置信息将用于小程序通知用户你的位置"
+      }
     },
     usingComponents: {
 

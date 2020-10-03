@@ -10,6 +10,7 @@ import { setUserInfo, logout, } from '@/actions/user';
 import { goToPage } from '@/utils/tools.js';
 import { get, set, remove } from '@/utils/localStorage';
 import { linkSocket, heartCheck } from '@/utils/heartbeatjuejin';
+const logo = require('@/asset/icon/logo.png');
 
 import './user.scss';
 
@@ -86,6 +87,13 @@ class User extends Component {
       goToPage('/pages/user/editMyInfo/editMyInfo');
     }
   }
+  setting() {
+    Taro.openSetting({
+      success(res) {
+        console.log('res', res)
+      }
+    })
+  }
   render() {
     const {
       address,
@@ -111,13 +119,14 @@ class User extends Component {
       collectionCount,
       followCount,
       eventCount,
+      DOB
     } = this.props.user;
     return (
       <View className='user'>
         <i-row i-class='user-info'>
           {nickName}
           <i-col span='4'>
-            <i-avatar src={avatar} size='large'></i-avatar>
+            <i-avatar src={avatar || logo} size='large'></i-avatar>
           </i-col>
           <i-col span='20' i-class='col-class'>
             <View className='user-name'>
@@ -198,28 +207,32 @@ class User extends Component {
               ></i-cell>
               <i-cell title='我的收益' is-link url='/pages/user/profit/profit'></i-cell>
               <i-cell title='收款二维码' is-link url={'/pages/user/userQrCode/userQrCode?id=' + id}></i-cell>
+              <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
             </View>
           )}
 
-          <i-cell title='关于' is-link></i-cell>
+        
+          {/* <i-cell title='关于' is-link url='/pages/user/about/about'></i-cell> */}
         </i-cell-group>
 
-        <View style='text-align:center;margin-top:40px;'>
-          {!id ? (
-            <Button
-              size='mini'
-              className='primary'
-              open-type='getUserInfo'
-              onGetUserInfo={this.getUserInfo.bind(this)}
-            >
-              登录
-            </Button>
-          ) : (
-              <Button size='mini' className='error' onClick={this.logout.bind(this)}>
-                退出
+        <View>
+          <View style='width:150px;margin:20px auto'>
+
+            {!id ? (
+              <Button
+
+                className='primary'
+                open-type='getUserInfo'
+                onGetUserInfo={this.getUserInfo.bind(this)}
+              >
+                登录
               </Button>
-            )}
-        </View>
+            ) : (
+                <Button className='error' onClick={this.logout.bind(this)}>
+                  退出
+                </Button>
+              )}
+          </View></View>
 
         <View className='tabbar-container'>
           <TabbarComp currentTab='user' />

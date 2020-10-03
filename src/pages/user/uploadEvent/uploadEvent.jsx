@@ -28,7 +28,8 @@ class UploadEvent extends Component {
     this.state = {
       name: '',
       introduction: '',
-      date: '',
+      startDate: '',
+      endDate: '',
       startTime: '',
       endTime: '',
       provinceCityRegion: { code: [], value: [] },
@@ -112,8 +113,11 @@ class UploadEvent extends Component {
   onChangeIntroduction(e) {
     this.setState({ introduction: e.detail.detail.value });
   }
-  onChangeDate(e) {
-    this.setState({ date: e.detail.value });
+  onChangeStartDate(e) {
+    this.setState({ startDate: e.detail.value });
+  }
+  onChangeEndDate(e) {
+    this.setState({ endDate: e.detail.value });
   }
   onChangeStartTime(e) {
     this.setState({ startTime: e.detail.value });
@@ -144,14 +148,15 @@ class UploadEvent extends Component {
     const {
       name,
       introduction,
-      date,
+      startDate,
+      endDate,
       startTime,
       endTime,
       address,
       poster,
       provinceCityRegion,
-
     } = this.state;
+
     const isValid = validator([
       {
         value: name,
@@ -173,10 +178,10 @@ class UploadEvent extends Component {
           }]
       },
       {
-        value: date,
+        value: startDate,
         rules: [{
           rule: 'required',
-          msg: '活动日期不能为空'
+          msg: '活动开始日期不能为空'
         }]
       },
       {
@@ -184,6 +189,13 @@ class UploadEvent extends Component {
         rules: [{
           rule: 'required',
           msg: '活动开始时间不能为空'
+        }]
+      },
+      {
+        value: endDate,
+        rules: [{
+          rule: 'required',
+          msg: '活动结束日期不能为空'
         }]
       },
       {
@@ -219,6 +231,23 @@ class UploadEvent extends Component {
       Taro.showToast({ title: isValid.msg, icon: 'none' });
       return;
     }
+    const now_ = new Date()
+    const startTime_ = new Date(Date.parse(`${startDate} ${startTime}`));
+    const endTime_ = new Date(Date.parse(`${endDate} ${endTime}`));
+
+
+    if (startTime_ < now_) {
+      Taro.showToast({ title: '开始时间不能小于当前时间', icon: 'none' });
+      return
+    }
+    if (startTime_ >= endTime_) {
+      Taro.showToast({ title: '开始时间不能小于结束时间', icon: 'none' });
+      return
+    }
+
+
+
+
     const poster_ = []
     for (const item of poster) {
       if (item.url.includes('http://qiniu.migaox.com')) {
@@ -240,14 +269,13 @@ class UploadEvent extends Component {
     const data = {
       name,
       introduction,
-      date,
+      startDate, endDate,
       startTime,
       endTime,
       address,
       poster: JSON.stringify(poster_),
       provinceCityRegion,
     }
-    console.log('data', data)
     this.setState({ isDisabled: true });
     if (this.state.isEdit) {
       data.id = this.state.id
@@ -274,7 +302,8 @@ class UploadEvent extends Component {
         this.setState({
           name: '',
           introduction: '',
-          date: '',
+          startDate: '',
+          endDate: '',
           startTime: '',
           endTime: '',
           provinceCityRegion: { code: [], value: [] },
@@ -315,7 +344,7 @@ class UploadEvent extends Component {
     const {
       name,
       introduction,
-      date,
+      startDate, endDate,
       startTime,
       endTime,
       address,
@@ -344,32 +373,47 @@ class UploadEvent extends Component {
           type='textarea'
         />
 
-        <Picker mode='date' onChange={this.onChangeDate.bind(this)}>
-          <View onClick={this.hideKeyBoard.bind(this)}>
-            <i-input title='日期' placeholder='活动日期' value={date} disabled />
-          </View>
-        </Picker>
-        <Picker mode='time' onChange={this.onChangeStartTime.bind(this)}>
-          <View onClick={this.hideKeyBoard.bind(this)}>
-            <i-input
-              title='开始时间'
-              placeholder='活动开始时间'
-              value={startTime}
-              disabled
-            />
-          </View>
-        </Picker>
+        <View style='display:flex' >
+          <View style='flex:1'>
+            <Picker mode='date' onChange={this.onChangeStartDate.bind(this)}>
+              <View onClick={this.hideKeyBoard.bind(this)}>
+                <i-input title='开始日期' placeholder='开始日期' value={startDate} disabled />
+              </View>
+            </Picker></View>
+          <View style='flex:1'>
+            <Picker mode='time' onChange={this.onChangeStartTime.bind(this)}>
+              <View onClick={this.hideKeyBoard.bind(this)}>
+                <i-input
+                  title='开始时间'
+                  placeholder='活动开始时间'
+                  value={startTime}
+                  disabled
+                />
+              </View>
+            </Picker></View>
+        </View>
+        <View style='display:flex' >
+          <View style='flex:1'>
+            <Picker mode='date' onChange={this.onChangeEndDate.bind(this)}>
+              <View onClick={this.hideKeyBoard.bind(this)}>
+                <i-input title='结束日期' placeholder='结束日期' value={endDate} disabled />
+              </View>
+            </Picker></View>
+          <View style='flex:1'>
+            <Picker mode='time' onChange={this.onChangeEndTime.bind(this)}>
+              <View onClick={this.hideKeyBoard.bind(this)}>
+                <i-input
+                  title='结束时间'
+                  placeholder='活动结束时间'
+                  value={endTime}
+                  disabled
+                />
+              </View>
+            </Picker></View>
+        </View>
 
-        <Picker mode='time' onChange={this.onChangeEndTime.bind(this)}>
-          <View onClick={this.hideKeyBoard.bind(this)}>
-            <i-input
-              title='结束时间'
-              placeholder='活动结束时间'
-              value={endTime}
-              disabled
-            />
-          </View>
-        </Picker>
+
+
         <Picker mode='region' onChange={this.onChangeProvinceCityRegion.bind(this)}>
           <View onClick={this.hideKeyBoard.bind(this)}>
             <i-input

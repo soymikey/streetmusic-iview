@@ -187,7 +187,7 @@ class Uploadsong extends Component {
           title='名称'
           placeholder='歌曲名称'
           value={name}
-          maxlength={-1}
+          maxlength={20}
           onChange={this.onChangeName.bind(this)}
         />
         <i-input

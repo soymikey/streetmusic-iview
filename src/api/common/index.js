@@ -8,12 +8,14 @@ export const createLike = (data) => { return Wechat.request('/api/like/create', 
 export const createCollection = (data) => { return Wechat.request('/api/collection/create', data) }//收藏
 export const createFollow = (data) => { return Wechat.request('/api/follow/create', data) }//关注
 export const getSearchResult = (data) => { return Wechat.request('/api/search', data) }//搜索
+export const getSMSCode = (data) => { return Wechat.request('/api/code', data) }//获取验证码
 
 export const uploadImage = (file, url) => {
     Taro.showLoading({
         title: '正在上传图片',
     });
     return new Promise((resolve, reject) => {
+                console.log('file',file)
         Taro.uploadFile({
             url: baseURL + url,// '/api/event/image/upload',
             filePath: file,
@@ -26,7 +28,7 @@ export const uploadImage = (file, url) => {
                 Taro.hideLoading();
             },
             fail: function (e) {
-                reject(e)
+                Taro.showToast({title:'图片上传失败',icon:'none'})
                 Taro.hideLoading();
             }
         })

@@ -6,9 +6,11 @@ import './editMyInfo.scss';
 import { getUserInfo, updateUserInfo } from '@/api/user';
 import { connect } from '@tarojs/redux'
 import validator from '@/utils/validator'
-import { uploadImage } from '@/api/common';
+import { uploadImage, getSMSCode } from '@/api/common';
 import { setUserInfo } from '@/actions/user'
+import { set, get } from '@/utils/localStorage';
 
+let clock
 @connect(state => state, { setUserInfo })
 
 class EditMyInfo extends Component {
@@ -54,7 +56,12 @@ class EditMyInfo extends Component {
       role: '',
       state: '',
       token: '',
-      isDisabled: false
+      isDisabled: false,
+      code: '',
+      smsDisabled: false,
+      smsText: '点击发送验证码',
+      smsCountDown: 60,
+
 
     };
   }
@@ -85,8 +92,9 @@ class EditMyInfo extends Component {
         state,
         token,
       } = res.data
+
       this.setState({
-        avatar: [{ url: avatar }],
+        avatar: avatar.includes('http://qiniu.migaox.com') ? [{ url: avatar }] : [],
         address,
         city,
         cityCode,
@@ -123,7 +131,6 @@ class EditMyInfo extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
   }
   onChangeName(e) {
     this.setState({ nickName: e.target.detail.value });
@@ -136,8 +143,37 @@ class EditMyInfo extends Component {
   hideKeyBoard() {
     Taro.hideKeyboard();
   }
+  getAddress() {
+    Taro.chooseLocation({
+      success: (res) => {
+        if (res.errMsg === "chooseLocation:ok") {
+          this.setState({ address: res.name + ' ' + res.address })
+        }
+
+      },
+      fail: err => {
+        Taro.showModal({
+          title: '提示',
+          content: '请在设置里开启定位',
+          success: res => {
+            if (res.confirm) {
+              Taro.switchTab({
+                url: '/pages/user/user',
+              });
+            } else if (res.cancel) {
+              Taro.showToast({ title: '获取修改状态失败' })
+            }
+          }
+
+        })
+      }
+    })
+  }
   onChangeAddress(e) {
     this.setState({ address: e.detail.detail.value });
+  }
+  onChangeCode(e) {
+    this.setState({ code: e.detail.detail.value });
   }
   onChangeIntroduction(e) {
     this.setState({ introduction: e.detail.detail.value });
@@ -168,8 +204,14 @@ class EditMyInfo extends Component {
       phone,
     } = this.state;
 
-
-
+    if (!avatar.length) {
+      Taro.showToast({ title: '头像不能为空', icon: 'none' });
+      return;
+    }
+    if (this.state.code !== get('code')) {
+      Taro.showToast({ title: '验证码输入错误,请重试~', icon: 'none' });
+      return;
+    }
     const isValid = validator(
       [
 
@@ -232,9 +274,10 @@ class EditMyInfo extends Component {
         avatar_.push(item.url)
       } else {
         const isUploaded = await uploadImage(item.url, '/api/userinfo/avatar/upload')
+        console.log('isUploaded', isUploaded)
         const isUploaded_ = JSON.parse(isUploaded)
         if (isUploaded_.errno !== 0) {
-          Taro.showToast({ title: '上传失败', icon: 'none' })
+          Taro.showToast({ title: '图片上传失败失败', icon: 'none' })
           this.setState({ isDisabled: false });
           return
         } else {
@@ -264,12 +307,29 @@ class EditMyInfo extends Component {
       }, 2000);
 
     }).catch(e => {
-
       this.setState({ isDisabled: false });
-
     })
+  }
 
-
+  sendCode() {
+    this.setState({ smsDisabled: true, smsText: this.state.smsCountDown + '秒后可重新获取' })
+    clock = setInterval(this.doLoop, 1000, this);
+  }
+  doLoop(that) {
+    that.setState({ smsCountDown: that.state.smsCountDown - 1 }, () => {
+      if (that.state.smsCountDown > 0) {
+        that.setState({ smsText: that.state.smsCountDown + '秒后可重新获取' })
+      } else {
+        clearInterval(clock); //清除js定时器
+        that.setState({ smsText: '点击发送验证码', smsDisabled: false, smsCountDown: 10 })
+      }
+    })
+  }
+  fetchMSMCode() {
+    return getSMSCode().then(res => {
+      set('code', res.data.code)
+      this.sendCode()
+    })
   }
   componentWillUnmount() { }
 
@@ -279,7 +339,6 @@ class EditMyInfo extends Component {
 
   render() {
     const {
-
       provinceCityRegion,
       address,
       avatar,
@@ -304,7 +363,9 @@ class EditMyInfo extends Component {
       role,
       state,
       token,
-      isDisabled
+      isDisabled,
+      code,
+      smsDisabled, smsCountDown, smsText
     } = this.state;
     return (
       <View className='editMyInfo'>
@@ -331,6 +392,31 @@ class EditMyInfo extends Component {
           maxlength={11}
           onChange={this.onChangePhone.bind(this)}
         />
+        <View style='display:flex'>
+          <View style='width:60%;'>
+            <i-input
+              title='验证码'
+              placeholder='4位验证码'
+              value={code}
+              maxlength={4}
+              onChange={this.onChangeCode.bind(this)}
+              type='number'
+            />
+          </View>
+          <View style='flex:1;display: flex; align-items: center;justify-content: end; background: #fff;'>
+            <View style='text-align:right;width:100%;padding-right:15px' >
+              <Button
+                size='mini'
+                className='success'
+                onClick={this.fetchMSMCode.bind(this)}
+                disabled={smsDisabled}
+              >
+                {smsText}
+              </Button>
+            </View>
+          </View>
+
+        </View>
         <Picker mode='region' onChange={this.onChangeProvinceCityRegion.bind(this)}>
           <View onClick={this.hideKeyBoard.bind(this)}>
             <i-input
@@ -341,14 +427,36 @@ class EditMyInfo extends Component {
             />
           </View>
         </Picker>
-        <i-input
+        {/* <i-input
           title='地址'
           placeholder='详细地址'
           value={address}
           maxlength={150}
           onChange={this.onChangeAddress.bind(this)}
           type='textarea'
-        />
+        /> */}
+        <View style='display:flex'>
+          <View style='width:80%;'>
+            <i-input
+              title='地址'
+              placeholder='详细地址'
+              value={address}
+              maxlength={150}
+              onChange={this.onChangeAddress.bind(this)}
+              type='textarea'
+            />
+          </View>
+          <View style='flex:1;display: flex; align-items: center;justify-content: center; background: #fff;'>
+            <Button
+              size='mini'
+              className='success'
+              onClick={this.getAddress.bind(this)}
+            >
+              地址
+          </Button>
+          </View>
+
+        </View>
         <i-input
           title='介绍'
           placeholder='个人介绍'

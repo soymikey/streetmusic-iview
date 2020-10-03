@@ -24,7 +24,7 @@ const INITIAL_STATE = {
   followCount: 0,
   eventCount: 0,
   wsConectionState: -1,//-1=未连接 0连接中 1连接成功
-
+  DOB:'',
 }
 
 

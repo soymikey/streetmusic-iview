@@ -20,7 +20,23 @@ class Wechat {
    */
   static getUserInfo() {
     return new Promise((resolve, reject) =>
-      Taro.getUserInfo({ withCredentials: true, success: resolve, fail: reject })
+      Taro.getUserInfo({
+        withCredentials: true, success: resolve, fail: err => {
+          Taro.showModal({
+            title: '提示',
+            content: '请在设置允许用户信息',
+            success: res => {
+              if (res.confirm) {
+                Taro.switchTab({
+                  url: '/pages/user/user',
+                });
+              } else if (res.cancel) {
+                Taro.showToast({title:'用户信息失败'})
+              }
+            }
+          })
+        }
+      })
     );
   }
 

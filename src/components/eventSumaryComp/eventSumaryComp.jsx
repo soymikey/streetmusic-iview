@@ -79,8 +79,9 @@ class Eventsumarycomp extends Component {
                       </i-col>
                       <i-col span='24' i-class='col-class'>
                         <View className='date'>
-                          {item.createdDate ? <View > <Text>{item.createdDate.slice(0, 10)}</Text><Text decode="true">&nbsp; &nbsp;</Text> <Text>{item.createdDate.slice(11, 19)}</Text></View>
-                            : null}
+                          <View > <Text>{item.startDate}</Text><Text decode="true">&nbsp; &nbsp;</Text>
+                            <Text>{item.startTime}</Text></View>
+
                         </View>
                       </i-col>
                       <i-col span='24' i-class='col-class'>

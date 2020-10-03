@@ -24,8 +24,6 @@ const { $Message } = require('../../iView/base/index');
 
 import './singer.scss';
 
-const post1_ = require('@/asset/images/poster1.png');
-const post2_ = require('@/asset/images/poster2.png');
 
 @connect(state => state)
 class Singer extends Component {
@@ -36,7 +34,6 @@ class Singer extends Component {
     usingComponents: {
       'i-row': '../../iView/row/index',
       'i-col': '../../iView/col/index',
-      'i-tag': '../../iView/tag/index',
       'i-avatar': '../../iView/avatar/index',
       'i-button': '../../iView/button/index',
       'i-icon': '../../iView/icon/index',
@@ -274,7 +271,7 @@ class Singer extends Component {
   }
 
   onOpenModal(song) {
-    this.setState({ isShowModal: true, selectedSong: song });
+    this.setState({ isShowModal: true, selectedSong: song, tips: 0 });
   }
 
   onPullDownRefresh() {
@@ -556,6 +553,7 @@ class Singer extends Component {
       path: `/pages/singer/singer?id=${this.$router.params.id}`
     }
   }
+ 
   render() {
     const {
       tagList,
@@ -581,12 +579,12 @@ class Singer extends Component {
     return (
       <View className='singer'>
         <i-message id="message" />
-        <Ball imageUrl={userInfo.avatar}/>
-        <View className='tip-wrapper' style='position:fixed;right:3%;bottom:3%;' onClick={() => { this.setState({ isShowTipsModal: true, tips: 1 }) }}>
+        <Ball imageUrl={userInfo.avatar} />
+        <View className='tip-wrapper' style='position:fixed;right:2%;bottom:1%;' onClick={() => { this.setState({ isShowTipsModal: true, tips: 1 }) }}>
           <i-avatar src={tipsPNG} size='large' />
-         {/*  <View className='text' style='position: absolute;'>赏</View> */}
+          {/*  <View className='text' style='position: absolute;'>赏</View> */}
           {/* <TipsComp imageUrl={userInfo.avatar}/> */}
-          
+
         </View>
 
         <i-pop-up
@@ -599,7 +597,7 @@ class Singer extends Component {
           <View className='tip-wrapper'>
             {
               tipsList.map(item => {
-                return <View className='button-wrapper' style='width:33.33%;padding-top: 10px;text-align:center' onClick={this.tip.bind(this, item)} >
+                return <View key={item.id} className='button-wrapper' style='width:33.33%;padding-top: 10px;text-align:center' onClick={this.tip.bind(this, item)} >
                   <i-button
                     shape='circle'
                     type={item === this.state.tips ? 'primary' : ''}
@@ -608,20 +606,16 @@ class Singer extends Component {
               })
             }
           </View>
-          {isShowModal ? <View className='song-info'  >
+          {isShowModal ? <View> <View className='song-info'  >
             <View className='song-name ellipsis'> 歌曲:{this.state.selectedSong.name}</View>
             <View className='song-price'> {this.state.selectedSong.price}元</View>
-          </View> : null}
-          <View className='song-info' >
-            <View className='song-name'>打赏: {this.state.tips} 元</View>
-            <View className='song-name' style='text-align:right;color:black;'  > 总计:
-            {Number(this.state.tips) + (isShowModal ? Number(this.state.selectedSong.price) : 0)}
+          </View>  <View className='song-info' >
+              <View className='song-name'>打赏: {this.state.tips} 元</View>
+              <View className='song-name' style='text-align:right;color:black;'>总计:{Number(this.state.tips) + (isShowModal ? Number(this.state.selectedSong.price) : 0)}
             元</View>
-          </View>
-
-          {isShowModal ? <i-panel>
-            <i-input value={content} title="留言" left mode="wrapped" placeholder="请输入你的留言..." maxlength={50} onChange={this.handleContent.bind(this)} />
-          </i-panel> : null
+            </View> <i-panel>
+              <i-input value={content} title="留言" left mode="wrapped" placeholder="请输入你的留言..." maxlength={50} onChange={this.handleContent.bind(this)} />
+            </i-panel></View> : <View className='tips-total'>打赏: {this.state.tips} 元</View>
           }
         </i-pop-up>
 
@@ -682,9 +676,28 @@ class Singer extends Component {
             </i-col>
           </i-row>
           <View className='tag-container'>
-            {tagList.map((item, index) => {
+            <i-tag
+              color='blue'
+              class='i-tags'
+            >
+              {userInfo.starSign}
+            </i-tag>
+            <i-tag
+              color='green'
+              class='i-tags'
+            >
+              {userInfo.city}
+            </i-tag>
+            <i-tag
+              color='yellow'
+              class='i-tags'
+            >
+              {userInfo.year}
+            </i-tag>
+            {/* {tagList.map((item, index) => {
               return (
                 <i-tag
+                  key={index}
                   key={item}
                   color={colorList[index]}
                   class='i-tags'
@@ -692,7 +705,7 @@ class Singer extends Component {
                   {item}
                 </i-tag>
               );
-            })}
+            })} */}
           </View>
         </View>
         <View

@@ -36,6 +36,7 @@ class Registerartist extends Component {
       phone: '',
       residentId: '',
       isDisabled: false,
+      DOB: '',
     };
   }
   componentDidMount() {
@@ -85,6 +86,9 @@ class Registerartist extends Component {
       avatar: this.state.avatar.concat(obj),
     });
   }
+  onChangeDOB(e) {
+    this.setState({ DOB: e.detail.value });
+  }
   registerArtist() {
     const {
       realName,
@@ -92,11 +96,9 @@ class Registerartist extends Component {
       provinceCityRegion,
       address,
       phone,
+      DOB,
       residentId,
     } = this.state;
-
-
-
     const isValid = validator(
       [
 
@@ -105,6 +107,13 @@ class Registerartist extends Component {
           rules: [{
             rule: 'required',
             msg: '真实名字不能为空'
+          }]
+        },
+        {
+          value: DOB,
+          rules: [{
+            rule: 'required',
+            msg: '生日不能为空'
           }]
         },
         {
@@ -158,6 +167,7 @@ class Registerartist extends Component {
       address,
       phone,
       residentId,
+      DOB
     }
     this.setState({ isDisabled: true });
     registerArtist(data).then(res => {
@@ -172,7 +182,6 @@ class Registerartist extends Component {
     }).catch(e => {
 
       this.setState({ isDisabled: false });
-
     })
 
 
@@ -191,7 +200,7 @@ class Registerartist extends Component {
       address,
       avatar,
       phone,
-      residentId, isDisabled
+      residentId, isDisabled, DOB
     } = this.state;
     return (
       <View className='registerArtist'>
@@ -210,6 +219,11 @@ class Registerartist extends Component {
           maxlength={-1}
           onChange={this.onChangeRealName.bind(this)}
         />
+        <Picker mode='date' onChange={this.onChangeDOB.bind(this)}>
+          <View onClick={this.hideKeyBoard.bind(this)}>
+            <i-input title='生日' placeholder='生日' value={DOB} disabled />
+          </View>
+        </Picker>
         <i-input
           title='手机'
           placeholder='手机号码'

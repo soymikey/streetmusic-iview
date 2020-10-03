@@ -5,15 +5,12 @@ import { getCommentList } from '@/api/common';
 
 import post1 from '@/asset/images/poster1.png';
 import post2 from '@/asset/images/poster2.png';
-import OneBlockComp from '@/components/OneBlockComp/OneBlockComp';
 import FollowButtonComp from '@/components/FollowButtonComp/FollowButtonComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
 import CommentSumaryComp from '@/components/commentSumaryComp/commentSumaryComp';
 import CommentBarComp from '@/components/commentBarComp/commentBarComp';
 import './eventDetail.scss';
 
-const post1_ = require('@/asset/images/poster1.png');
-const post2_ = require('@/asset/images/poster2.png');
 
 class EventDetail extends Component {
   // eslint-disable-next-line react/sort-comp
@@ -45,7 +42,8 @@ class EventDetail extends Component {
       ],
       name: '',
       introduction: '',
-      date: '',
+      startDate: '',
+      endDate: '',
       startTime: '',
       endTime: '',
       address: '',
@@ -82,7 +80,8 @@ class EventDetail extends Component {
         address,
         city,
         cityCode,
-        date,
+        startDate,
+        endDate,
         endTime,
         introduction,
         name,
@@ -110,7 +109,8 @@ class EventDetail extends Component {
         nickName,
         name,
         introduction,
-        date,
+        startDate,
+        endDate,
         startTime,
         endTime,
         address,
@@ -166,12 +166,13 @@ class EventDetail extends Component {
         this.setState({
           commentList: override
             ? res.data.list
-            : this.state.commentList(res.data.list),
+            : this.state.list.concat(res.data.list),
           total: res.data.total,
           loading: false,
         });
       })
       .catch(err => {
+        this.setState({loading:false})
         console.log('==> [ERROR]', err);
       });
   }
@@ -219,7 +220,8 @@ class EventDetail extends Component {
       commentList,
       name,
       introduction,
-      date,
+      startDate,
+      endDate,
       startTime,
       endTime,
       address,
@@ -278,11 +280,12 @@ class EventDetail extends Component {
             <i-col span='24' i-class='col-class'>
               <View>
                 <Text>
-                  {date.slice(0, 10)}
+
+                  {startDate.slice(0, 10)}
                   <Text decode='true'>&nbsp;</Text>
                   {startTime.slice(0, 5)}
                   <Text decode='true'>&nbsp;</Text>到<Text decode='true'>&nbsp;</Text>
-                  {date.slice(0, 10)}
+                  {endDate.slice(0, 10)}
                   <Text decode='true'>&nbsp;</Text>
                   {endTime.slice(0, 5)}
                 </Text>
@@ -313,7 +316,7 @@ class EventDetail extends Component {
             </i-col>
           </i-row>
 
-          <View className='tag-container'>
+          {/* <View className='tag-container'>
             {tagList.map(item => {
               return (
                 <i-tag key={item} class='i-tags'>
@@ -321,7 +324,7 @@ class EventDetail extends Component {
                 </i-tag>
               );
             })}
-          </View>
+          </View> */}
           {/* <i-row i-class='icon-row'>
             {iconList.map(item => {
               return (

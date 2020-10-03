@@ -17,7 +17,7 @@ class ImagePickerComp extends Component {
     this.state = {};
   }
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
+    
   }
 
   componentWillUnmount() {}

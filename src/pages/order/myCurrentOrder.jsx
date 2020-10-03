@@ -36,9 +36,7 @@ class MyCurrentOrder extends Component {
       totalOrderPage: 30,
       loading: false,
       stateList: [
-
         { value: '1', label: '上线' },
-
         { value: '2', label: '休息中' },
         { value: '0', label: '下线' },
       ],
@@ -70,6 +68,7 @@ class MyCurrentOrder extends Component {
         const state_ = this.state.stateList.filter(
           item => item.value === res.data.userInfo.state
         )[0].label;
+        console.log('state_', state_)
         this.setState({
           orderList: res.data.list,
           state: state_,
@@ -82,18 +81,45 @@ class MyCurrentOrder extends Component {
   onChangeState(event) {
     const label = this.state.stateList[event.detail.value].label;
     const value = this.state.stateList[event.detail.value].value;
-    const data = {
-      state: value,
-    };
-    updateUserState(data).then(res => {
-      this.setState({ state: label });
-      Taro.sendSocketMessage({
-        data: JSON.stringify({
-          type: 'updateUserStateOK',
-          artistId: this.props.user.id,
-        }),
-      });
-    });
+
+    Taro.getLocation({
+      type: 'wgs84',
+      isHighAccuracy: true,
+      success: res => {
+        const data = {
+          state: value,
+          latitude: res.latitude,
+          longitude: res.longitude,
+        };
+
+        updateUserState(data).then(res => {
+          this.setState({ state: label });
+          Taro.sendSocketMessage({
+            data: JSON.stringify({
+              type: 'updateUserStateOK',
+              artistId: this.props.user.id,
+            }),
+          });
+        });
+      },
+      fail: err => {
+        Taro.showModal({
+          title: '提示',
+          content: '请在设置里开启定位',
+          success: res => {
+            if (res.confirm) {
+              Taro.switchTab({
+                url: '/pages/user/user',
+              });
+            } else if (res.cancel) {
+              Taro.showToast({title:'获取修改状态失败'})
+            }
+          }
+        })
+
+      }
+
+    })
   }
 
   onPullDownRefresh() {

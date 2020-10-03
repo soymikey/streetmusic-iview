@@ -56,6 +56,7 @@ export const getProfitById = () => { return Wechat.request('/api/userinfo/profit
 export const withdrawByUserId = (data) => { return Wechat.request('/api/userinfo/withdraw/create', data) }
 export const getWithdrawList = (data) => { return Wechat.request('/api/userinfo/withdraw/history', data) }
 export const createPay = (data) => { return Wechat.request('/api/userinfo/pay/create', data) }
+export const createQrCodeStand = (data) => { return Wechat.request('/api/userinfo/createQRCodeStand', data) }
 
 export const uploadUserImage = files => {
   return new Promise((resolve, reject) => {

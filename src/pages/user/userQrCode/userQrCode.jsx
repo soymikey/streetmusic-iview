@@ -3,7 +3,7 @@ import { View, Button, Text, Image } from '@tarojs/components'
 import { getUserQrCode } from '@/api/user';
 import WQRCode from '@/components/WQRCode/index'
 import uQRCode from '@/components/WQRCode/uqrcode.js'
-
+import { goToPage } from '@/utils/tools.js';
 
 import './userQrCode.scss'
 
@@ -79,7 +79,9 @@ class Userqrcode extends Component {
       url: '/pages/user/userQrCode/qr/components/Qrcode/index'
     })
   }
-
+  goToQRcodeOrderPage() {
+    goToPage('/pages/user/userQrCode/userQrCodeOrder')
+  }
   render() {
     const { qrcodeSrc } = this.state
     return (
@@ -91,31 +93,26 @@ class Userqrcode extends Component {
           <WQRCode cid="michael" text={'https://streetmusic.migaox.com/qrcode/code?id=oUf6_4hX68zrrbvSKwFCNadg-OMU'} size={300} foregroundColor="#9b9bdf" makeOnLoad logo="http://qiniu.migaox.com/1600689451849.jpg" />
         </View> */}
 
-        <View className='button' style='text-align:center;margin-top:20px;'>
-          <Button
-            size='mini'
-            className='primary'
-
-            onClick={this.saveImageToAlbum.bind(this)}
-          >
-            保存图片
+        <View className='button' style='margin-top:20px;display:flex;justify-content: space-around;;'>
+          <View style='text-align:center'>
+            <Button
+              size='mini'
+              className='primary'
+              onClick={this.saveImageToAlbum.bind(this)}
+            >
+              保存图片
               </Button>
-          {/* <Button
-            size='mini'
-            className='primary'
-
-            onClick={this.toComponent1.bind(this)}
-          >
-            1
+          </View>
+          <View style='text-align:center'>
+            <Button
+              size='mini'
+              className='success'
+              onClick={this.goToQRcodeOrderPage.bind(this)}
+            >
+              申请二维码收款码
               </Button>
-          <Button
-            size='mini'
-            className='primary'
+          </View>
 
-            onClick={this.toComponent2.bind(this)}
-          >
-            2
-              </Button> */}
         </View>
       </View>
 
