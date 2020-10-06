@@ -25,6 +25,7 @@ class MyCurrentOrder extends Component {
       'i-icon': '../../iView/icon/index',
       'i-modal': '../../iView/modal/index',
       "i-message": "../../iView/message/index",
+      "i-input": "../../iView/input/index",
     },
   };
 
@@ -68,7 +69,6 @@ class MyCurrentOrder extends Component {
         const state_ = this.state.stateList.filter(
           item => item.value === res.data.userInfo.state
         )[0].label;
-        console.log('state_', state_)
         this.setState({
           orderList: res.data.list,
           state: state_,
@@ -81,7 +81,6 @@ class MyCurrentOrder extends Component {
   onChangeState(event) {
     const label = this.state.stateList[event.detail.value].label;
     const value = this.state.stateList[event.detail.value].value;
-
     Taro.getLocation({
       type: 'wgs84',
       isHighAccuracy: true,
@@ -91,7 +90,6 @@ class MyCurrentOrder extends Component {
           latitude: res.latitude,
           longitude: res.longitude,
         };
-
         updateUserState(data).then(res => {
           this.setState({ state: label });
           Taro.sendSocketMessage({
@@ -112,7 +110,7 @@ class MyCurrentOrder extends Component {
                 url: '/pages/user/user',
               });
             } else if (res.cancel) {
-              Taro.showToast({title:'获取修改状态失败'})
+              Taro.showToast({ title: '获取修改状态失败' })
             }
           }
         })
@@ -262,7 +260,7 @@ class MyCurrentOrder extends Component {
   componentDidHide() { }
 
   render() {
-    const { orderList, isShowModal, selectedOrder, actions } = this.state;
+    const { orderList, isShowModal, selectedOrder, actions, state, stateList } = this.state;
     return (
       <View className='order'>
         <View className='refresh' onClick={this.refresh.bind(this)} >
@@ -283,7 +281,7 @@ class MyCurrentOrder extends Component {
           </View>
         </i-modal>
         <i-row i-class='state'>
-          <Picker
+          {/* <Picker
             mode='selector'
             range={this.state.stateRange}
             onChange={this.onChangeState.bind(this)}
@@ -291,7 +289,22 @@ class MyCurrentOrder extends Component {
             <AtList>
               <AtListItem title='状态' extraText={this.state.state} />
             </AtList>
+          </Picker> */}
+        
+          <Picker
+            mode='selector'
+            range={this.state.stateRange}
+            onChange={this.onChangeState.bind(this)} value={stateList.findIndex(item => item.label === state)}
+          >
+            <View onClick={this.hideKeyBoard.bind(this)}>
+              <i-input title='状态' value={state} disabled />
+            </View>
           </Picker>
+          {/* <Picker mode='date' onChange={this.onChangeStartDate.bind(this)} value={startDate}>
+              <View onClick={this.hideKeyBoard.bind(this)}>
+                <i-input title='开始日期' placeholder='开始日期' value={startDate} disabled />
+              </View>
+            </Picker> */}
         </i-row>
         {orderList.map((item, index) => {
           return (
@@ -312,7 +325,7 @@ class MyCurrentOrder extends Component {
                       订单日期:
                       {item.createdDate && <Text><Text>{item.createdDate.slice(0, 10)}</Text><Text decode="true">&nbsp;</Text> <Text>{item.createdDate.slice(11, 16)}</Text></Text>}
                     </i-col>
-                    <i-divider height={10}></i-divider>
+                    <i-divider i-class='divider' height={10}></i-divider>
                     {/* <i-col span='18' i-class='col-class name ellipsis'>
                       用户名:{item.nickName}
                     </i-col>
@@ -355,11 +368,11 @@ class MyCurrentOrder extends Component {
                   </i-row>
                 </i-col>
               </i-row>
-              <i-divider height={24}></i-divider>
+              <i-divider i-class='divider' height={24}></i-divider>
             </View>
           );
         })}
-        <i-divider height={48} content='加载已经完成,没有其他数据'></i-divider>
+        <i-divider i-class='divider' height={48} content='加载已经完成,没有其他数据'></i-divider>
       </View>
     );
   }

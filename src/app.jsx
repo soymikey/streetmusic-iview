@@ -42,6 +42,7 @@ class App extends Component {
       'pages/comment/comment',
       'pages/order/order',
       'pages/tips/history',
+      'pages/reference/history',
       'pages/order/myHistoryOrder',
       'pages/order/myCurrentOrder',
       'pages/singer/singer',

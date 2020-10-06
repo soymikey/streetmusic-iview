@@ -40,7 +40,7 @@ width: 60px;
     height: 250px;
     padding-left: 20px;
     padding-right: 20px;
-    padding-top: 50px;
+    padding-top: 30px;
     padding-bottom: 50px;
     position: relative;
     .background {
@@ -67,9 +67,9 @@ width: 60px;
       }
       .row-top-col-right{
         height: 100%;
+        display: flex;
         justify-content: end;
-          display: flex;
-          align-items: center;
+        align-items: center;
       }
       .follow-button {
         width: 120px;
@@ -99,6 +99,7 @@ width: 60px;
       }
       .state{
         font-size: $size-s;
+        text-align: right;
         .title{
 
         }

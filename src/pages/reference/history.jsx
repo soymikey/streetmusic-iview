@@ -1,34 +1,39 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View, Button, Text } from '@tarojs/components'
+/* eslint-disable react/no-unused-state */
+/* eslint-disable react/sort-comp */
+import Taro, { Component } from '@tarojs/taro';
+import { View, Button, Picker } from '@tarojs/components';
+import { connect } from '@tarojs/redux';
+import { getReferenceHistoryListById } from '@/api/user';
 
+import './history.scss';
 
-import './withdrawHistory.scss'
-
-import {
-  getWithdrawList
-} from '@/api/user';
-class Withdrawhistory extends Component {
-
+@connect(state => state)
+class History extends Component {
   config = {
-    navigationBarTitleText: '提现历史',
+    navigationBarTitleText: '推荐好友',
     usingComponents: {
-
-      'i-cell-group': '../../../../iView/cell-group/index',
-      'i-cell': '../../../../iView/cell/index',
-      'i-divider': '../../../../iView/divider/index',
-      'i-input': '../../../../iView/input/index',
-
+      'i-row': '../../iView/row/index',
+      'i-col': '../../iView/col/index',
+      'i-divider': '../../iView/divider/index',
+      'i-avatar': '../../iView/avatar/index',
+      'i-divider': '../../iView/divider/index',
+      'i-icon': '../../iView/icon/index',
+      'i-modal': '../../iView/modal/index',
+      'i-cell-group': '../../iView/cell-group/index',
+      'i-cell': '../../iView/cell/index',
+      'i-input': '../../iView/input/index',
     },
-  }
+  };
+
   constructor() {
     super(...arguments);
     this.state = {
-      list: [],
       total: 0,
-      amount: 0,
-      pageSize: 20,
+      pageSize: 10,
       pageNo: 1,
       loading: false,
+      list: [],
+      amount: 0,
       startDate: '',
       endDate: '',
       startTime: '00:00',
@@ -36,18 +41,18 @@ class Withdrawhistory extends Component {
       today:'',
     };
   }
+
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps)
+    // console.log(this.props, nextProps);
   }
   componentDidMount() {
     this.initDate()
   }
-
   initDate() {
     var currentDate = new Date(+new Date() + 8 * 3600 * 1000);
     var ourDate = new Date(+new Date() + 8 * 3600 * 1000);
     ourDate.setDate(ourDate.getDate() - 30);
-    
+
     this.setState({
       startDate: ourDate.toISOString().split('T')[0], endDate: currentDate.toISOString().split('T')[0],
       endTime: currentDate.toISOString().split('T')[1].slice(0, 5),
@@ -59,10 +64,8 @@ class Withdrawhistory extends Component {
 
   getList(override) {
     Taro.showLoading({
-      title: '加载中-提现记录',
+      title: '加载中-推荐好友',
     });
-
-    // 向后端请求指定页码的数据
     const { pageSize, pageNo, startDate,
       endDate,
       startTime,
@@ -70,21 +73,20 @@ class Withdrawhistory extends Component {
     const startDateTime = startDate + ' ' + startTime
     const endDateTime = endDate + ' ' + endTime
     const data = { pageSize, pageNo, startDateTime, endDateTime }
-    this.setState({ loading: true });
-    return getWithdrawList(data)
-      .then(res => {
 
+    return getReferenceHistoryListById(data)
+      .then(res => {
         this.setState({
           list: override ? res.data.list : this.state.list.concat(res.data.list),
           total: res.data.total, //总页数
-          amount:res.data.amount||0,
+          amount: res.data.amount || 0,
           loading: false,
         });
       })
       .catch(err => {
         this.setState({ loading: false })
         console.log('==> [ERROR]', err);
-      })
+      });
   }
   onChangeStartDate(e) {
     this.setState({ startDate: e.detail.value });
@@ -101,17 +103,15 @@ class Withdrawhistory extends Component {
   search() {
     this.getList(true)
   }
-  componentWillUnmount() { }
-
-  componentDidShow() { }
-
-  componentDidHide() { }
   onPullDownRefresh() {
+    // 上拉刷新
     if (!this.state.loading) {
       this.setState({ pageNo: 1 }, () => {
-        this.getList(true)
+        this.getList(true).then(res => {
+          // 处理完成后，终止下拉刷新
+          Taro.stopPullDownRefresh();
+        });
       });
-
 
     }
   }
@@ -125,6 +125,11 @@ class Withdrawhistory extends Component {
       });
     }
   }
+  componentDidShow() {
+
+  }
+
+  componentDidHide() { }
 
   render() {
     const { list, startDate, total, amount,
@@ -132,16 +137,17 @@ class Withdrawhistory extends Component {
       startTime,
       endTime,today } = this.state
     return (
-      <View className='withdrawHistory'>
+
+      <View className='history'>
         <View style='display:flex' >
           <View style='flex:1'>
-            <Picker mode='date' onChange={this.onChangeStartDate.bind(this)} value={startDate} end={today}>
+            <Picker mode='date' onChange={this.onChangeStartDate.bind(this)} value={startDate}>
               <View onClick={this.hideKeyBoard.bind(this)}>
                 <i-input title='开始日期' placeholder='开始日期' value={startDate} disabled />
               </View>
             </Picker></View>
           <View style='flex:1'>
-            <Picker mode='time' onChange={this.onChangeStartTime.bind(this)}  value={startTime}>
+            <Picker mode='time' onChange={this.onChangeStartTime.bind(this)} value={startTime}>
               <View onClick={this.hideKeyBoard.bind(this)}>
                 <i-input
                   title='开始时间'
@@ -154,13 +160,13 @@ class Withdrawhistory extends Component {
         </View>
         <View style='display:flex' >
           <View style='flex:1'>
-            <Picker mode='date' onChange={this.onChangeEndDate.bind(this)} value={endDate}>
+            <Picker mode='date' onChange={this.onChangeEndDate.bind(this)} end={today} value={endDate}>
               <View onClick={this.hideKeyBoard.bind(this)}>
                 <i-input title='结束日期' placeholder='结束日期' value={endDate} disabled />
               </View>
             </Picker></View>
           <View style='flex:1'>
-            <Picker mode='time' onChange={this.onChangeEndTime.bind(this)}  value={endTime}>
+            <Picker mode='time' onChange={this.onChangeEndTime.bind(this)} value={endTime}>
               <View onClick={this.hideKeyBoard.bind(this)}>
                 <i-input
                   title='结束时间'
@@ -181,19 +187,41 @@ class Withdrawhistory extends Component {
               </Button>
         </View>
         <i-cell-group>
-          <i-cell title={'总计:' + amount + '元'} > <View slot="footer">{total}条记录</View> </i-cell>
-          {list.map(item => {
-            return <i-cell
-              title='提现金额'
-              label={item.createdDate.slice(0, 10) + '  ' + item.createdDate.slice(11, 19)}
-            > <View slot="footer">{item.amount}元</View> </i-cell>
+          <i-cell > <View slot="footer">{total}条记录</View> </i-cell>
 
-          })}
         </i-cell-group>
-        <i-divider i-class='divider' content='加载已经完成,没有其他数据' ></i-divider>
+        {list.map(item => {
+          return (
+            <View className='order-item-wrapper' key={item.id}>
+
+              <i-row i-class='left'>
+                <i-col span='4' i-class='col-class'>
+                  <i-avatar src={item.avatar} size='large' />
+                </i-col>
+                <i-col span='20' i-class='col-class'>
+                  <i-row i-class='right'>
+
+                    <i-col span='24' i-class='col-class date'>
+                      订单日期:  {item.createdDate && <Text><Text>{item.createdDate.slice(0, 10)}</Text><Text decode="true">&nbsp;</Text> <Text>{item.createdDate.slice(11, 16)}</Text></Text>}
+                    </i-col>
+                    <i-divider i-class='divider' height={10}></i-divider>
+                    <i-col span='18' i-class='col-class name date'>
+                      <Text>用户名:{item.nickName}</Text>
+                    </i-col>
+                    <i-col span='24' i-class='col-class price'>
+                      状态:{item.state === '0' ? '未获得奖励' : '恭喜,获得50元奖励'}
+                    </i-col>
+                  </i-row>
+                </i-col>
+              </i-row>
+              <i-divider i-class='divider' height={24}></i-divider>
+            </View>
+          );
+        })}
+        <i-divider i-class='divider' height={48} content='加载已经完成,没有其他数据'></i-divider>
       </View>
-    )
+    );
   }
 }
 
-export default Withdrawhistory
+export default History;

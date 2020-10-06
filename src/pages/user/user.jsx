@@ -34,6 +34,9 @@ class User extends Component {
   };
 
   componentDidMount() {
+    if (this.$router.params.referenceCode) {
+      set(referenceCode, this.$router.params.referenceCode)
+    }
     this.getSession();
 
   }
@@ -65,7 +68,7 @@ class User extends Component {
       this.props.setUserInfo(res.data);
       linkSocket(userInfo.openid);//连接websocket
       Taro.showToast({ title: '登录成功', icon: 'none' })
-      remove('openId')
+
       const backToPage = get('backToPage')
       if (backToPage) {
         setTimeout(() => {
@@ -94,6 +97,20 @@ class User extends Component {
       }
     })
   }
+  recommendation() {
+    Taro.openSetting({
+      success(res) {
+        console.log('res', res)
+      }
+    })
+  }
+  onShareAppMessage() {
+    return {
+      from: 'button',
+      title: `来自${this.props.user.nickName}的邀请,邀请码:${this.props.user.referenceCode}`,
+      path: `/pages/user/user?referenceCode=${this.props.user.referenceCode}`
+    }
+  }
   render() {
     const {
       address,
@@ -119,10 +136,10 @@ class User extends Component {
       collectionCount,
       followCount,
       eventCount,
-      DOB
+      DOB, referenceCode
     } = this.props.user;
     return (
-      <View className='user'>
+      <View className='user pb50px'>
         <i-row i-class='user-info'>
           {nickName}
           <i-col span='4'>
@@ -174,14 +191,17 @@ class User extends Component {
             </View>
           </i-col>
         </i-row>
-        <i-divider i-class='divider' height={24}></i-divider>
+        <i-divider i-class='divider' i-class='divider' height={24}></i-divider>
         <i-cell-group>
           {role === 'user' && (
-            <i-cell
-              title='注册艺人'
-              is-link
-              url='/pages/user/registerArtist/registerArtist'
-            ></i-cell>
+            <View>
+              <i-cell
+                title='注册艺人'
+                is-link
+                url='/pages/user/registerArtist/registerArtist'
+              ></i-cell>
+              <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
+            </View>
           )}
           {role === 'artist' && (
             <View>
@@ -208,10 +228,18 @@ class User extends Component {
               <i-cell title='我的收益' is-link url='/pages/user/profit/profit'></i-cell>
               <i-cell title='收款二维码' is-link url={'/pages/user/userQrCode/userQrCode?id=' + id}></i-cell>
               <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
+              <Button
+                size='mini'
+                className='share-button'
+                open-type='share'
+              >
+                <i-cell title='邀请有奖' label='邀请好友注册艺人,并完成50个订单.您将获得50元奖励' value={'邀请码:' + referenceCode} >
+
+                </i-cell> </Button>
             </View>
           )}
 
-        
+
           {/* <i-cell title='关于' is-link url='/pages/user/about/about'></i-cell> */}
         </i-cell-group>
 

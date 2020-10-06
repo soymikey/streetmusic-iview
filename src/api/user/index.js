@@ -23,6 +23,9 @@ export const getMyOpenid = data => {
 export const getUserInfo = data => {
   return Wechat.request('/api/userinfo/detail', data);
 }; //获取用户信息
+export const getUserFullInfo = data => {
+  return Wechat.request('/api/userinfo/fullDetail', data);
+}; //歌手获取自己的所有信息
 export const getUserQrCode = data => {
   return Wechat.request('/api/userinfo/qrCode', data);
 }; //获取用户二维码
@@ -57,6 +60,7 @@ export const withdrawByUserId = (data) => { return Wechat.request('/api/userinfo
 export const getWithdrawList = (data) => { return Wechat.request('/api/userinfo/withdraw/history', data) }
 export const createPay = (data) => { return Wechat.request('/api/userinfo/pay/create', data) }
 export const createQrCodeStand = (data) => { return Wechat.request('/api/userinfo/createQRCodeStand', data) }
+export const getReferenceHistoryListById = (data) => { return Wechat.request('/api/userinfo/reference/history', data) }//获取某个用户/歌手打赏历史
 
 export const uploadUserImage = files => {
   return new Promise((resolve, reject) => {

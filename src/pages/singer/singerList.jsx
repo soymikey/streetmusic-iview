@@ -189,7 +189,7 @@ class Event extends Component {
           <View className="clear"></View>
 
         </ScrollView>
-        <i-divider content='加载已经完成,没有其他数据'></i-divider>
+        <i-divider i-class='divider' content='加载已经完成,没有其他数据'></i-divider>
 
       </View>
 

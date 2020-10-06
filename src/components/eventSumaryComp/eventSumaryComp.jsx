@@ -25,7 +25,7 @@ class Eventsumarycomp extends Component {
     goToPage(`/pages/singer/singer?id=${id}`)
   }
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
+    // console.log(this.props, nextProps);
   }
 
   componentWillUnmount() { }
@@ -139,7 +139,7 @@ class Eventsumarycomp extends Component {
                   ) : null} */}
                   </i-row>
                 </i-col>
-                {list.length - 1 === index ? null : <i-divider i-class='divider' height={24}></i-divider>}
+                {list.length - 1 === index ? null : <i-divider i-class='divider' i-class='divider' height={24}></i-divider>}
               </i-row></View>
           );
         })}

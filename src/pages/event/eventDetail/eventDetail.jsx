@@ -339,7 +339,7 @@ class EventDetail extends Component {
               );
             })}
           </i-row> */}
-          <i-divider height={10} />
+          <i-divider i-class='divider' height={10} />
           <i-row i-class='user-row'>
             <i-col span='18' i-class='col-class'>
               <i-avatar src={avatar} size='large' />
@@ -375,7 +375,7 @@ class EventDetail extends Component {
         <View className='CommentSumaryCompWrapper'>
           <CommentSumaryComp list={commentList} />
         </View>
-        <i-divider content='加载已经完成,没有其他数据'></i-divider>
+        <i-divider i-class='divider' content='加载已经完成,没有其他数据'></i-divider>
         <View className='commentBarComp-wrapper'>
           <CommentBarComp
             id_={this.$router.params.id}

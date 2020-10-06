@@ -41,6 +41,7 @@ class UploadEvent extends Component {
       isEdit: false,
       poster: [],
       isDisabled: false,
+      today:new Date(+new Date() + 8 * 3600 * 1000).toISOString().split('T')[0]
     };
   }
 
@@ -142,7 +143,32 @@ class UploadEvent extends Component {
   onChangeAddress(e) {
     this.setState({ address: e.detail.detail.value });
   }
+  getAddress() {
+    Taro.chooseLocation({
+      success: (res) => {
+        if (res.errMsg === "chooseLocation:ok") {
+          this.setState({ address: res.name + ' ' + res.address })
+        }
 
+      },
+      fail: err => {
+        Taro.showModal({
+          title: '提示',
+          content: '请在设置里开启定位',
+          success: res => {
+            if (res.confirm) {
+              Taro.switchTab({
+                url: '/pages/user/user',
+              });
+            } else if (res.cancel) {
+              Taro.showToast({ title: '获取修改状态失败' })
+            }
+          }
+
+        })
+      }
+    })
+  }
   async onClickUpload() {
 
     const {
@@ -352,7 +378,7 @@ class UploadEvent extends Component {
       provinceCityRegion,
       isEdit,
       id,
-      isDisabled
+      isDisabled,today
     } = this.state;
     console.log('poster', poster)
     return (
@@ -375,13 +401,13 @@ class UploadEvent extends Component {
 
         <View style='display:flex' >
           <View style='flex:1'>
-            <Picker mode='date' onChange={this.onChangeStartDate.bind(this)}>
+            <Picker mode='date' onChange={this.onChangeStartDate.bind(this)} value={startDate} start={today}>
               <View onClick={this.hideKeyBoard.bind(this)}>
                 <i-input title='开始日期' placeholder='开始日期' value={startDate} disabled />
               </View>
             </Picker></View>
           <View style='flex:1'>
-            <Picker mode='time' onChange={this.onChangeStartTime.bind(this)}>
+            <Picker mode='time' onChange={this.onChangeStartTime.bind(this)} value={startTime}>
               <View onClick={this.hideKeyBoard.bind(this)}>
                 <i-input
                   title='开始时间'
@@ -394,13 +420,13 @@ class UploadEvent extends Component {
         </View>
         <View style='display:flex' >
           <View style='flex:1'>
-            <Picker mode='date' onChange={this.onChangeEndDate.bind(this)}>
+            <Picker mode='date' onChange={this.onChangeEndDate.bind(this)} value={endDate}>
               <View onClick={this.hideKeyBoard.bind(this)}>
                 <i-input title='结束日期' placeholder='结束日期' value={endDate} disabled />
               </View>
             </Picker></View>
           <View style='flex:1'>
-            <Picker mode='time' onChange={this.onChangeEndTime.bind(this)}>
+            <Picker mode='time' onChange={this.onChangeEndTime.bind(this)} value={endTime}>
               <View onClick={this.hideKeyBoard.bind(this)}>
                 <i-input
                   title='结束时间'
@@ -414,7 +440,7 @@ class UploadEvent extends Component {
 
 
 
-        <Picker mode='region' onChange={this.onChangeProvinceCityRegion.bind(this)}>
+        <Picker mode='region' onChange={this.onChangeProvinceCityRegion.bind(this)}  value={provinceCityRegion.value}>
           <View onClick={this.hideKeyBoard.bind(this)}>
             <i-input
               title='省市区'
@@ -424,13 +450,35 @@ class UploadEvent extends Component {
             />
           </View>
         </Picker>
-        <i-input
+        {/* <i-input
           title='地址'
           placeholder='活动举办地址'
           value={address}
           maxlength={-1}
           onChange={this.onChangeAddress.bind(this)}
-        />
+        /> */}
+        <View style='display:flex'>
+          <View style='width:80%;'>
+            <i-input
+              title='地址'
+              placeholder='活动举办地址'
+              value={address}
+              maxlength={150}
+              onChange={this.onChangeAddress.bind(this)}
+              type='textarea'
+            />
+          </View>
+          <View style='flex:1;display: flex; align-items: center;justify-content: center; background: #fff;'>
+            <Button
+              size='mini'
+              className='success'
+              onClick={this.getAddress.bind(this)}
+            >
+              地址
+          </Button>
+          </View>
+
+        </View>
 
         <i-panel title='活动图片'></i-panel>
 

@@ -3,12 +3,11 @@ import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Picker } from '@tarojs/components';
 import ImagePickerComp from '@/components/ImagePickerComp/ImagePickerComp';
 import './editMyInfo.scss';
-import { getUserInfo, updateUserInfo } from '@/api/user';
+import { getUserFullInfo, updateUserInfo } from '@/api/user';
 import { connect } from '@tarojs/redux'
 import validator from '@/utils/validator'
 import { uploadImage, getSMSCode } from '@/api/common';
 import { setUserInfo } from '@/actions/user'
-import { set, get } from '@/utils/localStorage';
 
 let clock
 @connect(state => state, { setUserInfo })
@@ -61,12 +60,14 @@ class EditMyInfo extends Component {
       smsDisabled: false,
       smsText: '点击发送验证码',
       smsCountDown: 60,
+      randomCode: '',
 
 
     };
   }
   componentDidMount() {
-    getUserInfo({ id: this.props.user.id }).then(res => {
+ 
+    getUserFullInfo({}).then(res => {
       const {
         address,
         avatar,
@@ -136,6 +137,7 @@ class EditMyInfo extends Component {
     this.setState({ nickName: e.target.detail.value });
   }
   onChangeProvinceCityRegion(e) {
+
     this.setState({
       provinceCityRegion: { value: e.detail.value, code: e.detail.code },
     });
@@ -203,12 +205,20 @@ class EditMyInfo extends Component {
       nickName,
       phone,
     } = this.state;
+    if (!this.state.code.length) {
+      Taro.showToast({ title: '验证码不能为空', icon: 'none' });
+      return;
+    }
+    if (this.state.code !== this.state.randomCode) {
+      Taro.showToast({ title: '验证码不正确', icon: 'none' });
+      return;
+    }
 
     if (!avatar.length) {
       Taro.showToast({ title: '头像不能为空', icon: 'none' });
       return;
     }
-    if (this.state.code !== get('code')) {
+    if (this.state.code !== this.state.randomCode) {
       Taro.showToast({ title: '验证码输入错误,请重试~', icon: 'none' });
       return;
     }
@@ -298,9 +308,9 @@ class EditMyInfo extends Component {
 
     this.setState({ isDisabled: true });
     updateUserInfo(data).then(res => {
-      this.setState({ isDisabled: false });
+      this.setState({ isDisabled: false, code: '' });
       setTimeout(async () => {
-        await getUserInfo({ id: this.props.user.id }).then(res => {
+        await getUserFullInfo({ id: this.props.user.id }).then(res => {
           this.props.setUserInfo(res.data)
         })
         Taro.navigateBack(-1)
@@ -326,8 +336,20 @@ class EditMyInfo extends Component {
     })
   }
   fetchMSMCode() {
-    return getSMSCode().then(res => {
-      set('code', res.data.code)
+    const isValid = validator(
+      [{
+        value: this.state.phone,
+        rules: [{
+          rule: 'isMobile',
+        }]
+      },]
+    )
+    if (!isValid.status) {
+      Taro.showToast({ title: isValid.msg, icon: 'none' });
+      return;
+    }
+    return getSMSCode({ phone: this.state.phone }).then(res => {
+      this.setState({ randomCode: res.data.code })
       this.sendCode()
     })
   }
@@ -417,7 +439,7 @@ class EditMyInfo extends Component {
           </View>
 
         </View>
-        <Picker mode='region' onChange={this.onChangeProvinceCityRegion.bind(this)}>
+        <Picker mode='region' onChange={this.onChangeProvinceCityRegion.bind(this)} value={provinceCityRegion.value}>
           <View onClick={this.hideKeyBoard.bind(this)}>
             <i-input
               title='省市区'

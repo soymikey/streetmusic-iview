@@ -82,7 +82,7 @@ class CommentSumaryComp extends Component {
 
                 </i-row>
               </i-col>
-              {list.length - 1 === index ? null : <i-divider i-class='divider' height={24}></i-divider>}
+              {list.length - 1 === index ? null : <i-divider i-class='divider' i-class='divider' height={24}></i-divider>}
             </i-row>
           );
         })}

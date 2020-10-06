@@ -57,14 +57,14 @@ class OneBlockComp extends Component {
                   当邓超喊出蓝莲花的时候 我无耻的笑了
                 </i-col>
               </i-row>
-              <i-divider height={10}></i-divider>
+              <i-divider i-class='divider' height={10}></i-divider>
               <i-row i-class='bottom'>
                 <i-col span='16' i-class='col-class'>
                   <i-avatar src={item} size='large' />
                   <Text className='username'>hwllow world</Text>
                 </i-col>
               </i-row>
-              <i-divider height={24}></i-divider>
+              <i-divider i-class='divider' height={24}></i-divider>
             </View>
           );
         })}

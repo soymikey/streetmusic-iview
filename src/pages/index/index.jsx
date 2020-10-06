@@ -254,13 +254,13 @@ class Index extends Component {
                 </View>
               </i-col>
             </i-row> */}
-          <i-divider height={24}></i-divider>
+          <i-divider i-class='divider' height={24}></i-divider>
           <SixBlockComp title='推荐歌曲' list={this.state.recommendList} />
-          <i-divider height={24}></i-divider>
+          <i-divider i-class='divider' height={24}></i-divider>
           <SixBlockComp title='热门歌曲' list={this.state.hotList} />
-          <i-divider height={24}></i-divider>
+          <i-divider i-class='divider' height={24}></i-divider>
           <EventSumaryComp list={hotEventList} isShowIcons={false} />
-          <i-divider content='加载已经完成,没有其他数据'></i-divider>
+          <i-divider i-class='divider' content='加载已经完成,没有其他数据'></i-divider>
           <View className='tabbar-container'>
             <TabbarComp currentTab='index' />
           </View>

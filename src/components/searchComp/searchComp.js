@@ -172,7 +172,7 @@ export default class WSearch extends Component {
                             {
                                 resultList.singers.map((item, index) => {
                                     return (<View key={index} className='result-item' onClick={this.goToSignerPage.bind(this, item)}>{item.nickName}
-                                        <i-divider i-class='divider' height={24}></i-divider>
+                                        <i-divider i-class='divider' i-class='divider' height={24}></i-divider>
                                     </View>)
                                 })
                             }
@@ -181,7 +181,7 @@ export default class WSearch extends Component {
                             {
                                 resultList.events.map((item, index) => {
                                     return (<View key={index} className='result-item' onClick={this.goToEventPage.bind(this, item)}>{item.name}
-                                        <i-divider i-class='divider' height={24}></i-divider>
+                                        <i-divider i-class='divider' i-class='divider' height={24}></i-divider>
                                     </View>)
                                 })
                             }

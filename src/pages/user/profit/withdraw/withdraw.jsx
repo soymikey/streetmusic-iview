@@ -1,5 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text } from '@tarojs/components'
+import { getSMSCode } from '@/api/common';
+
 import {
   withdrawByUserId,
 
@@ -7,6 +9,7 @@ import {
 import './withdraw.scss'
 import validator from '@/utils/validator'
 
+let clock
 class Withdraw extends Component {
 
   config = {
@@ -25,7 +28,8 @@ class Withdraw extends Component {
       code: '',
       smsDisabled: false,
       smsText: '点击发送验证码',
-      smsCountDown: 10,
+      smsCountDown: 60,
+      randomCode: ''
     };
   }
 
@@ -38,6 +42,9 @@ class Withdraw extends Component {
   }
   onChangePhone(e) {
     this.setState({ phone: e.detail.detail.value });
+  }
+  onChangeCode(e) {
+    this.setState({ code: e.detail.detail.value });
   }
   sendCode() {
     this.setState({ smsDisabled: true, smsText: this.state.smsCountDown + '秒后可重新获取' })
@@ -54,16 +61,27 @@ class Withdraw extends Component {
     })
   }
   fetchMSMCode() {
-    return getSMSCode().then(res => {
-      set('code', res.data.code)
+    const isValid = validator(
+      [{
+        value: this.state.phone,
+        rules: [{
+          rule: 'isMobile',
+        }]
+      },]
+    )
+    if (!isValid.status) {
+      Taro.showToast({ title: isValid.msg, icon: 'none' });
+      return;
+    }
+    return getSMSCode({phone:this.state.phone}).then(res => {
+      this.setState({ randomCode: res.data.code })
       this.sendCode()
     })
   }
 
   withdraw() {
 
-
-    if (this.state.code !== get('code')) {
+    if (this.state.code !== this.state.randomCode) {
       Taro.showToast({ title: '验证码输入错误,请重试~', icon: 'none' });
       return;
     }
@@ -73,7 +91,7 @@ class Withdraw extends Component {
           value: this.state.total,
           rules: [{
             rule: 'isPrice',
-            msg: '提现格式错误'
+            msg: '提现金额格式错误'
           }]
         },
         {
@@ -95,8 +113,8 @@ class Withdraw extends Component {
       return
     }
     this.setState({ disabled: true })
-    withdrawByUserId({ amount: this.state.total,phone:this.state.phone }).then(res => {
-      this.setState({ total: 0, disabled: false })
+    withdrawByUserId({ amount: this.state.total, phone: this.state.phone }).then(res => {
+      this.setState({ total: 0, phone: '', code: '', disabled: false })
     }).catch(e => {
       this.setState({ disabled: false })
     })
@@ -148,8 +166,8 @@ class Withdraw extends Component {
               </Button>
             </View>
           </View></View>
-        <i-input value={total} right title="提现(元):" maxlength={3}  placeholder="一次提现金额不能超过999元" onChange={this.onChangeTotal.bind(this)} type='number' />
-        <View style='text-align:center'>
+        <i-input value={total} right title="提现(元):" maxlength={3} placeholder="一次提现金额不能超过999元" onChange={this.onChangeTotal.bind(this)} type='number' />
+        <View style='text-align:center;margin-top:20px;'>
           <Button className='primary' size='mini' onClick={this.withdraw.bind(this)} disabled={disabled} >
             提现 </Button>
         </View>

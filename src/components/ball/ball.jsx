@@ -32,7 +32,8 @@ class Ball extends Component {
 
   componentDidMount() {
     this.setState({
-      windowHeight: Taro.getSystemInfoSync().windowHeight - Taro.getSystemInfoSync().windowHeight % 20,
+      // windowHeight: Taro.getSystemInfoSync().windowHeight - Taro.getSystemInfoSync().windowHeight % 20,
+      windowHeight: 200 - 200 % 20,
       windowWidth: Taro.getSystemInfoSync().windowWidth - Taro.getSystemInfoSync().windowWidth % 20
     })
     setTimeout(() => {

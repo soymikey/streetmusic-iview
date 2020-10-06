@@ -199,7 +199,7 @@ class Uploadsong extends Component {
           type='textarea'
         />
 
-        <Picker mode='time' onChange={this.onChangeTime.bind(this)}>
+        <Picker mode='time' onChange={this.onChangeTime.bind(this)} value={duration} >
           <View onClick={this.hideKeyBoard.bind(this)}>
             <i-input title='时长' placeholder='歌曲时长' value={duration} disabled />
           </View>

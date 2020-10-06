@@ -46,7 +46,6 @@ class Singer extends Component {
       "i-tag": "../../iView/tag/index",
       "i-message": "../../iView/message/index",
       "i-button": "../../iView/button/index",
-      "i-notice-bar": "../../iView/notice-bar/index",
 
 
     },
@@ -383,6 +382,28 @@ class Singer extends Component {
       }
 
 
+
+      const loadingTrue = [{
+        name: '取消',
+      },
+      {
+        name: '支付',
+        color: '#2d8cf0',
+        loading: true,
+      }]
+      const loadingFalse = [{
+        name: '取消',
+      },
+      {
+        name: '支付',
+        color: '#2d8cf0',
+        loading: false,
+      }]
+      this.setState({
+        actions: loadingTrue
+      })
+
+      return
       let amount
       if (this.state.isShowModal) {
         amount = (Number(this.state.selectedSong.price) + Number(this.state.tips)) * 100
@@ -437,7 +458,7 @@ class Singer extends Component {
               }
               if (this.state.isShowTipsModal) {
                 createTips(data).then(res => {
-                  this.setState({ actions: loadingFalse, isShowTipsModal: false, tips: 0 });
+                  this.setState({ actions: loadingFalse, isShowModal: false, tips: 0 });
                   Taro.sendSocketMessage({
                     data: JSON.stringify({
                       type: 'createTipsOK',
@@ -458,6 +479,7 @@ class Singer extends Component {
             }
           },
           fail: function (res) {
+            this.setState({ actions: loadingFalse });
             if (res.errMsg == 'requestPayment:fail cancel') {
               Taro.showToast({
                 title: '支付取消',
@@ -527,11 +549,12 @@ class Singer extends Component {
   }
   onShareAppMessage() {
     return {
+
       from: 'menu',
       path: `/pages/singer/singer?id=${this.$router.params.id}`
     }
   }
-
+ 
   render() {
     const {
       tagList,
@@ -672,13 +695,20 @@ class Singer extends Component {
             >
               {userInfo.year}
             </i-tag>
+            {/* {tagList.map((item, index) => {
+              return (
+                <i-tag
+                  key={index}
+                  key={item}
+                  color={colorList[index]}
+                  class='i-tags'
+                >
+                  {item}
+                </i-tag>
+              );
+            })} */}
           </View>
-
         </View>
-
-        {userInfo.introduction ? <i-notice-bar loop speed="2000">
-          {userInfo.introduction}
-        </i-notice-bar> : null}
         <View
           className='tabs-container'
           style='position:sticky;position: -webkit-sticky;top:0;z-index: 999;'

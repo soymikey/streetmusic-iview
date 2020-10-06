@@ -34,9 +34,17 @@ class Order extends Component {
     return (
       <View className='order'>
         <i-cell-group>
-          {this.props.user.role === 'artist' && <i-cell title='现在订单' is-link url='/pages/order/myCurrentOrder'></i-cell>}
+          {this.props.user.role === 'artist' &&
+            <View>
+
+              <i-cell title='现在订单' is-link url='/pages/order/myCurrentOrder'></i-cell>
+              <i-cell title='推荐历史' is-link url='/pages/reference/history'></i-cell>
+            </View>
+
+          }
           <i-cell title='打赏历史' is-link url='/pages/tips/history'></i-cell>
           <i-cell title='订单历史' is-link url='/pages/order/myHistoryOrder'></i-cell>
+
         </i-cell-group>
         <View className='tabbar-container'>
           <TabbarComp currentTab='order' />
