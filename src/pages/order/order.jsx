@@ -1,12 +1,10 @@
 /* eslint-disable react/sort-comp */
 import Taro, { Component } from '@tarojs/taro';
-import { connect } from '@tarojs/redux';
-
 import { View, Button, Text } from '@tarojs/components';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
-
 import './order.scss';
-@connect(state => state)
+import { get, set, remove,clear } from '@/utils/localStorage';
+
 class Order extends Component {
   config = {
     enablePullDownRefresh: false,
@@ -22,7 +20,6 @@ class Order extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
   }
 
   componentWillUnmount() { }
@@ -32,11 +29,12 @@ class Order extends Component {
   componentDidHide() { }
 
   render() {
+    const userInfo_ = get('userInfo') || {}
     return (
       <View className='order'>
-         <i-message id="message" />
+        <i-message id="message" />
         <i-cell-group>
-          {this.props.user.role === 'artist' &&
+          {userInfo_.role === 'artist' &&
             <View>
 
               <i-cell title='现在订单' is-link url='/pages/order/myCurrentOrder'></i-cell>

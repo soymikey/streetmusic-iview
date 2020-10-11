@@ -1,5 +1,4 @@
 import Taro, { Component, onBLECharacteristicValueChange } from '@tarojs/taro';
-import { connect } from '@tarojs/redux'
 
 import {
   View,
@@ -14,18 +13,12 @@ import {
 import SixBlockComp from '@/components/SixBlockComp/SixBlockComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
-import { setUserInfo } from '@/actions/user'
 import { getHotEventList } from '@/api/event';
 import { getHotSongList, getRecommendSongList } from '@/api/song';
 import { getMyOpenid } from '@/api/user';
 import { goToPage } from '@/utils/tools.js';
 import { get, set, clear, remove } from '@/utils/localStorage';
 import './index.scss';
-
-
-@connect(state => state, { setUserInfo })
-
-
 class Index extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
@@ -69,7 +62,7 @@ class Index extends Component {
       goToPage(`/pages/singer/singer?id=${id}`)
 
     }
-  
+
   }
 
   componentDidShow() {
@@ -186,18 +179,15 @@ class Index extends Component {
 
   render() {
     const { hotEventList, isShowLoginComp, hotList, recommendList, path } = this.state;
-    const { user } = this.props
     return (
       <View>
- <i-message id="message" />
+        <i-message id="message" />
         <View className='index pb50px'>
           <View className='search-wrapper'>
-
             <View className="search" onClick={this.goToSearch.bind(this)} >
               <Input maxLength="20" type="text" placeholder="请输入关键词搜索" />
               <Image src={require("./static/search.svg")} mode="aspectFit" className="search-left-icon"></Image>
             </View>
-
           </View>
           <Swiper
             style='height:250px;'
@@ -208,7 +198,7 @@ class Index extends Component {
             indicatorDots
             autoplay
           >
-            {hotEventList.length ? hotEventList.slice(0,5).map(item => {
+            {hotEventList.length ? hotEventList.slice(0, 5).map(item => {
               return <SwiperItem key={item.id} >
                 <View className='image-wrapper' onClick={this.goToEventDetailPage.bind(this, item.id)}>
                   <Image src={item.poster[0]} mode='aspectFit' style='width: 100%' />

@@ -1,12 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
-import { connect } from '@tarojs/redux';
-
 import { View, Button, Text, Image } from '@tarojs/components'
 const post1_ = require('@/asset/images/poster1.png');
 import { myLogin, createUser } from '@/api/user';
-import { setUserInfo, logout } from '@/actions/user';
 import './login.scss'
-@connect(state => state, { setUserInfo, logout })
 
 class LoginComp extends Component {
   config = {

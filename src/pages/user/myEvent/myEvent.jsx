@@ -2,12 +2,10 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, } from '@tarojs/components';
 import { getEventListById, deleteEvent } from '@/api/event';
-import { connect } from '@tarojs/redux'
 import { goToPage } from '@/utils/tools.js';
+import { get, set, remove,clear } from '@/utils/localStorage';
+
 import './myEvent.scss';
-@connect(state => state)
-
-
 class MyEvent extends Component {
   config = {
     navigationBarTitleText: '我的活动',
@@ -39,9 +37,6 @@ class MyEvent extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
-  }
   componentDidMount() {
 
   }
@@ -50,7 +45,8 @@ class MyEvent extends Component {
       title: '加载中-活动',
     });
     // 向后端请求指定页码的数据
-    const data = { id: this.props.user.id, pageSize: this.state.pageSize, pageNo: this.state.pageNo }
+    const userInfo_ = get('userInfo') || {}
+    const data = { id: userInfo_.id, pageSize: this.state.pageSize, pageNo: this.state.pageNo }
 
     return getEventListById(data)
       .then(res => {

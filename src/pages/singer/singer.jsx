@@ -1,5 +1,4 @@
 import Taro, { Component } from '@tarojs/taro';
-import { connect } from '@tarojs/redux';
 import { View, Button, Text, Image, Swiper, SwiperItem } from '@tarojs/components';
 import Tab3 from './tab3/tab3';
 import Tab1 from './tab1/tab1';
@@ -7,26 +6,16 @@ import Tab2 from './tab2/tab2';
 import FollowButtonComp from '@/components/FollowButtonComp/FollowButtonComp';
 import Ball from '@/components/ball/ball';
 import TipsComp from '@/components/tipsComp/tipsComp';
-
 import { getUserInfo, getUserState, createPay } from '@/api/user';
-
 import { getEventListById } from '@/api/event';
 import { getSongListById } from '@/api/song';
 import { createOrder, getOrderListById } from '@/api/order';
 import { createTips } from '@/api/tips';
 
-import { sendWS } from '@/utils/heartbeatjuejin';
-import { goToLogin } from '@/utils/tools.js';
 import validator from '@/utils/validator'
 import tipsPNG from '@/asset/icon/tips.png';
 import { get, set } from '@/utils/localStorage';
-
-const { $Message } = require('../../iView/base/index');
-
 import './singer.scss';
-
-
-@connect(state => state)
 class Singer extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
@@ -177,7 +166,6 @@ class Singer extends Component {
     this.setState({ currentTab: value });
   }
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
   }
 
   componentWillUnmount() { }
@@ -414,13 +402,13 @@ class Singer extends Component {
                 tips: this.state.tips,
                 singerId: this.$router.params.id
               };
-
+              const userInfo_ = get('userInfo') || {}
               if (this.state.isShowModal) {
                 set('order', JSON.stringify({
                   type: 'createOrderOK',
                   roomId: this.$router.params.id + '@@@' + get('openId'),
                   songName: this.state.selectedSong.name,
-                  userName: this.props.user.nickName,
+                  userName: userInfo_.nickName,
                 }))
                 data.songId = this.state.selectedSong.id
                 data.price = this.state.selectedSong.price
@@ -443,7 +431,7 @@ class Singer extends Component {
                   type: 'createTipsOK',
                   roomId: this.$router.params.id + '@@@' + get('openId'),
                   tips: this.state.tips,
-                  userName: this.props.user.nickName,
+                  userName: userInfo_.nickName,
                 }))
                 createTips(data).then(res => {
                   this.setState({ isShowTipsModal: false, tips: 0 });

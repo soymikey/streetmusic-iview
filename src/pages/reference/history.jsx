@@ -2,12 +2,10 @@
 /* eslint-disable react/sort-comp */
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Picker } from '@tarojs/components';
-import { connect } from '@tarojs/redux';
 import { getReferenceHistoryListById } from '@/api/user';
 
 import './history.scss';
 
-@connect(state => state)
 class History extends Component {
   config = {
     navigationBarTitleText: '推荐好友',
@@ -43,7 +41,7 @@ class History extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log(this.props, nextProps);
+
   }
   componentDidMount() {
     this.initDate()

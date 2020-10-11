@@ -2,16 +2,10 @@
 /* eslint-disable react/sort-comp */
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Picker } from '@tarojs/components';
-import { connect } from '@tarojs/redux';
-import { AtList, AtListItem } from 'taro-ui';
-import { heartCheck } from '@/utils/heartbeatjuejin';
 import { getOrderListById, updateOrder } from '@/api/order';
 import { updateUserState } from '@/api/user';
-const { $Message } = require('../../iView/base/index');
+import { get, set, remove,clear } from '@/utils/localStorage';
 import './myCurrentOrder.scss';
-const innerAudioContext = Taro.createInnerAudioContext()
-innerAudioContext.src = 'http://47.104.167.164/faceVideo/result_2020_07_20_21_43_11.mp3'
-@connect(state => state)
 class MyCurrentOrder extends Component {
   config = {
     navigationBarTitleText: '现在订单',
@@ -51,7 +45,6 @@ class MyCurrentOrder extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log(this.props, nextProps);
   }
   componentDidMount() {
 
@@ -92,12 +85,13 @@ class MyCurrentOrder extends Component {
         };
         updateUserState(data).then(res => {
           this.setState({ state: label });
+          const userInfo_ = get('userInfo') || {}
           Taro.sendSocketMessage({
             data: JSON.stringify({
               type: 'updateUserStateOK',
-              artistId: this.props.user.id,
-              state:value,
-              artist:this.props.user.nickName
+              artistId: userInfo_.id,
+              state: value,
+              artist: userInfo_.nickName
             }),
           });
         });
@@ -182,10 +176,11 @@ class MyCurrentOrder extends Component {
             item.id === id ? { ...item, state: '1' } : item
           ),
         });
+        const userInfo_ = get('userInfo') || {}
         Taro.sendSocketMessage({
           data: JSON.stringify({
             type: 'updateOrderStateOK',
-            artistId: this.props.user.id,
+            artistId: userInfo_.id,
             state: '1',
             songName: this.state.selectedOrder.name,
             userName: this.state.selectedOrder.nickName,
@@ -214,10 +209,11 @@ class MyCurrentOrder extends Component {
           ),
         });
         this.fetchOrderList()
+        const userInfo_ = get('userInfo') || {}
         Taro.sendSocketMessage({
           data: JSON.stringify({
             type: 'updateOrderStateOK',
-            artistId: this.props.user.id,
+            artistId: userInfo_.id,
             state: '2',
             songName: this.state.selectedOrder.name,
             userName: this.state.selectedOrder.nickName,
@@ -268,7 +264,7 @@ class MyCurrentOrder extends Component {
   refresh() {
     this.fetchOrderList();
   }
-  componentDidShow(){
+  componentDidShow() {
     this.fetchOrderList(true);
   }
   componentDidHide() { }

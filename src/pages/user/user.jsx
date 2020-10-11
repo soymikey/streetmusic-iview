@@ -1,20 +1,13 @@
 /* eslint-disable react/sort-comp */
 import Taro, { Component } from '@tarojs/taro';
-import { connect } from '@tarojs/redux';
-
 import { View, Button, Text } from '@tarojs/components';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
-import { getMyOpenid, login } from '@/api/user';
-import { setUserInfo, logout, } from '@/actions/user';
-
+import {  login } from '@/api/user';
 import { goToPage } from '@/utils/tools.js';
-import { get, set, remove } from '@/utils/localStorage';
+import { get, set, remove,clear } from '@/utils/localStorage';
 const logo = require('@/asset/icon/logo.png');
-
-import './user.scss';
 import { linkSocket } from '@/utils/heartbeatjuejin';
-
-@connect(state => state, { setUserInfo, logout })
+import './user.scss';
 class User extends Component {
   config = {
     enablePullDownRefresh: false,
@@ -52,7 +45,6 @@ class User extends Component {
     return login(userInfo).then(res => {
       set('token', res.data.token)
       set('userInfo', res.data)
-      this.props.setUserInfo(res.data);
       linkSocket()
       Taro.showToast({ title: '登录成功', icon: 'none' })
 
@@ -67,7 +59,7 @@ class User extends Component {
     })
   }
   logout() {
-    this.props.logout();
+    clear()
     setTimeout(() => {
       Taro.reLaunch({ url: '/pages/index/index' })
     }, 2000);
@@ -124,7 +116,8 @@ class User extends Component {
       followCount,
       eventCount,
       DOB, referenceCode,
-    } = this.props.user;
+    } = get('userInfo')||{};
+
     return (
       <View className='user pb50px'>
         <i-message id="message" />

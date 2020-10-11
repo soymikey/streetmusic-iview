@@ -4,16 +4,12 @@ import { View, Button, Text, Picker } from '@tarojs/components';
 import ImagePickerComp from '@/components/ImagePickerComp/ImagePickerComp';
 import './registerArtist.scss';
 import { getUserInfo, registerArtist, login } from '@/api/user';
-import { connect } from '@tarojs/redux'
 import validator from '@/utils/validator'
-import { setUserInfo } from '@/actions/user'
 import { getSMSCode } from '@/api/common';
 import { linkSocket } from '@/utils/heartbeatjuejin';
-import { get, set } from '@/utils/localStorage';
+import { get, set, remove,clear } from '@/utils/localStorage';
 
 let clock
-@connect(state => state, { setUserInfo })
-
 class Registerartist extends Component {
   config = {
     navigationBarTitleText: '注册艺人',
@@ -54,7 +50,9 @@ class Registerartist extends Component {
     if (referenceCode) {
       this.setState({ referenceCode: referenceCode })
     }
-    getUserInfo({ id: this.props.user.id }).then(res => {
+    const userInfo_ = get('userInfo') || {}
+
+    getUserInfo({ id:userInfo_.id }).then(res => {
       const { address,
         avatar, introduction,
       } = res.data
@@ -64,9 +62,6 @@ class Registerartist extends Component {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
-  }
   onChangeRealName(e) {
     this.setState({ realName: e.target.detail.value });
   }
@@ -207,7 +202,6 @@ class Registerartist extends Component {
         return login({ openid: openId }).then(res => {
           set('token', res.data.token)
           set('userInfo', res.data)
-          this.props.setUserInfo(res.data);
           linkSocket();//连接websocket
           Taro.navigateBack(-1)
         })

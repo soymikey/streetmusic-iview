@@ -2,11 +2,8 @@
 /* eslint-disable react/sort-comp */
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Picker } from '@tarojs/components';
-import { connect } from '@tarojs/redux';
-import { getOrderHistoryListById, updateOrder } from '@/api/order';
-import { updateUserState } from '@/api/user';
+import { getOrderHistoryListById } from '@/api/order';
 import './myHistoryOrder.scss';
-@connect(state => state)
 class myHistoryOrder extends Component {
   config = {
     navigationBarTitleText: '订单历史',

@@ -2,11 +2,10 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Picker } from '@tarojs/components';
 import { getSongListById, deleteSong } from '@/api/song';
-import { connect } from '@tarojs/redux'
 import { goToPage } from '@/utils/tools.js';
-import './mySong.scss';
-@connect(state => state)
+import { get, set, remove,clear } from '@/utils/localStorage';
 
+import './mySong.scss';
 class MySong extends Component {
   config = {
     navigationBarTitleText: '我的歌曲',
@@ -37,9 +36,6 @@ class MySong extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
-  }
   componentDidMount() {
   }
   fetchSongList(override) {
@@ -47,6 +43,7 @@ class MySong extends Component {
       title: '加载中-歌曲',
     });
     // 向后端请求指定页码的数据
+    const userInfo_ = get('userInfo') || {}
     const data = { id: this.props.user.id, pageSize: this.state.pageSize, pageNo: this.state.pageNo }
 
     return getSongListById(data)

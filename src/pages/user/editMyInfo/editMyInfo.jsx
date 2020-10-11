@@ -4,14 +4,11 @@ import { View, Button, Text, Picker } from '@tarojs/components';
 import ImagePickerComp from '@/components/ImagePickerComp/ImagePickerComp';
 import './editMyInfo.scss';
 import { getUserFullInfo, updateUserInfo } from '@/api/user';
-import { connect } from '@tarojs/redux'
 import validator from '@/utils/validator'
 import { uploadImage, getSMSCode } from '@/api/common';
-import { setUserInfo } from '@/actions/user'
+import { get, set, remove,clear } from '@/utils/localStorage';
 
 let clock
-@connect(state => state, { setUserInfo })
-
 class EditMyInfo extends Component {
   config = {
     navigationBarTitleText: '编辑资料',
@@ -311,8 +308,9 @@ class EditMyInfo extends Component {
     updateUserInfo(data).then(res => {
       this.setState({ isDisabled: false, code: '' });
       setTimeout(async () => {
-        await getUserFullInfo({ id: this.props.user.id }).then(res => {
-          this.props.setUserInfo(res.data)
+        const userInfo_ = get('userInfo') || {}
+        await getUserFullInfo({ id: userInfo_.id }).then(res => {
+          set('userInfo', res.data)
         })
         Taro.navigateBack(-1)
       }, 2000);
