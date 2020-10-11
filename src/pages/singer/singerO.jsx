@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Image } from '@tarojs/components';
-import post1 from '@/asset/images/poster1.png';
 
 import './singer.scss';
 

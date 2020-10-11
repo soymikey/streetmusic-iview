@@ -9,9 +9,6 @@ let id = ''
 const innerAudioContext = Taro.createInnerAudioContext()
 innerAudioContext.src = baseURL + '/static/voice/newOrder.mp3'
 
-
-
-
 const heartCheck = {
   timeout: 10000,
   timeoutObj: null,
@@ -33,7 +30,7 @@ const heartCheck = {
   },
 };
 
-const sendWSMessage = (data) => {
+const sendWSMessage = (data) => {  
   Taro.sendSocketMessage({
     data: JSON.stringify(data)
   });
@@ -150,7 +147,7 @@ function initEventHandle() {
   Taro.onSocketError(res => {
     console.log('WebSocket连接打开失败');
     $Message({
-      content: `直连网络失败, 重试中~~`,
+      content: `同步网络失败, 重试中~~`,
       duration: 7
     });
     reconnect();
@@ -193,7 +190,7 @@ function reJoinRoomAfterSeverRestart() {
           userName:userInfo_.nickName,
         })
       } else {
-        Taro.showToast({ title: '直连歌手失败,无效歌手Id' })
+        Taro.showToast({ title: '同步歌手失败,无效歌手Id' })
       }
 
     }

@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import { getHotEventList } from '@/api/event'
 import { goToPage } from '@/utils/tools.js';
@@ -69,7 +68,6 @@ class Event extends Component {
           await Promise.all(promises)
         }
         awaitAll(res.data.list)
-        console.log('override', override)
         this.setState({
           list: override ? res.data.list : this.state.list.push(res.data.list),
           total: res.data.total, //总页数

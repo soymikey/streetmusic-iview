@@ -87,7 +87,7 @@ class Eventsumarycomp extends Component {
                       </i-col>
                       <i-col span='24' i-class='col-class'>
                         <View className='content'>
-                          <Text>{item.introduction}</Text>
+                          {item.introduction}
                         </View>
                       </i-col>
                       {item.poster.length && (

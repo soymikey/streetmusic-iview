@@ -1,6 +1,5 @@
 import Taro, { Component, showToast } from '@tarojs/taro';
 import { View, Image, Input, Textarea, Button } from '@tarojs/components';
-import closeImg from '@/asset/images/poster1.png';
 import { AtTextarea } from 'taro-ui'
 import { createComment } from '@/api/common';
 // import {sensitiveFilter} from '@/utils/keywordFilter'
@@ -30,14 +29,12 @@ class FloatLayout extends Component {
   }
 
   commit() {
-    
-    if(!this.state.content){
+    if (!this.state.content) {
       Taro.showToast({
         title: '发布内容不能为空'
       })
       return
     }
-    
     const data = {
       content: this.state.content,
       type: this.props.type,
@@ -49,6 +46,12 @@ class FloatLayout extends Component {
       Taro.showToast({
         title: '评论成功'
       })
+      const currentPage = Taro.getCurrentPages()[Taro.getCurrentPages().length - 1]
+      const currentPath = currentPage.$component.$router.path
+      if(currentPath==='/pages/event/eventDetail/eventDetail'){
+        currentPage.onReady()
+      }
+      console.log('currentPath', currentPath)
     }).catch(e => {
       this.setState({ isDisabled: false });
     })
@@ -77,36 +80,7 @@ class FloatLayout extends Component {
 
           </View>
           <View className='layout-body'>{this.props.children}
-            {/* <View className='content1'>
-
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-              <View className=''>11</View>
-            </View> */}
-
-
             <View className='textarea' style='position: fixed;bottom: 0px;width: 94%;' >
-
-
-
               <AtTextarea
                 cursorSpacing={200}
                 value={content}

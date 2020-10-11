@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text, Image } from '@tarojs/components'
-const post1_ = require('@/asset/images/poster1.png');
 import { myLogin, createUser } from '@/api/user';
 import './login.scss'
 

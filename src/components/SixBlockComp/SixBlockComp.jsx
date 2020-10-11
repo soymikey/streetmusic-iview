@@ -23,20 +23,15 @@ class SixBlockComp extends Component {
   constructor() {
     super(...arguments);
     this.state = {
+
       // list: [square1, square2, square3, square4, square5, square6],
     };
   }
   goToSingerPage(id) {
     goToPage(`/pages/singer/singer?id=${id}`)
   }
-  goToSingerListPage(title) {
-    let type
-    if (title === '热门歌曲') {
-      type = 'hot'
-    }
-    if (title === '推荐歌曲') {
-      type = 'recommend'
-    }
+  goToSingerListPage(type) {
+
     goToPage(`/pages/singer/singerList?type=${type}`)
   }
   // componentWillReceiveProps(nextProps) {
@@ -50,7 +45,7 @@ class SixBlockComp extends Component {
   componentDidHide() { }
 
   render() {
-    const { title, list } = this.props;
+    const { title, list, type } = this.props;
     return (
       <View className='SixBlockComp'>
         <i-row i-class='title-row'>
@@ -61,7 +56,7 @@ class SixBlockComp extends Component {
           </i-col>
 
           <i-col span='4' i-class='col-class'>
-            <View className='more' onClick={this.goToSingerListPage.bind(this, title)}>
+            <View className='more' onClick={this.goToSingerListPage.bind(this, type)}>
               <Text>更多</Text>
             </View>
           </i-col>
@@ -77,7 +72,7 @@ class SixBlockComp extends Component {
                 <View className='image-wrapper'>
                   <Image mode='aspectFill' className='image' src={item.avatar} />
                 </View>
-                <View className='title'>{item.name}</View>
+                <View className='title'>{type === 'hot' ? item.nickName : item.name}</View>
               </View>
             );
           })}

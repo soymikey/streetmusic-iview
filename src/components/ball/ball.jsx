@@ -1,8 +1,6 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Image } from '@tarojs/components';
-import post1 from '@/asset/images/poster1.png';
-import post2 from '@/asset/images/poster2.png';
-import { goToPage } from '@/utils/tools.js';
+
 
 import './ball.scss';
 var left = 0

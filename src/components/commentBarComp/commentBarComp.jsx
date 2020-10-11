@@ -122,13 +122,13 @@ class CommentBarComp extends Component {
           </i-row>
           <View className='tabbar-block'></View>
 
-          <FloatLayout
+          {isOpened ? <FloatLayout
             isOpened={isOpened}
             onClose={this.onClose.bind(this)}
             title='留言'
             id_={this.props.id_}
             type={this.props.type}
-          />
+          /> : null}
         </View>
 
       </View>

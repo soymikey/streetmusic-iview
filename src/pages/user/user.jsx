@@ -2,11 +2,10 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text } from '@tarojs/components';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
-import {  login } from '@/api/user';
+import { login } from '@/api/user';
 import { goToPage } from '@/utils/tools.js';
-import { get, set, remove,clear } from '@/utils/localStorage';
+import { get, set, remove, clear } from '@/utils/localStorage';
 const logo = require('@/asset/icon/logo.png');
-import { linkSocket } from '@/utils/heartbeatjuejin';
 import './user.scss';
 class User extends Component {
   config = {
@@ -26,13 +25,21 @@ class User extends Component {
       "i-message": "../../iView/message/index",
     },
   };
-
+  constructor() {
+    super(...arguments);
+    this.state = {
+      userInfo: {
+        collectionCount: 0,
+        followCount: 0,
+        eventCount: 0,
+      }
+    };
+  }
 
   componentDidMount() {
     if (this.$router.params.referenceCode) {
       set(referenceCode, this.$router.params.referenceCode)
     }
-
   }
 
   getUserInfo(e) {
@@ -45,9 +52,8 @@ class User extends Component {
     return login(userInfo).then(res => {
       set('token', res.data.token)
       set('userInfo', res.data)
-      linkSocket()
+      this.setState({ userInfo: res.data })
       Taro.showToast({ title: '登录成功', icon: 'none' })
-
       const backToPage = get('backToPage')
       if (backToPage) {
         setTimeout(() => {
@@ -65,7 +71,8 @@ class User extends Component {
     }, 2000);
   }
   goToEditMyInfo() {
-    if (this.props.user.id) {
+    const token = get('token')
+    if (token) {
       goToPage('/pages/user/editMyInfo/editMyInfo');
     }
   }
@@ -84,11 +91,19 @@ class User extends Component {
     })
   }
   onShareAppMessage() {
+    const userInfo_ = get('userInfo')
     return {
       from: 'button',
-      title: `来自${this.props.user.nickName}的邀请,邀请码:${this.props.user.referenceCode}`,
-      path: `/pages/user/user?referenceCode=${this.props.user.referenceCode}`
+      title: `来自${userInfo_.nickName}的邀请,邀请码:${userInfo_.referenceCode}`,
+      path: `/pages/user/user?referenceCode=${userInfo_.referenceCode}`
     }
+  }
+  componentDidShow() {
+    const userInfo_ = get('userInfo')
+    if (userInfo_) {
+      this.setState({ userInfo: userInfo_ })
+    }
+
   }
   render() {
     const {
@@ -116,7 +131,7 @@ class User extends Component {
       followCount,
       eventCount,
       DOB, referenceCode,
-    } = get('userInfo')||{};
+    } = this.state.userInfo;
 
     return (
       <View className='user pb50px'>
@@ -132,7 +147,7 @@ class User extends Component {
             </View>
             <View className='user-level'>
               {role === 'user' && <i-tag>普通用户</i-tag>}
-              {role === 'artist' && <i-tag>街头艺人</i-tag>}
+              {role === 'artist' && <i-tag>歌手</i-tag>}
             </View>
           </i-col>
         </i-row>
@@ -177,10 +192,12 @@ class User extends Component {
           {role === 'user' && (
             <View>
               <i-cell
-                title='注册艺人'
+                title='注册歌手'
                 is-link
                 url='/pages/user/registerArtist/registerArtist'
               ></i-cell>
+              <i-cell title='使用指南' is-link url='/pages/user/instruction/instruction'></i-cell>
+
               <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
             </View>
           )}
@@ -207,7 +224,9 @@ class User extends Component {
                 url='/pages/user/myEvent/myEvent'
               ></i-cell>
               <i-cell title='我的收益' is-link url='/pages/user/profit/profit'></i-cell>
-              <i-cell title='收款二维码' is-link url={'/pages/user/userQrCode/userQrCode?id=' + id}></i-cell>
+              <i-cell title='点歌二维码' is-link url={'/pages/user/userQrCode/userQrCode?id=' + id}></i-cell>
+              <i-cell title='使用指南' is-link url='/pages/user/instruction/instruction'></i-cell>
+
               <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
               <Button
                 size='mini'
@@ -226,7 +245,6 @@ class User extends Component {
 
         <View>
           <View style='width:150px;margin:20px auto'>
-
             {!id ? (
               <Button
 

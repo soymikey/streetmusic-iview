@@ -2,9 +2,6 @@ import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Swiper, SwiperItem, Image } from '@tarojs/components';
 import { getEventDetailById, getRecommendEventList } from '@/api/event';
 import { getCommentList } from '@/api/common';
-
-import post1 from '@/asset/images/poster1.png';
-import post2 from '@/asset/images/poster2.png';
 import FollowButtonComp from '@/components/FollowButtonComp/FollowButtonComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
 import CommentSumaryComp from '@/components/commentSumaryComp/commentSumaryComp';
@@ -28,7 +25,7 @@ class EventDetail extends Component {
   constructor() {
     super(...arguments);
     this.state = {
-      list: [post1, post2],
+      list: [],
       tagList: [
         '摇滚',
         '流行',
@@ -98,7 +95,6 @@ class EventDetail extends Component {
         followed,
         userId
       } = res.data;
-      console.log('userId',userId)
       this.fetchHotEventList(userId)
       let poster_ = [];
       if (JSON.parse(poster).length) {
@@ -135,7 +131,7 @@ class EventDetail extends Component {
       title: '加载中-活动',
     });
     // 向后端请求指定页码的数据
-    const data = { pageSize: 5, pageNo: 1, userId:userId};
+    const data = { pageSize: 5, pageNo: 1, userId: userId };
 
     return getRecommendEventList(data)
       .then(res => {
@@ -182,28 +178,26 @@ class EventDetail extends Component {
   onClickFollow(value) {
     this.setState({ followed: value });
   }
-  init() {
-    this.getEventDetail(); //活动详情
-    this.fetchCommentList(true).then(res => {
-      // 处理完成后，终止下拉刷新
-      Taro.stopPullDownRefresh();
-    }); //留言列表
+ 
+  componentDidMount() {
+    this.fetchCommentList(true)
   }
-  componentWillMount() {
-    this.init();
-  }
-  componentDidMount() { }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps);
   }
 
   componentWillUnmount() { }
 
-  componentDidShow() { }
+  componentDidShow() {
+    this.getEventDetail();
+  }
 
   componentDidHide() { }
   onPullDownRefresh() {
-    this.init();
+    this.fetchCommentList(true).then(res => {
+      // 处理完成后，终止下拉刷新
+      Taro.stopPullDownRefresh();
+    }); //留言列表
   }
   onReachBottom() {
     if (!this.state.loading && this.state.pageNo * this.state.pageSize < this.state.total) {

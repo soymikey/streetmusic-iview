@@ -6,13 +6,13 @@ import './registerArtist.scss';
 import { getUserInfo, registerArtist, login } from '@/api/user';
 import validator from '@/utils/validator'
 import { getSMSCode } from '@/api/common';
-import { linkSocket } from '@/utils/heartbeatjuejin';
-import { get, set, remove,clear } from '@/utils/localStorage';
+import { get, set, remove, clear } from '@/utils/localStorage';
+import { getSession } from '@/utils/tools';
 
 let clock
 class Registerartist extends Component {
   config = {
-    navigationBarTitleText: '注册艺人',
+    navigationBarTitleText: '注册歌手',
     usingComponents: {
       'i-row': '../../../iView/row/index',
       'i-col': '../../../iView/col/index',
@@ -23,6 +23,7 @@ class Registerartist extends Component {
       'i-button': '../../../iView/button/index',
       'i-input': '../../../iView/input/index',
       'i-panel': '../../../iView/panel/index',
+      'i-modal': '../../../iView/modal/index',
     },
   };
   constructor() {
@@ -43,6 +44,13 @@ class Registerartist extends Component {
       smsText: '点击发送验证码',
       smsCountDown: 60,
       randomCode: '',
+      isShowModal: false,
+      action: [
+        {
+          name: '重新登录'
+        },
+
+      ],
     };
   }
   componentDidMount() {
@@ -52,7 +60,7 @@ class Registerartist extends Component {
     }
     const userInfo_ = get('userInfo') || {}
 
-    getUserInfo({ id:userInfo_.id }).then(res => {
+    getUserInfo({ id: userInfo_.id }).then(res => {
       const { address,
         avatar, introduction,
       } = res.data
@@ -195,17 +203,16 @@ class Registerartist extends Component {
     }
     this.setState({ isDisabled: true });
     registerArtist(data).then(res => {
-      this.setState({ isDisabled: false });
-      setTimeout(() => {
+      this.setState({ isDisabled: false, isShowModal: true });
 
-        const openId = get('openId')
-        return login({ openid: openId }).then(res => {
-          set('token', res.data.token)
-          set('userInfo', res.data)
-          linkSocket();//连接websocket
-          Taro.navigateBack(-1)
-        })
-      }, 2000);
+      // setTimeout(() => {
+      //   const openId = get('openId')
+      //   return login({ openid: openId }).then(res => {
+      //     set('token', res.data.token)
+      //     set('userInfo', res.data)
+      //     Taro.navigateBack(-1)
+      //   })
+      // }, 2000);
 
     }).catch(e => {
 
@@ -278,7 +285,14 @@ class Registerartist extends Component {
   componentDidShow() { }
 
   componentDidHide() { }
-
+  reLaunch() {
+    clear()
+    getSession()
+    Taro.reLaunch({ url: '/pages/user/user' })
+    // setTimeout(() => {
+    //   Taro.switchTab({ url: '/pages/user/user' })
+    // }, 2000);
+  }
   render() {
     const {
       realName,
@@ -288,10 +302,11 @@ class Registerartist extends Component {
       avatar,
       phone,
       residentId, isDisabled, DOB, code,
-      smsDisabled, smsCountDown, smsText
+      smsDisabled, smsCountDown, smsText, isShowModal, action
     } = this.state;
     return (
       <View className='registerArtist'>
+        <i-modal title="恭喜您,注册成功~" visible={isShowModal} actions={action} action-mode="vertical" onClick={this.reLaunch.bind(this)} />
         {/* <i-panel title='个人头像'>
           <ImagePickerComp
             count={1}
@@ -412,7 +427,7 @@ class Registerartist extends Component {
         />
         <View className='button-wrapper'>
           <Button size='mini' className='primary' onClick={this.registerArtist.bind(this)} disabled={isDisabled}>
-            注册艺人
+            注册歌手
           </Button>
         </View>
       </View>

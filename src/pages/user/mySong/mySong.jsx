@@ -44,7 +44,7 @@ class MySong extends Component {
     });
     // 向后端请求指定页码的数据
     const userInfo_ = get('userInfo') || {}
-    const data = { id: this.props.user.id, pageSize: this.state.pageSize, pageNo: this.state.pageNo }
+    const data = { id: userInfo_.id, pageSize: this.state.pageSize, pageNo: this.state.pageNo }
 
     return getSongListById(data)
       .then(res => {

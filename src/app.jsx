@@ -1,11 +1,8 @@
 import Taro, { Component } from '@tarojs/taro';
-import { Provider } from '@tarojs/redux';
 import Index from './pages/index';
-import configStore from './store';
 import './app.scss';
-import { linkSocket } from '@/utils/heartbeatjuejin';
-import { getMyOpenid } from '@/api/user';
 import { get, set } from '@/utils/localStorage';
+import { getSession,checkUpdateVersion } from '@/utils/tools';
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -14,24 +11,26 @@ import { get, set } from '@/utils/localStorage';
 // }
 
 
-const store = configStore();
 
 class App extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
 
     pages: [
-      // 'pages/user/about/about',
-
+     
+     
       'pages/index/index',
+     
+     
+      'pages/index/search/search',
+
+      //我的tab
+      'pages/user/user',
       'pages/user/profit/withdraw/withdraw',
       'pages/user/userQrCode/qr/qrinner/index',
       'pages/user/userQrCode/qr/components/Qrcode/index',
       'pages/user/userQrCode/userQrCode',
       'pages/user/userQrCode/userQrCodeOrder',
-      'pages/user/user',
-      'pages/index/search/search',
-
       'pages/user/uploadSong/uploadSong',
       'pages/user/uploadEvent/uploadEvent',
       'pages/user/mySong/mySong',
@@ -40,6 +39,14 @@ class App extends Component {
       'pages/user/editMyInfo/editMyInfo',
       'pages/user/profit/profit',
       'pages/user/profit/withdrawHistory/withdrawHistory',
+      //使用指南
+      'pages/user/instruction/instruction',
+      'pages/user/instruction/howToRegister/howToRegister',
+      'pages/user/instruction/howToWithdraw/howToWithdraw',
+      'pages/user/instruction/howToUploadEvent/howToUploadEvent',
+      'pages/user/instruction/howToUploadSong/howToUploadSong',
+      'pages/user/instruction/howToQrCode/howToQrCode',
+      'pages/user/instruction/howToTakeOrder/howToTakeOrder',
 
       'pages/event/eventDetail/eventDetail',
       'pages/event/event',
@@ -152,54 +159,31 @@ class App extends Component {
   };
 
   componentWillMount() {
-    Taro.hideTabBar();
-    this.getSession()
+
   }
   componentDidMount() {
-
+    checkUpdateVersion()
+    console.log('didmount')
   }
 
   componentDidShow() {
-    const openId = get('openId')
-    if (openId) {
-      linkSocket()
-    }
-
+    Taro.hideTabBar();
+    getSession()
   }
 
   componentDidHide() {
-    console.log('app did hide')
     // const openId = get('openId')
     // if (openId) {
     //   Taro.closeSocket({ code: 1001, reason: '小程序关闭' });
     // }
   }
-  // 获取登录的code
-  getSession() {
-    Taro.login({
-      success: (res) => {
-        if (res.code) {
-          return getMyOpenid({ jsCode: res.code }).then(res1 => {
-            set('openId', res1.data.openid)
-          })
-        }
-      },
-      fail: (err) => {
-        Taro.showToast({ title: '获取openId失败,联系管理员~', icon: 'none' })
-        return
-      }
-    })
-  }
-
   componentDidCatchError() { }
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
   render() {
     return (
-      <Provider store={store}>
-        <Index />
-      </Provider>
+      <Index />
     );
   }
 }

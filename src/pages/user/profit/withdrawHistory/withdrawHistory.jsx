@@ -12,12 +12,10 @@ class Withdrawhistory extends Component {
   config = {
     navigationBarTitleText: '提现历史',
     usingComponents: {
-
       'i-cell-group': '../../../../iView/cell-group/index',
       'i-cell': '../../../../iView/cell/index',
       'i-divider': '../../../../iView/divider/index',
       'i-input': '../../../../iView/input/index',
-
     },
   }
   constructor() {
@@ -33,7 +31,7 @@ class Withdrawhistory extends Component {
       endDate: '',
       startTime: '00:00',
       endTime: '00:00',
-      today:'',
+      today: '',
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -47,11 +45,11 @@ class Withdrawhistory extends Component {
     var currentDate = new Date(+new Date() + 8 * 3600 * 1000);
     var ourDate = new Date(+new Date() + 8 * 3600 * 1000);
     ourDate.setDate(ourDate.getDate() - 30);
-    
+
     this.setState({
       startDate: ourDate.toISOString().split('T')[0], endDate: currentDate.toISOString().split('T')[0],
       endTime: currentDate.toISOString().split('T')[1].slice(0, 5),
-      today:new Date(+new Date() + 8 * 3600 * 1000).toISOString().split('T')[0]
+      today: new Date(+new Date() + 8 * 3600 * 1000).toISOString().split('T')[0]
     }, () => {
       this.getList(true);
     })
@@ -77,7 +75,7 @@ class Withdrawhistory extends Component {
         this.setState({
           list: override ? res.data.list : this.state.list.concat(res.data.list),
           total: res.data.total, //总页数
-          amount:res.data.amount||0,
+          amount: res.data.amount || 0,
           loading: false,
         });
       })
@@ -125,12 +123,21 @@ class Withdrawhistory extends Component {
       });
     }
   }
+  stateInText(state) {
+    if (state === '0') {
+      return '审核中'
+    } else if (state === '1') {
+      return '提现成功'
+    } else if (state === '-1') {
+      return '提现失败'
+    }
+  }
 
   render() {
     const { list, startDate, total, amount,
       endDate,
       startTime,
-      endTime,today } = this.state
+      endTime, today } = this.state
     return (
       <View className='withdrawHistory'>
         <View style='display:flex' >
@@ -141,7 +148,7 @@ class Withdrawhistory extends Component {
               </View>
             </Picker></View>
           <View style='flex:1'>
-            <Picker mode='time' onChange={this.onChangeStartTime.bind(this)}  value={startTime}>
+            <Picker mode='time' onChange={this.onChangeStartTime.bind(this)} value={startTime}>
               <View onClick={this.hideKeyBoard.bind(this)}>
                 <i-input
                   title='开始时间'
@@ -160,7 +167,7 @@ class Withdrawhistory extends Component {
               </View>
             </Picker></View>
           <View style='flex:1'>
-            <Picker mode='time' onChange={this.onChangeEndTime.bind(this)}  value={endTime}>
+            <Picker mode='time' onChange={this.onChangeEndTime.bind(this)} value={endTime}>
               <View onClick={this.hideKeyBoard.bind(this)}>
                 <i-input
                   title='结束时间'
@@ -184,7 +191,7 @@ class Withdrawhistory extends Component {
           <i-cell title={'总计:' + amount + '元'} > <View slot="footer">{total}条记录</View> </i-cell>
           {list.map(item => {
             return <i-cell
-              title='提现金额'
+              title={'状态:'+this.stateInText(item.state)}
               label={item.createdDate.slice(0, 10) + '  ' + item.createdDate.slice(11, 19)}
             > <View slot="footer">{item.amount}元</View> </i-cell>
 

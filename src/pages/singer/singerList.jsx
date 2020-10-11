@@ -1,9 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import {
-  getHotSongList,
+  getHotSingerList,
   getRecommendSongList
 } from '@/api/song'
 import { goToPage } from '@/utils/tools.js';
@@ -46,7 +45,7 @@ class Event extends Component {
     }
     if (this.$router.params.type === 'hot') {
       Taro.setNavigationBarTitle({
-        title: '热门歌曲'
+        title: '热门歌手'
       })
     }
     this.setState({ type: this.$router.params.type })
@@ -65,12 +64,12 @@ class Event extends Component {
   }
   getList(override) {
     Taro.showLoading({
-      title: '加载中-热门歌曲',
+      title: '加载中~',
     });
     // 向后端请求指定页码的数据
     const data = { pageSize: this.state.pageSize, pageNo: this.state.pageNo }
     this.setState({ loading: true });
-    const requestApi = this.state.type === 'hot' ? getHotSongList : getRecommendSongList
+    const requestApi = this.state.type === 'hot' ? getHotSingerList : getRecommendSongList
     return requestApi(data)
       .then(res => {
 
@@ -136,15 +135,11 @@ class Event extends Component {
     }
   }
   onReachBottom() {
-    console.log('this.state.loading', this.state.loading)
-    console.log('this.state.total', this.state.total)
-    console.log('this.state.pageNo', this.state.pageNo)
-    console.log('this.state.pageSize', this.state.pageSize)
+    
     if (
       !this.state.loading &&
       this.state.pageNo * this.state.pageSize < this.state.total
     ) {
-      console.log('reach bottom')
       this.setState({ pageNo: this.state.pageNo + 1 }, () => {
         this.getList();
       });
@@ -161,12 +156,9 @@ class Event extends Component {
   componentDidHide() { }
 
   render() {
-    const { leftList, rightList } = this.state;
+    const { leftList, rightList,type } = this.state;
     return (
       <View className='event pb50px'>
-
-
-
         <ScrollView
           enableFlex={true}
           className='content'>
@@ -174,7 +166,7 @@ class Event extends Component {
             {leftList.map((item, index) => {
               return <View key={index} onClick={this.goToSingerDetailPage.bind(this, item.toUserId)} className='wrapper'>
                 <Image lazyLoad mode="widthFix" className='pic' src={item.Cover}></Image>
-                <View className='title ellipsis'>{item.name}</View>
+                <View className='title ellipsis'>{type==='hot'?item.nickName:item.name}</View>
               </View>
             })}
           </View>
@@ -182,7 +174,7 @@ class Event extends Component {
             {rightList.map((item, index) => {
               return <View key={index} onClick={this.goToSingerDetailPage.bind(this, item.toUserId)} className='wrapper'>
                 <Image lazyLoad mode="widthFix" className='pic' src={item.Cover}></Image>
-                <View className='title ellipsis'>{item.name}</View>
+                <View className='title ellipsis'>{type==='hot'?item.nickName:item.name}</View>
               </View>
             })}
           </View>

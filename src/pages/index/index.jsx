@@ -14,7 +14,7 @@ import SixBlockComp from '@/components/SixBlockComp/SixBlockComp';
 import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import { getHotEventList } from '@/api/event';
-import { getHotSongList, getRecommendSongList } from '@/api/song';
+import { getHotSingerList, getRecommendSongList } from '@/api/song';
 import { getMyOpenid } from '@/api/user';
 import { goToPage } from '@/utils/tools.js';
 import { get, set, clear, remove } from '@/utils/localStorage';
@@ -107,7 +107,7 @@ class Index extends Component {
     // 向后端请求指定页码的数据
     const data = { pageSize: 6, pageNo: 1 }
     this.setState({ loading: true });
-    return getHotSongList(data)
+    return getHotSingerList(data)
       .then(res => {
         this.setState({
           hotList: override ? res.data.list : this.state.hotList.concat(res.data.list),
@@ -246,9 +246,9 @@ class Index extends Component {
               </i-col>
             </i-row> */}
           <i-divider i-class='divider' height={24}></i-divider>
-          <SixBlockComp title='推荐歌曲' list={this.state.recommendList} />
+          <SixBlockComp title='推荐歌曲' type='recommend' list={this.state.recommendList} />
           <i-divider i-class='divider' height={24}></i-divider>
-          <SixBlockComp title='热门歌曲' list={this.state.hotList} />
+          <SixBlockComp title='热门歌手' type='hot' list={this.state.hotList} />
           <i-divider i-class='divider' height={24}></i-divider>
           <EventSumaryComp list={hotEventList} isShowIcons={false} />
           <i-divider i-class='divider' content='加载已经完成,没有其他数据'></i-divider>

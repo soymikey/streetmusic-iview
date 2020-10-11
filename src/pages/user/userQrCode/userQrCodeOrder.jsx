@@ -2,13 +2,15 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text, Image } from '@tarojs/components'
 import { goToPage } from '@/utils/tools.js';
 import { createPay, createQrCodeStand } from '@/api/user';
+import validator from '@/utils/validator'
+
 import './userQrCodeOrder.scss'
 
 
 class userQrCodeOrder extends Component {
 
   config = {
-    navigationBarTitleText: '申请支付二维码',
+    navigationBarTitleText: '申请点歌二维码',
 
     usingComponents: {
       'i-row': '../../../iView/row/index',
@@ -64,17 +66,39 @@ class userQrCodeOrder extends Component {
     Taro.hideKeyboard();
   }
   pay() {
-    
-    if (!this.state.user) {
-      Taro.showToast({ title: '收货联系人不能为空', icon: 'none' })
-      return
+    const { user, phoneNumber, address } = this.state
+    const isValid = validator(
+      [
+
+        {
+          value: user,
+          rules: [{
+            rule: 'required',
+            msg: '收件名称不能为空'
+          }]
+        },
+
+        {
+          value: phoneNumber,
+          rules: [{
+            rule: 'isMobile',
+          }]
+        },
+        {
+          value: address,
+          rules: [{
+            rule: 'required',
+            msg: '收货地址不能为空'
+          }]
+        },])
+
+    if (!isValid.status) {
+      Taro.showToast({ title: isValid.msg, icon: 'none' });
+      return;
     }
-    else if (this.state.phoneNumber.length !== 11) {
-      Taro.showToast({ title: '联系电话格式错误', icon: 'none' })
-      return
-    }
-    else if (!this.state.address) {
-      Taro.showToast({ title: '收获地址不能为空', icon: 'none' })
+    const userInfo_ = get('userInfo') || {}
+    if (phoneNumber !== userInfo_.phone) {
+      Taro.showToast({ title: '联系电话号码和注册电话号码不一致', icon: 'none' })
       return
     }
 
@@ -167,8 +191,8 @@ class userQrCodeOrder extends Component {
           <View style='width:80%;'>
 
             <i-input
-              title='地址'
-              placeholder='详细地址'
+              title='收件地址'
+              placeholder='收件地址'
               value={address}
               maxlength={150}
               onChange={this.onChangeAddress.bind(this)}
@@ -194,7 +218,7 @@ class userQrCodeOrder extends Component {
             size='mini'
             className='primary'
             onClick={this.pay.bind(this)}
-          >支付5元</Button>
+          >支付</Button>
 
         </View>
 

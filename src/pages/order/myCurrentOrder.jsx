@@ -4,7 +4,7 @@ import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Picker } from '@tarojs/components';
 import { getOrderListById, updateOrder } from '@/api/order';
 import { updateUserState } from '@/api/user';
-import { get, set, remove,clear } from '@/utils/localStorage';
+import { get, set, remove, clear } from '@/utils/localStorage';
 import './myCurrentOrder.scss';
 class MyCurrentOrder extends Component {
   config = {
@@ -44,8 +44,6 @@ class MyCurrentOrder extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-  }
   componentDidMount() {
 
   }
@@ -64,7 +62,7 @@ class MyCurrentOrder extends Component {
         )[0].label;
         this.setState({
           orderList: res.data.list,
-          state: state_,
+          state: state_
         });
       })
       .catch(err => {
@@ -72,8 +70,12 @@ class MyCurrentOrder extends Component {
       });
   }
   onChangeState(event) {
+
     const label = this.state.stateList[event.detail.value].label;
     const value = this.state.stateList[event.detail.value].value;
+    if (label === this.state.state) {
+      return
+    }
     Taro.getLocation({
       type: 'wgs84',
       isHighAccuracy: true,
@@ -234,40 +236,17 @@ class MyCurrentOrder extends Component {
       this.state.selectedOrder.state === '0' ? this.confirmStart() : this.confirmFinish();
     }
   }
-  // componentDidShow() {
-  //   Taro.onSocketMessage(res => {
-  //     //收到消息
-  //     console.log('我的订单页面, 收到服务器消息', res);
 
-  //     const data = JSON.parse(res.data);
-  //     if (data.type == 'pong') {
-  //       heartCheck.reset().start();
-  //     }
-  //     else if (data.type === 'goFetchOrderList') {
-  //       $Message({
-  //         content: '您有新订单~'
-  //       });
-  //       innerAudioContext.play()
-  //       this.fetchOrderList().then(res=>{
-  //         Taro.showToast({title:'您有新订单~'})
-  //       });
-  //       // 处理数据
-  //     }
-  //     else if (data.type === 'createTipsOKBack') {
-  //       $Message({
-  //         content: `${data.data.userName}打赏了${data.data.tips}元~`
-  //       });
-
-  //     }
-  //   });
-  // }
   refresh() {
     this.fetchOrderList();
   }
   componentDidShow() {
     this.fetchOrderList(true);
+    this.onChangeState({ detail: { value: '0' } })
   }
-  componentDidHide() { }
+  componentDidHide() {
+    this.onChangeState({ detail: { value: '2' } })
+  }
 
   render() {
     const { orderList, isShowModal, selectedOrder, actions, state, stateList } = this.state;

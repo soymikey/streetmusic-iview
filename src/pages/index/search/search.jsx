@@ -35,11 +35,11 @@ class Search extends Component {
 
   componentDidHide() { }
   getSearchText = (e) => {
-    Taro.showToast({
-      title: '回调的搜索信息: ' + e,
-      icon: "none"
-    })
-    getSearchResult().then(res => {
+    // Taro.showToast({
+    //   title: '回调的搜索信息: ' + e,
+    //   icon: "none"
+    // })
+    getSearchResult({keyword:e}).then(res => {
       this.setState({ resultList: res.data });
     })
   }

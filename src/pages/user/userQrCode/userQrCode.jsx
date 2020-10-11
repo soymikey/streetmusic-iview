@@ -113,7 +113,7 @@ class Userqrcode extends Component {
               className='success'
               onClick={this.goToQRcodeOrderPage.bind(this)}
             >
-              申请二维码收款码
+              申请点歌二维码
               </Button>
           </View>
 

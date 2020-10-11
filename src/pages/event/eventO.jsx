@@ -7,8 +7,6 @@ import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
 
 import './event.scss';
 
-const post1_ = require('@/asset/images/poster1.png');
-const post2_ = require('@/asset/images/poster2.png');
 
 class Event extends Component {
   config = {
@@ -36,7 +34,7 @@ class Event extends Component {
           date: ' 昨天06：28',
           content:
             ' #早安世界#知道劝你们玩手机是没有用的，那就只能给你们加油鼓励了，早，今天也要努力学习哦！',
-          posters: [post1_],
+          posters: [],
           likes: '112',
           shares: '223',
           comments: '334',

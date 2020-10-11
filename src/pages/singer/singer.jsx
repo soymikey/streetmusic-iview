@@ -14,7 +14,9 @@ import { createTips } from '@/api/tips';
 
 import validator from '@/utils/validator'
 import tipsPNG from '@/asset/icon/tips.png';
-import { get, set } from '@/utils/localStorage';
+import { get, set, remove } from '@/utils/localStorage';
+import { goToLogin } from '@/utils/tools.js';
+
 import './singer.scss';
 class Singer extends Component {
   // eslint-disable-next-line react/sort-comp
@@ -135,7 +137,13 @@ class Singer extends Component {
   }
 
   componentWillMount() {
-
+    if (!get('token')) {
+      Taro.showToast({ title: "您还未登录,请登录~", icon: 'none' })
+      setTimeout(() => {
+        goToLogin()
+      }, 2000);
+      return
+    }
     getUserInfo({ id: this.$router.params.id }).then(res => {
       this.setState({ userInfo: res.data });
       this.fetchSongList(true);
@@ -145,6 +153,9 @@ class Singer extends Component {
   }
 
   componentDidMount() {
+    if (!get('token')) {
+      return
+    }
     this.fetchUserDetail()
     this.fetchOrderList()
   }
@@ -381,9 +392,7 @@ class Singer extends Component {
       if (this.state.isShowTipsModal) {
         amount = Number(this.state.tips) * 100
       }
-
-
-      createPay({ amount }).then(res => {
+      createPay({ amount: amount.toFixed() }).then(res => {
         Taro.requestPayment({
           timeStamp: res.data.timeStamp,
           nonceStr: res.data.nonceStr,
@@ -470,21 +479,29 @@ class Singer extends Component {
 
   joinToTheRoom() {
     const { path, params } = this.$router;
-    if (params.id) {
-      const userInfo_=get('userInfo')
+    const userInfo_ = get('userInfo')
+    if (params.id && userInfo_) {
+
       Taro.sendSocketMessage({
         data: JSON.stringify({
           type: 'join',
           roomId: params.id + '@@@' + get('openId'),
-          userName:userInfo_.nickName,
+          userName: userInfo_.nickName,
         }),
       });
     } else {
-      Taro.showToast({ title: '直连歌手失败,无效歌手Id' })
+      Taro.showToast({ title: '同步歌手失败,无效歌手Id',icon:'none' })
     }
   }
   componentDidShow() {
-    this.joinToTheRoom()
+    if (!get('token')) {
+      return
+    }
+    const order = get('order')
+    if (!order) {
+      this.joinToTheRoom()
+    }
+
   }
 
   tip(item) {
