@@ -52,7 +52,6 @@ class Search extends Component {
   }
   render() {
     const { themeClass, hotList, resultList } = this.state;
-    console.log('resultList', resultList)
     return (
       <View className='search'>
         <SearchComp isFocus={false}

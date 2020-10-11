@@ -70,7 +70,8 @@ class UploadEvent extends Component {
       const { address,
         city,
         cityCode,
-        date,
+        startDate,
+        endDate,
         endTime,
 
         introduction,
@@ -89,7 +90,8 @@ class UploadEvent extends Component {
       this.setState({
         name,
         introduction,
-        date: date.slice(0, 10),
+        startDate,
+        endDate,
         startTime,
         endTime,
         address,
@@ -380,7 +382,6 @@ class UploadEvent extends Component {
       id,
       isDisabled,today
     } = this.state;
-    console.log('poster', poster)
     return (
       <View className='uploadEvent'>
         <i-input

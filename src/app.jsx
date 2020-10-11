@@ -13,6 +13,7 @@ import { get, set } from '@/utils/localStorage';
 //   require('nerv-devtools')
 // }
 
+
 const store = configStore();
 
 class App extends Component {
@@ -159,15 +160,15 @@ class App extends Component {
   }
 
   componentDidShow() {
-    console.log('app did show')
     const openId = get('openId')
     if (openId) {
       linkSocket()
     }
+
   }
 
   componentDidHide() {
-    // console.log('app did hide')
+    console.log('app did hide')
     // const openId = get('openId')
     // if (openId) {
     //   Taro.closeSocket({ code: 1001, reason: '小程序关闭' });

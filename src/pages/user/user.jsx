@@ -30,7 +30,7 @@ class User extends Component {
       'i-divider': '../../iView/divider/index',
       'i-avatar': '../../iView/avatar/index',
       'i-icon': '../../iView/icon/index',
-      "i-message": "../../iView/message/index", 
+      "i-message": "../../iView/message/index",
     },
   };
 
@@ -51,8 +51,9 @@ class User extends Component {
     userInfo.openid = get('openId');
     return login(userInfo).then(res => {
       set('token', res.data.token)
+      set('userInfo', res.data)
       this.props.setUserInfo(res.data);
-linkSocket()
+      linkSocket()
       Taro.showToast({ title: '登录成功', icon: 'none' })
 
       const backToPage = get('backToPage')
@@ -126,7 +127,7 @@ linkSocket()
     } = this.props.user;
     return (
       <View className='user pb50px'>
-         <i-message id="message" />
+        <i-message id="message" />
         <i-row i-class='user-info'>
           {nickName}
           <i-col span='4'>

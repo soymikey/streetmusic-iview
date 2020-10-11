@@ -1,6 +1,6 @@
 import { ADD, MINUS, SETUSERINFO, LOGOUT, SETWSSTATE } from '../constants/counter'
 import Taro from '@tarojs/taro'
-import { remove } from '@/utils/localStorage';
+import { clear } from '@/utils/localStorage';
 
 const INITIAL_STATE = {
   id: '',
@@ -24,8 +24,8 @@ const INITIAL_STATE = {
   followCount: 0,
   eventCount: 0,
   wsConectionState: -1,//-1=未连接 0连接中 1连接成功
-  DOB:'',
-  referenceCode:'',
+  DOB: '',
+  referenceCode: '',
 }
 
 
@@ -42,8 +42,7 @@ export default function user(state = INITIAL_STATE, action) {
         ...action.payload
       }
     case LOGOUT:
-      console.log('logout reduce');
-      remove('token')
+      clear()
       Taro.showToast({ title: '退出成功', icon: 'none' })
       return {
         id: '',

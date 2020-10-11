@@ -52,7 +52,6 @@ class Eventsumarycomp extends Component {
     // regionCode: "350102"
     // startTime: "19:05:00"
     // userId: "o2VHy5Fn3m8GlVISHmDgNS6y3WrM"
-    console.log('list',list)
     return (
     
       <View className='eventSumaryComp'>

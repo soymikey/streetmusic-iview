@@ -15,11 +15,11 @@ import { getSongListById } from '@/api/song';
 import { createOrder, getOrderListById } from '@/api/order';
 import { createTips } from '@/api/tips';
 
-import { heartCheck } from '@/utils/heartbeatjuejin';
+import { sendWS } from '@/utils/heartbeatjuejin';
 import { goToLogin } from '@/utils/tools.js';
 import validator from '@/utils/validator'
 import tipsPNG from '@/asset/icon/tips.png';
-import { get } from '@/utils/localStorage';
+import { get, set } from '@/utils/localStorage';
 
 const { $Message } = require('../../iView/base/index');
 
@@ -146,11 +146,18 @@ class Singer extends Component {
   }
 
   componentWillMount() {
-    this.fetchUserDetail();
+
+    getUserInfo({ id: this.$router.params.id }).then(res => {
+      this.setState({ userInfo: res.data });
+      this.fetchSongList(true);
+      this.fetchEventList(true);
+      this.fetchOrderList();
+    });
   }
 
   componentDidMount() {
-    this.fetchOrderList();
+    this.fetchUserDetail()
+    this.fetchOrderList()
   }
   setSwiperHeight(value) {
     let height = 0;
@@ -178,8 +185,6 @@ class Singer extends Component {
   fetchUserDetail() {
     getUserInfo({ id: this.$router.params.id }).then(res => {
       this.setState({ userInfo: res.data });
-      this.fetchSongList(true);
-      this.fetchEventList(true);
     });
   }
   fetchSongList(override) {
@@ -305,7 +310,6 @@ class Singer extends Component {
     }
   }
   onReachBottom() {
-    this.joinToTheRoom()
     const { currentTab } = this.state;
     if (currentTab === 0) {
       if (!this.state.loading && this.state.songPageNo < this.state.songTotal) {
@@ -410,7 +414,14 @@ class Singer extends Component {
                 tips: this.state.tips,
                 singerId: this.$router.params.id
               };
+
               if (this.state.isShowModal) {
+                set('order', JSON.stringify({
+                  type: 'createOrderOK',
+                  roomId: this.$router.params.id + '@@@' + get('openId'),
+                  songName: this.state.selectedSong.name,
+                  userName: this.props.user.nickName,
+                }))
                 data.songId = this.state.selectedSong.id
                 data.price = this.state.selectedSong.price
                 data.name = this.state.selectedSong.name
@@ -418,14 +429,7 @@ class Singer extends Component {
                 createOrder(data).then(res => {
                   this.setState({ isShowModal: false, tips: 0 });
                   console.log('准备发送toArtist');
-                  Taro.sendSocketMessage({
-                    data: JSON.stringify({
-                      type: 'createOrderOK',
-                      roomId: this.$router.params.id + '@@@' + get('openId'),
-                      songName: this.state.selectedSong.name,
-                      userName: this.props.user.nickName,
-                    }),
-                  });
+
                   setTimeout(() => {
                     this.fetchOrderList();
                     this.onChangeTab({ detail: { key: 1 } })
@@ -435,17 +439,14 @@ class Singer extends Component {
                 })
               }
               if (this.state.isShowTipsModal) {
+                set('tips', JSON.stringify({
+                  type: 'createTipsOK',
+                  roomId: this.$router.params.id + '@@@' + get('openId'),
+                  tips: this.state.tips,
+                  userName: this.props.user.nickName,
+                }))
                 createTips(data).then(res => {
                   this.setState({ isShowTipsModal: false, tips: 0 });
-                  Taro.sendSocketMessage({
-                    data: JSON.stringify({
-                      type: 'createTipsOK',
-                      roomId: this.$router.params.id + '@@@' + get('openId'),
-                      tips: this.state.tips,
-                      userName: this.props.user.nickName,
-                    }),
-                  });
-                  this.setState({ isShowTipsModal: false });
                   Taro.showToast({
                     title: '感谢支持', icon: 'none'
                   })
@@ -479,34 +480,23 @@ class Singer extends Component {
     this.setState({ content: e.detail.detail.value });
   }
 
-
-  componentDidShow() {
-    this.fetchUserDetail();
-    setTimeout(() => {
-      this.joinToTheRoom()
-    }, 2000);
-
-
-  }
   joinToTheRoom() {
     const { path, params } = this.$router;
-    Taro.sendSocketMessage({
-      data: JSON.stringify({
-        type: 'join',
-        roomId: params.id + '@@@' + get('openId'),
-      }),
-    });
+    if (params.id) {
+      const userInfo_=get('userInfo')
+      Taro.sendSocketMessage({
+        data: JSON.stringify({
+          type: 'join',
+          roomId: params.id + '@@@' + get('openId'),
+          userName:userInfo_.nickName,
+        }),
+      });
+    } else {
+      Taro.showToast({ title: '直连歌手失败,无效歌手Id' })
+    }
   }
-  componentDidHide() {
-    // const { path, params } = this.$router;
-    // console.log('singer did hide')
-    // Taro.sendSocketMessage({
-    //   data: JSON.stringify({
-    //     type: 'unJoin',
-    //     roomId: params.id + '@@@' + get('openId'),
-    //   }),
-    // });
-
+  componentDidShow() {
+    this.joinToTheRoom()
   }
 
   tip(item) {
@@ -549,7 +539,7 @@ class Singer extends Component {
       <View className='singer'>
         <i-message id="message" />
         {/* <Ball imageUrl={userInfo.avatar} /> */}
-        <View className='tip-wrapper' style='position:fixed;right:2%;bottom:1%;' onClick={() => { this.setState({ isShowTipsModal: true, tips: 1 }) }}>
+        <View className='tip-wrapper' style='position:fixed;right:2%;bottom:1%;z-index:1000' onClick={() => { this.setState({ isShowTipsModal: true, tips: 1 }) }}>
           <i-avatar src={tipsPNG} size='large' />
           {/*  <View className='text' style='position: absolute;'>赏</View> */}
           {/* <TipsComp imageUrl={userInfo.avatar}/> */}

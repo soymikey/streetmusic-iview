@@ -206,6 +206,7 @@ class Registerartist extends Component {
         const openId = get('openId')
         return login({ openid: openId }).then(res => {
           set('token', res.data.token)
+          set('userInfo', res.data)
           this.props.setUserInfo(res.data);
           linkSocket();//连接websocket
           Taro.navigateBack(-1)
