@@ -9,10 +9,10 @@ import { setUserInfo, logout, } from '@/actions/user';
 
 import { goToPage } from '@/utils/tools.js';
 import { get, set, remove } from '@/utils/localStorage';
-import { linkSocket, heartCheck } from '@/utils/heartbeatjuejin';
 const logo = require('@/asset/icon/logo.png');
 
 import './user.scss';
+import { linkSocket } from '@/utils/heartbeatjuejin';
 
 @connect(state => state, { setUserInfo, logout })
 class User extends Component {
@@ -30,32 +30,18 @@ class User extends Component {
       'i-divider': '../../iView/divider/index',
       'i-avatar': '../../iView/avatar/index',
       'i-icon': '../../iView/icon/index',
+      "i-message": "../../iView/message/index", 
     },
   };
+
 
   componentDidMount() {
     if (this.$router.params.referenceCode) {
       set(referenceCode, this.$router.params.referenceCode)
     }
-    this.getSession();
 
   }
-  // 获取登录的code
-  getSession() {
-    Taro.login({
-      success: (res) => {
-        if (res.code) {
-          return getMyOpenid({ jsCode: res.code }).then(res1 => {
-            set('openId', res1.data.openid)
-          })
-        }
-      },
-      fail: (err) => {
-        Taro.showToast({ title: '获取openId失败,联系管理员~', icon: 'none' })
-        return
-      }
-    })
-  }
+
   getUserInfo(e) {
     let userInfo = e.detail.userInfo;
     if (!get('openId')) {
@@ -66,7 +52,7 @@ class User extends Component {
     return login(userInfo).then(res => {
       set('token', res.data.token)
       this.props.setUserInfo(res.data);
-      linkSocket(userInfo.openid);//连接websocket
+linkSocket()
       Taro.showToast({ title: '登录成功', icon: 'none' })
 
       const backToPage = get('backToPage')
@@ -136,10 +122,11 @@ class User extends Component {
       collectionCount,
       followCount,
       eventCount,
-      DOB, referenceCode
+      DOB, referenceCode,
     } = this.props.user;
     return (
       <View className='user pb50px'>
+         <i-message id="message" />
         <i-row i-class='user-info'>
           {nickName}
           <i-col span='4'>

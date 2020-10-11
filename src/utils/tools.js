@@ -20,13 +20,16 @@ export const goToPage = (url, checkAuth = false) => {
 export const goToLogin = () => {
   // 存当前页面的地址
   const prePage = Taro.getCurrentPages().pop()
-  let query = ''
+  let query = '?'
   for (const key in prePage.$component.$router.params) {
     const value = prePage.$component.$router.params[key]
     query += `${key}=${value}&`
   }
   query = query.substr(0, query.length - 1)
-  const prePageUrl = `${prePage.$component.$router.path}?${query}`
+  const prePageUrl = `${prePage.$component.$router.path}${query}`
+  if(prePageUrl.includes('pages/user/user')){
+    return
+  }
   set('backToPage', prePageUrl);
   logout()
   Taro.switchTab({ url: '/pages/user/user' })

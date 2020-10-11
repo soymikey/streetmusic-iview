@@ -17,8 +17,8 @@ class Event extends Component {
     usingComponents: {
       'i-row': '../../iView/row/index',
       'i-col': '../../iView/col/index',
-      'i-divider': '../../iView/divider/index'
-
+      'i-divider': '../../iView/divider/index',
+      "i-message": "../../iView/message/index", 
     },
   }
   constructor(props) {
@@ -71,7 +71,7 @@ class Event extends Component {
         awaitAll(res.data.list)
         console.log('override', override)
         this.setState({
-          list: override ? res.data.list : this.state.list.concat(res.data.list),
+          list: override ? res.data.list : this.state.list.push(res.data.list),
           total: res.data.total, //总页数
           loading: false,
           leftList: [],
@@ -142,6 +142,8 @@ class Event extends Component {
     const { leftList, rightList } = this.state;
     return (
       <View className='event pb50px'>
+        <i-message id="message" />
+
         <ScrollView
           enableFlex={true}
           className='content'>

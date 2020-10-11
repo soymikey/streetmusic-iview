@@ -17,6 +17,7 @@ class Order extends Component {
       'i-cell-group': '../../iView/cell-group/index',
       'i-cell': '../../iView/cell/index',
       'i-divider': '../../iView/divider/index',
+      "i-message": "../../iView/message/index",
     },
   };
 
@@ -33,6 +34,7 @@ class Order extends Component {
   render() {
     return (
       <View className='order'>
+         <i-message id="message" />
         <i-cell-group>
           {this.props.user.role === 'artist' &&
             <View>
@@ -41,9 +43,11 @@ class Order extends Component {
               <i-cell title='推荐历史' is-link url='/pages/reference/history'></i-cell>
             </View>
 
+
           }
           <i-cell title='打赏历史' is-link url='/pages/tips/history'></i-cell>
           <i-cell title='订单历史' is-link url='/pages/order/myHistoryOrder'></i-cell>
+
 
         </i-cell-group>
         <View className='tabbar-container'>

@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Swiper, SwiperItem, Image } from '@tarojs/components';
-import { getEventDetailById, getHotEventList } from '@/api/event';
+import { getEventDetailById, getRecommendEventList } from '@/api/event';
 import { getCommentList } from '@/api/common';
 
 import post1 from '@/asset/images/poster1.png';
@@ -98,6 +98,8 @@ class EventDetail extends Component {
         followed,
         userId
       } = res.data;
+      console.log('userId',userId)
+      this.fetchHotEventList(userId)
       let poster_ = [];
       if (JSON.parse(poster).length) {
         poster_ = JSON.parse(poster).map(item => {
@@ -128,14 +130,14 @@ class EventDetail extends Component {
   }
 
   // 热门活动
-  fetchHotEventList() {
+  fetchHotEventList(userId) {
     Taro.showLoading({
       title: '加载中-活动',
     });
     // 向后端请求指定页码的数据
-    const data = { pageSize: 5, pageNo: 1 };
+    const data = { pageSize: 5, pageNo: 1, userId:userId};
 
-    return getHotEventList(data)
+    return getRecommendEventList(data)
       .then(res => {
         for (const item of res.data.list) {
           item.poster = JSON.parse(item.poster);
@@ -172,7 +174,7 @@ class EventDetail extends Component {
         });
       })
       .catch(err => {
-        this.setState({loading:false})
+        this.setState({ loading: false })
         console.log('==> [ERROR]', err);
       });
   }
@@ -182,7 +184,6 @@ class EventDetail extends Component {
   }
   init() {
     this.getEventDetail(); //活动详情
-    this.fetchHotEventList(); //热门推荐活动
     this.fetchCommentList(true).then(res => {
       // 处理完成后，终止下拉刷新
       Taro.stopPullDownRefresh();

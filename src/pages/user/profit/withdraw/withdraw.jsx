@@ -56,7 +56,7 @@ class Withdraw extends Component {
         that.setState({ smsText: that.state.smsCountDown + '秒后可重新获取' })
       } else {
         clearInterval(clock); //清除js定时器
-        that.setState({ smsText: '点击发送验证码', smsDisabled: false, smsCountDown: 10 })
+        that.setState({ smsText: '点击发送验证码', smsDisabled: false, smsCountDown: 60 })
       }
     })
   }
@@ -144,7 +144,7 @@ class Withdraw extends Component {
           onChange={this.onChangePhone.bind(this)}
         />
         <View style='display:flex'>
-          <View style='width:60%;'>
+          <View style='width:50%;'>
             <i-input
               title='验证码'
               placeholder='4位验证码'

@@ -9,7 +9,8 @@ import { getOrderListById, updateOrder } from '@/api/order';
 import { updateUserState } from '@/api/user';
 const { $Message } = require('../../iView/base/index');
 import './myCurrentOrder.scss';
-
+const innerAudioContext = Taro.createInnerAudioContext()
+innerAudioContext.src = 'http://47.104.167.164/faceVideo/result_2020_07_20_21_43_11.mp3'
 @connect(state => state)
 class MyCurrentOrder extends Component {
   config = {
@@ -54,7 +55,6 @@ class MyCurrentOrder extends Component {
   }
   componentDidMount() {
 
-    this.fetchOrderList();
   }
   componentWillUnmount() { }
   fetchOrderList() {
@@ -96,6 +96,8 @@ class MyCurrentOrder extends Component {
             data: JSON.stringify({
               type: 'updateUserStateOK',
               artistId: this.props.user.id,
+              state:value,
+              artist:this.props.user.nickName
             }),
           });
         });
@@ -184,6 +186,9 @@ class MyCurrentOrder extends Component {
           data: JSON.stringify({
             type: 'updateOrderStateOK',
             artistId: this.props.user.id,
+            state: '1',
+            songName: this.state.selectedOrder.name,
+            userName: this.state.selectedOrder.nickName,
           }),
         });
       })
@@ -213,6 +218,9 @@ class MyCurrentOrder extends Component {
           data: JSON.stringify({
             type: 'updateOrderStateOK',
             artistId: this.props.user.id,
+            state: '2',
+            songName: this.state.selectedOrder.name,
+            userName: this.state.selectedOrder.nickName,
           }),
         });
       })
@@ -230,32 +238,38 @@ class MyCurrentOrder extends Component {
       this.state.selectedOrder.state === '0' ? this.confirmStart() : this.confirmFinish();
     }
   }
-  componentDidShow() {
-    Taro.onSocketMessage(res => {
-      //收到消息
-      console.log('我的订单页面, 收到服务器消息', res);
+  // componentDidShow() {
+  //   Taro.onSocketMessage(res => {
+  //     //收到消息
+  //     console.log('我的订单页面, 收到服务器消息', res);
 
-      const data = JSON.parse(res.data);
-      if (data.type == 'pong') {
-        heartCheck.reset().start();
-      }
-      else if (data.type === 'goFetchOrderList') {
-        $Message({
-          content: '您有新订单~'
-        });
-        this.fetchOrderList();
-        // 处理数据
-      }
-      else if (data.type === 'createTipsOKBack') {
-        $Message({
-          content: `${data.data.userName}打赏了${data.data.tips}元~`
-        });
+  //     const data = JSON.parse(res.data);
+  //     if (data.type == 'pong') {
+  //       heartCheck.reset().start();
+  //     }
+  //     else if (data.type === 'goFetchOrderList') {
+  //       $Message({
+  //         content: '您有新订单~'
+  //       });
+  //       innerAudioContext.play()
+  //       this.fetchOrderList().then(res=>{
+  //         Taro.showToast({title:'您有新订单~'})
+  //       });
+  //       // 处理数据
+  //     }
+  //     else if (data.type === 'createTipsOKBack') {
+  //       $Message({
+  //         content: `${data.data.userName}打赏了${data.data.tips}元~`
+  //       });
 
-      }
-    });
-  }
+  //     }
+  //   });
+  // }
   refresh() {
     this.fetchOrderList();
+  }
+  componentDidShow(){
+    this.fetchOrderList(true);
   }
   componentDidHide() { }
 
@@ -281,16 +295,8 @@ class MyCurrentOrder extends Component {
           </View>
         </i-modal>
         <i-row i-class='state'>
-          {/* <Picker
-            mode='selector'
-            range={this.state.stateRange}
-            onChange={this.onChangeState.bind(this)}
-          >
-            <AtList>
-              <AtListItem title='状态' extraText={this.state.state} />
-            </AtList>
-          </Picker> */}
-        
+
+
           <Picker
             mode='selector'
             range={this.state.stateRange}
@@ -300,11 +306,7 @@ class MyCurrentOrder extends Component {
               <i-input title='状态' value={state} disabled />
             </View>
           </Picker>
-          {/* <Picker mode='date' onChange={this.onChangeStartDate.bind(this)} value={startDate}>
-              <View onClick={this.hideKeyBoard.bind(this)}>
-                <i-input title='开始日期' placeholder='开始日期' value={startDate} disabled />
-              </View>
-            </Picker> */}
+
         </i-row>
         {orderList.map((item, index) => {
           return (

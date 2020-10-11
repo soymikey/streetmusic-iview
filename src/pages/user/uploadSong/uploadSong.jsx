@@ -105,13 +105,13 @@ class Uploadsong extends Component {
             msg: '歌曲名称不能为空'
           }]
         },
-        {
-          value: duration,
-          rules: [{
-            rule: 'required',
-            msg: '歌曲时间不能为空'
-          }]
-        },
+        // {
+        //   value: duration,
+        //   rules: [{
+        //     rule: 'required',
+        //     msg: '歌曲时间不能为空'
+        //   }]
+        // },
         // {
         //   value: type,
         //   rules: [{
@@ -190,7 +190,7 @@ class Uploadsong extends Component {
           maxlength={20}
           onChange={this.onChangeName.bind(this)}
         />
-        <i-input
+        {/* <i-input
           onChange={this.onChangeContent.bind(this)}
           value={introduction}
           title='介绍'
@@ -210,7 +210,7 @@ class Uploadsong extends Component {
           value={type}
           maxlength={-1}
           onChange={this.onChangeType.bind(this)}
-        />
+        /> */}
         <i-input
           onChange={this.onChangePrice.bind(this)}
           title='价格'

@@ -3,6 +3,9 @@ import { Provider } from '@tarojs/redux';
 import Index from './pages/index';
 import configStore from './store';
 import './app.scss';
+import { linkSocket } from '@/utils/heartbeatjuejin';
+import { getMyOpenid } from '@/api/user';
+import { get, set } from '@/utils/localStorage';
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -55,6 +58,9 @@ class App extends Component {
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black',
+      // usingComponents:{
+      //   "i-message": "./iView/message/index",
+      // }
     },
     tabBar: {
       color: '#7a7a7a',
@@ -145,17 +151,44 @@ class App extends Component {
   };
 
   componentWillMount() {
-
+    Taro.hideTabBar();
+    this.getSession()
   }
   componentDidMount() {
-    Taro.hideTabBar();
+
   }
 
   componentDidShow() {
-
+    console.log('app did show')
+    const openId = get('openId')
+    if (openId) {
+      linkSocket()
+    }
   }
 
-  componentDidHide() { }
+  componentDidHide() {
+    // console.log('app did hide')
+    // const openId = get('openId')
+    // if (openId) {
+    //   Taro.closeSocket({ code: 1001, reason: '小程序关闭' });
+    // }
+  }
+  // 获取登录的code
+  getSession() {
+    Taro.login({
+      success: (res) => {
+        if (res.code) {
+          return getMyOpenid({ jsCode: res.code }).then(res1 => {
+            set('openId', res1.data.openid)
+          })
+        }
+      },
+      fail: (err) => {
+        Taro.showToast({ title: '获取openId失败,联系管理员~', icon: 'none' })
+        return
+      }
+    })
+  }
 
   componentDidCatchError() { }
 

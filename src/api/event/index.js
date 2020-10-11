@@ -6,5 +6,6 @@ export const getEventDetailById = (data) => { return Wechat.request('/api/event/
 export const updateEvent = (data) => { return Wechat.request('/api/event/update', data) }//更新活动
 export const deleteEvent = (data) => { return Wechat.request('/api/event/delete', data) }//删除活动
 export const getHotEventList = (data) => { return Wechat.request('/api/event/hotList', data) }//获取热门活动
+export const  getRecommendEventList = (data) => { return Wechat.request('/api/event/recommend', data) }//获取推荐活动
 
 

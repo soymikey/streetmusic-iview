@@ -283,7 +283,7 @@ class UploadEvent extends Component {
         console.log('isUploaded', isUploaded)
         const isUploaded_ = JSON.parse(isUploaded)
         if (isUploaded_.errno !== 0) {
-          Taro.showToast({ title: '图片上传失败', icon: 'none' })
+          Taro.showToast({ title: '图片上传失败,请重新上传图片', icon: 'none' })
           this.setState({ isDisabled: false });
           return
         } else {

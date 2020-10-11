@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text } from '@tarojs/components';
+import { get } from '@/utils/localStorage';
 
 import './tab2.scss';
 
@@ -45,7 +46,7 @@ class Tab2 extends Component {
                 title={item.name}
                 label={'点歌用户:' + item.nickName}
                 value={item.state === '0' ? '未开始' : '进行中...'}>
-                {item.nickName === userInfo.nickName ? <View style='text-align:center;font-weight:bold'>{userInfo.nickName}点的歌曲</View> : null
+                {item.fromUserId === get('openId') ? <View style='text-align:center;font-weight:bold'>你点的歌曲</View> : null
                 }
               </i-cell>
             );

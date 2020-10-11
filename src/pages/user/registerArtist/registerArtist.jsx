@@ -207,7 +207,7 @@ class Registerartist extends Component {
         return login({ openid: openId }).then(res => {
           set('token', res.data.token)
           this.props.setUserInfo(res.data);
-          linkSocket(openId);//连接websocket
+          linkSocket();//连接websocket
           Taro.navigateBack(-1)
         })
       }, 2000);
@@ -230,7 +230,7 @@ class Registerartist extends Component {
         that.setState({ smsText: that.state.smsCountDown + '秒后可重新获取' })
       } else {
         clearInterval(clock); //清除js定时器
-        that.setState({ smsText: '点击发送验证码', smsDisabled: false, smsCountDown: 10 })
+        that.setState({ smsText: '点击发送验证码', smsDisabled: false, smsCountDown: 60 })
       }
     })
   }
@@ -326,7 +326,7 @@ class Registerartist extends Component {
           onChange={this.onChangePhone.bind(this)}
         />
         <View style='display:flex'>
-          <View style='width:60%;'>
+          <View style='width:50%;'>
             <i-input
               title='验证码'
               placeholder='4位验证码'

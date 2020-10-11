@@ -66,7 +66,7 @@ class EditMyInfo extends Component {
     };
   }
   componentDidMount() {
- 
+
     getUserFullInfo({}).then(res => {
       const {
         address,
@@ -283,11 +283,12 @@ class EditMyInfo extends Component {
       if (item.url.includes('http://qiniu.migaox.com')) {
         avatar_.push(item.url)
       } else {
+        console.log('item.url', item.url)
         const isUploaded = await uploadImage(item.url, '/api/userinfo/avatar/upload')
         console.log('isUploaded', isUploaded)
         const isUploaded_ = JSON.parse(isUploaded)
         if (isUploaded_.errno !== 0) {
-          Taro.showToast({ title: '图片上传失败失败', icon: 'none' })
+          Taro.showToast({ title: '图片上传失败,请重新上传图片', icon: 'none' })
           this.setState({ isDisabled: false });
           return
         } else {
@@ -331,7 +332,7 @@ class EditMyInfo extends Component {
         that.setState({ smsText: that.state.smsCountDown + '秒后可重新获取' })
       } else {
         clearInterval(clock); //清除js定时器
-        that.setState({ smsText: '点击发送验证码', smsDisabled: false, smsCountDown: 10 })
+        that.setState({ smsText: '点击发送验证码', smsDisabled: false, smsCountDown: 60 })
       }
     })
   }
@@ -415,7 +416,7 @@ class EditMyInfo extends Component {
           onChange={this.onChangePhone.bind(this)}
         />
         <View style='display:flex'>
-          <View style='width:60%;'>
+          <View style='width:50%;'>
             <i-input
               title='验证码'
               placeholder='4位验证码'

@@ -5,9 +5,7 @@ import { View, Button, Picker } from '@tarojs/components';
 import { connect } from '@tarojs/redux';
 import { getOrderHistoryListById, updateOrder } from '@/api/order';
 import { updateUserState } from '@/api/user';
-
 import './myHistoryOrder.scss';
-
 @connect(state => state)
 class myHistoryOrder extends Component {
   config = {
@@ -39,7 +37,7 @@ class myHistoryOrder extends Component {
       endDate: '',
       startTime: '00:00',
       endTime: '00:00',
-      today:''
+      today: ''
     };
   }
 
@@ -50,15 +48,15 @@ class myHistoryOrder extends Component {
     this.initDate();
   }
   initDate() {
-    
+
     var currentDate = new Date(+new Date() + 8 * 3600 * 1000);
     var ourDate = new Date(+new Date() + 8 * 3600 * 1000);
     ourDate.setDate(ourDate.getDate() - 30);
-    
+
     this.setState({
       startDate: ourDate.toISOString().split('T')[0], endDate: currentDate.toISOString().split('T')[0],
       endTime: currentDate.toISOString().split('T')[1].slice(0, 5),
-      today:new Date(+new Date() + 8 * 3600 * 1000).toISOString().split('T')[0]
+      today: new Date(+new Date() + 8 * 3600 * 1000).toISOString().split('T')[0]
     }, () => {
       this.getList(true);
     })
@@ -80,7 +78,7 @@ class myHistoryOrder extends Component {
         this.setState({
           list: override ? res.data.list : this.state.list.concat(res.data.list),
           total: res.data.total, //总页数
-          amount:res.data.amount||0,
+          amount: res.data.amount || 0,
           loading: false,
         });
       })
@@ -103,6 +101,7 @@ class myHistoryOrder extends Component {
   search() {
     this.getList(true)
   }
+
   onPullDownRefresh() {
     // 上拉刷新
     if (!this.state.loading) {
@@ -131,17 +130,18 @@ class myHistoryOrder extends Component {
   }
 
   componentDidHide() { }
-
+ 
   render() {
     const { list, startDate, total, amount,
       endDate,
       startTime,
-      endTime, 
+      endTime,
       today
     } = this.state;
 
     return (
       <View className='myHistoryOrder'>
+
         <View style='display:flex' >
           <View style='flex:1'>
             <Picker mode='date' onChange={this.onChangeStartDate.bind(this)} value={startDate}>
@@ -161,6 +161,7 @@ class myHistoryOrder extends Component {
               </View>
             </Picker></View>
         </View>
+      
         <View style='display:flex' >
           <View style='flex:1'>
             <Picker mode='date' onChange={this.onChangeEndDate.bind(this)} value={endDate} end={today}>

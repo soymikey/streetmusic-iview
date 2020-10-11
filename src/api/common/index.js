@@ -30,6 +30,8 @@ export const uploadImage = (file, url) => {
             fail: function (e) {
                 Taro.showToast({title:'图片上传失败',icon:'none'})
                 Taro.hideLoading();
+                console.log('图片上传失败',e)
+                reject(e)
             }
         })
     })

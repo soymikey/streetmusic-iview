@@ -1,4 +1,4 @@
-import Taro, { Component } from '@tarojs/taro';
+import Taro, { Component, onBLECharacteristicValueChange } from '@tarojs/taro';
 import { connect } from '@tarojs/redux'
 
 import {
@@ -36,6 +36,7 @@ class Index extends Component {
       'i-divider': '../../iView/divider/index',
       'i-tab-bar': '../../iView/tab-bar/index',
       'i-tab-bar-item': '../../iView/tab-bar-item/index',
+      "i-message": "../../iView/message/index",
     },
   };
   constructor() {
@@ -68,6 +69,7 @@ class Index extends Component {
       goToPage(`/pages/singer/singer?id=${id}`)
 
     }
+  
   }
 
   componentDidShow() {
@@ -187,7 +189,7 @@ class Index extends Component {
     const { user } = this.props
     return (
       <View>
-       
+ <i-message id="message" />
         <View className='index pb50px'>
           <View className='search-wrapper'>
 
@@ -206,7 +208,7 @@ class Index extends Component {
             indicatorDots
             autoplay
           >
-            {hotEventList.length ? hotEventList.map(item => {
+            {hotEventList.length ? hotEventList.slice(0,5).map(item => {
               return <SwiperItem key={item.id} >
                 <View className='image-wrapper' onClick={this.goToEventDetailPage.bind(this, item.id)}>
                   <Image src={item.poster[0]} mode='aspectFit' style='width: 100%' />
@@ -217,7 +219,6 @@ class Index extends Component {
             }) : null}
 
           </Swiper>
-          {path}
 
           {/* 未开启功能 */}
           {/* <i-row i-class='sub-cate'>

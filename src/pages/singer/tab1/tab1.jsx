@@ -53,7 +53,10 @@ class Tab1 extends Component {
             return (
               <i-cell key={item.id} title={item.name} label={item.price + '元'}>
                 <Button slot='footer' size='mini' className='primary' onClick={this.order.bind(this, item)} disabled={userState === '0' || userState === '2'} >
-                  点歌
+                  
+                  {userState === '1'?'点歌':null}
+                  {userState === '0'?'下线':null}
+                  {userState === '2'?'休息中':null}
                 </Button>
               </i-cell>
             );

@@ -4,6 +4,7 @@ import { getUserQrCode } from '@/api/user';
 import WQRCode from '@/components/WQRCode/index'
 import uQRCode from '@/components/WQRCode/uqrcode.js'
 import { goToPage } from '@/utils/tools.js';
+import { get } from '@/utils/localStorage';
 
 import './userQrCode.scss'
 
@@ -20,30 +21,33 @@ class Userqrcode extends Component {
       qrcodeText: 'https://streetmusic.migaox.com/qrcode/code?id=oUf6_4hX68zrrbvSKwFCNadg-OMU',
       qrcodeSize: 300,
       qrcodeSrc: ''
-    },
-      uQRCode.make({
-        canvasId: 'qrcode',
-        text: this.state.qrcodeText,
-        size: this.state.qrcodeSize,
-        margin: 10,
-        backgroudColor: '#9b9bdf',
-        success: res => {
-          this.setState({
-            qrcodeSrc: res
-          })
-        },
-        complete: () => {
-          Taro.hideLoading()
-        }
-      })
+    }
   }
 
   componentDidMount() {
-    // console.log('this.$router.params.id', this.$router.params.id)
-    // const id = this.$router.params.id
-    // getUserQrCode({ id }).then(res => {
-    //   this.setState({ qrCode: res.data.qrCode })
-    // })
+    const openId = get('openId')
+    if (openId) {
+      this.setState({ qrcodeText: 'https://streetmusic.migaox.com/qrcode/code?id=' + openId }, () => {
+        uQRCode.make({
+          canvasId: 'qrcode',
+          text: this.state.qrcodeText,
+          size: this.state.qrcodeSize,
+          margin: 10,
+          backgroudColor: '#9b9bdf',
+          success: res => {
+            this.setState({
+              qrcodeSrc: res
+            })
+          },
+          complete: () => {
+            Taro.hideLoading()
+          }
+        })
+      })
+
+    } else {
+      Taro.showToast({ title: '获取openId失败,请重新打开小程序', icon: 'none' })
+    }
 
   }
   componentWillUnmount() { }

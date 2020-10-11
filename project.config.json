@@ -37,7 +37,7 @@
   "compileType": "miniprogram",
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
-  "libVersion": "2.13.0",
+  "libVersion": "2.13.1",
   "condition": {
     "search": {
       "current": -1,
@@ -63,8 +63,8 @@
       "list": [
         {
           "id": 0,
-          "name": "pages/index/index",
-          "pathName": "pages/index/index",
+          "name": "pages/singer/singer",
+          "pathName": "pages/singer/singer",
           "query": "id=oUf6_4hX68zrrbvSKwFCNadg-OMU",
           "scene": null
         }
