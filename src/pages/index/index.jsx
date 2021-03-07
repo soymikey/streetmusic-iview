@@ -18,7 +18,10 @@ import { getHotSingerList, getRecommendSongList } from '@/api/song';
 import { getMyOpenid } from '@/api/user';
 import { goToPage } from '@/utils/tools.js';
 import { get, set, clear, remove } from '@/utils/localStorage';
+import eventPoster from '@/asset/images/posters/eventPoster.jpg';
+
 import './index.scss';
+
 class Index extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
@@ -30,6 +33,7 @@ class Index extends Component {
       'i-tab-bar': '../../iView/tab-bar/index',
       'i-tab-bar-item': '../../iView/tab-bar-item/index',
       "i-message": "../../iView/message/index",
+      'i-modal': '../../iView/modal/index',
     },
   };
   constructor() {
@@ -62,6 +66,7 @@ class Index extends Component {
       goToPage(`/pages/singer/singer?id=${id}`)
 
     }
+
 
   }
 
@@ -177,11 +182,17 @@ class Index extends Component {
     goToPage(`/pages/event/eventDetail/eventDetail?id=${id}`)
   }
 
+
+
+
+
   render() {
     const { hotEventList, isShowLoginComp, hotList, recommendList, path } = this.state;
     return (
       <View>
         <i-message id="message" />
+
+
         <View className='index pb50px'>
           <View className='search-wrapper'>
             <View className="search" onClick={this.goToSearch.bind(this)} >

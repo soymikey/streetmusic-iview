@@ -43,7 +43,6 @@ export default class WSearch extends Component {
             Taro.getStorage({
                 key: 'search_cache',
                 success(res) {
-                    console.log(res)
                     let list = res.data;
                     if (list.length > 5) {
                         for (let item of list) {
@@ -64,7 +63,6 @@ export default class WSearch extends Component {
                     _this.setState({
                         hList: list
                     }, () => {
-                        console.log(_this.state.hList)
                         Taro.setStorage({
                             key: 'search_cache',
                             data: _this.state.hList
@@ -80,7 +78,6 @@ export default class WSearch extends Component {
                         _this.setState({
                             hList
                         }, () => {
-                            console.log(_this.state.hList)
                             Taro.setStorage({
                                 key: 'search_cache',
                                 data: _this.state.hList
@@ -94,7 +91,6 @@ export default class WSearch extends Component {
     }
 
     keywordsClick = (item, e) => {	//关键词搜索与历史搜索
-        console.log(item)
         this.setState({
             searchText: item
         }, () => {

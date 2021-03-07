@@ -2,26 +2,30 @@ import Taro, { Component } from '@tarojs/taro';
 import Index from './pages/index';
 import './app.scss';
 import { get, set } from '@/utils/localStorage';
-import { getSession,checkUpdateVersion } from '@/utils/tools';
+import { getSession, checkUpdateVersion } from '@/utils/tools';
+import { Provider } from '@tarojs/redux'
 
+
+import configStore from './store'
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
 // if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
 //   require('nerv-devtools')
 // }
 
-
+const store = configStore()
 
 class App extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
 
     pages: [
-     
-     
+
       'pages/index/index',
-     
-     
+      'pages/user/profit/profit',
+      'pages/user/profit/details/details',
+
+
       'pages/index/search/search',
 
       //我的tab
@@ -37,7 +41,7 @@ class App extends Component {
       'pages/user/myEvent/myEvent',
       'pages/user/registerArtist/registerArtist',
       'pages/user/editMyInfo/editMyInfo',
-      'pages/user/profit/profit',
+      // 'pages/user/profit/profit',
       'pages/user/profit/withdrawHistory/withdrawHistory',
       //使用指南
       'pages/user/instruction/instruction',
@@ -163,7 +167,6 @@ class App extends Component {
   }
   componentDidMount() {
     checkUpdateVersion()
-    console.log('didmount')
   }
 
   componentDidShow() {
@@ -183,7 +186,9 @@ class App extends Component {
   // 请勿修改此函数
   render() {
     return (
-      <Index />
+      <Provider store={store}>
+        <Index />
+      </Provider>
     );
   }
 }

@@ -4,7 +4,6 @@ import Tab3 from './tab3/tab3';
 import Tab1 from './tab1/tab1';
 import Tab2 from './tab2/tab2';
 import FollowButtonComp from '@/components/FollowButtonComp/FollowButtonComp';
-import Ball from '@/components/ball/ball';
 import TipsComp from '@/components/tipsComp/tipsComp';
 import { getUserInfo, getUserState, createPay } from '@/api/user';
 import { getEventListById } from '@/api/event';
@@ -253,7 +252,6 @@ class Singer extends Component {
     };
     return getEventListById(data)
       .then(res => {
-        console.log('res.data', res.data);
         for (const item of res.data.list) {
           item.poster = JSON.parse(item.poster);
         }
@@ -281,7 +279,7 @@ class Singer extends Component {
       // 上拉刷新
       if (!this.state.loading) {
         this.setState({ songPageNo: 1 }, () => {
-          this.getUserInfo({ id: this.$router.params.id })
+          getUserInfo({ id: this.$router.params.id })
           this.fetchSongList(true).then(res => {
             // 处理完成后，终止下拉刷新
             Taro.stopPullDownRefresh();
@@ -490,7 +488,7 @@ class Singer extends Component {
         }),
       });
     } else {
-      Taro.showToast({ title: '同步歌手失败,无效歌手Id',icon:'none' })
+      Taro.showToast({ title: '同步歌手失败,无效歌手Id', icon: 'none' })
     }
   }
   componentDidShow() {
@@ -542,14 +540,14 @@ class Singer extends Component {
     } = this.state;
     return (
       <View className='singer'>
+
         <i-message id="message" />
         {/* <Ball imageUrl={userInfo.avatar} /> */}
-        <View className='tip-wrapper' style='position:fixed;right:2%;bottom:1%;z-index:1000' onClick={() => { this.setState({ isShowTipsModal: true, tips: 1 }) }}>
+        {/* <View className='tip-wrapper flash' style='position:fixed;right:2%;top:19.5%;z-index:1001' onClick={() => {
+          this.setState({ isShowTipsModal: true, tips: 1 })
+        }}>
           <i-avatar src={tipsPNG} size='large' />
-          {/*  <View className='text' style='position: absolute;'>赏</View> */}
-          {/* <TipsComp imageUrl={userInfo.avatar}/> */}
-
-        </View>
+        </View> */}
 
         <i-pop-up
 
@@ -558,7 +556,7 @@ class Singer extends Component {
           visible={isShowModal || isShowTipsModal}
           onClick={this.pay.bind(this)}
         >
-          <View className='tip-wrapper'>
+          {isShowTipsModal && <View className='tip-wrapper'>
             {
               tipsList.map(item => {
                 return <View key={item.id} className='button-wrapper' style='width:33.33%;padding-top: 10px;text-align:center' onClick={this.tip.bind(this, item)} >
@@ -569,12 +567,12 @@ class Singer extends Component {
                 </View>
               })
             }
-          </View>
+          </View>}
           {isShowModal ? <View> <View className='song-info'>
             <View className='song-name ellipsis'> 歌曲:{this.state.selectedSong.name}</View>
             <View className='song-price'> {this.state.selectedSong.price}元</View>
           </View>  <View className='song-info' >
-              <View className='song-name'>打赏: {this.state.tips} 元</View>
+              <View className='song-name'></View>
               <View className='song-name' style='text-align:right;color:black;'>总计:{Number(this.state.tips) + (isShowModal ? Number(this.state.selectedSong.price) : 0)}
             元</View>
             </View> <i-panel>
@@ -639,26 +637,37 @@ class Singer extends Component {
               </Text>
             </i-col>
           </i-row>
-          <View className='tag-container'>
-            <i-tag
-              color='blue'
-              class='i-tags'
-            >
-              {userInfo.starSign}
-            </i-tag>
-            <i-tag
-              color='green'
-              class='i-tags'
-            >
-              {userInfo.city}
-            </i-tag>
-            <i-tag
-              color='yellow'
-              class='i-tags'
-            >
-              {userInfo.year}
-            </i-tag>
+          <View className='tag-row'>
+            <View className='tag-container'>
+              <i-tag
+                color='blue'
+                class='i-tags'
+              >
+                {userInfo.starSign}
+              </i-tag>
+              <i-tag
+                color='green'
+                class='i-tags'
+              >
+                {userInfo.city}
+              </i-tag>
+              <i-tag
+                color='yellow'
+                class='i-tags'
+              >
+                {userInfo.year}
+              </i-tag>
+            </View>
+
+            <View className='tip-wrapper flash' onClick={() => {
+              this.setState({ isShowTipsModal: true, tips: 1 })
+            }}>
+              <i-avatar src={tipsPNG} size='large' />
+            </View>
           </View>
+
+
+
 
         </View>
 

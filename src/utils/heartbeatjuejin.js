@@ -30,7 +30,7 @@ const heartCheck = {
   },
 };
 
-const sendWSMessage = (data) => {  
+const sendWSMessage = (data) => {
   Taro.sendSocketMessage({
     data: JSON.stringify(data)
   });
@@ -71,7 +71,7 @@ function initEventHandle() {
     }
     else if (data.type === 'join') {
       $Message({
-        content: data.data.userName+'加入了~'
+        content: data.data.userName + '加入了~'
       });
     }
     // else if (data.type === 'unJoin') {
@@ -95,7 +95,7 @@ function initEventHandle() {
 
       const isArtist = data.data.artistId === get('openId')
       if (isArtist) {
-        innerAudioContext.play()
+        // innerAudioContext.play()
       }
 
     }
@@ -183,11 +183,11 @@ function reJoinRoomAfterSeverRestart() {
     const currentParams = currentPage.$component.$router.params
     if (currentPath === "/pages/singer/singer") {
       if (currentParams.id) {
-        const userInfo_=get('userInfo')
+        const userInfo_ = get('userInfo')
         sendWSMessage({
           type: 'join',
           roomId: currentParams.id + '@@@' + get('openId'),
-          userName:userInfo_.nickName,
+          userName: userInfo_.nickName,
         })
       } else {
         Taro.showToast({ title: '同步歌手失败,无效歌手Id' })

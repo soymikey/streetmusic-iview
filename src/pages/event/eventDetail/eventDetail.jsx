@@ -178,7 +178,7 @@ class EventDetail extends Component {
   onClickFollow(value) {
     this.setState({ followed: value });
   }
- 
+
   componentDidMount() {
     this.fetchCommentList(true)
   }
@@ -200,11 +200,11 @@ class EventDetail extends Component {
     }); //留言列表
   }
   onReachBottom() {
-    if (!this.state.loading && this.state.pageNo * this.state.pageSize < this.state.total) {
-      this.setState({ pageNo: this.state.pageNo + 1 }, () => {
-        this.fetchCommentList();
-      });
-    }
+    // if (!this.state.loading && this.state.pageNo * this.state.pageSize < this.state.total) {
+    //   this.setState({ pageNo: this.state.pageNo + 1 }, () => {
+    //     this.fetchCommentList();
+    //   });
+    // }
   }
   render() {
     const {

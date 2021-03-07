@@ -2,20 +2,22 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text } from '@tarojs/components'
 
 
-import './withdrawHistory.scss'
+import './details.scss'
 
 import {
-  getWithdrawList
+  getStatementList
 } from '@/api/user';
-class Withdrawhistory extends Component {
+class Details extends Component {
 
   config = {
-    navigationBarTitleText: '提现历史',
+    navigationBarTitleText: '流水列表',
     usingComponents: {
       'i-cell-group': '../../../../iView/cell-group/index',
       'i-cell': '../../../../iView/cell/index',
+      'i-avatar': '../../../../iView/avatar/index',
       'i-divider': '../../../../iView/divider/index',
       'i-input': '../../../../iView/input/index',
+      'i-action-sheet': '../../../../iView/action-sheet/index',
     },
   }
   constructor() {
@@ -32,6 +34,32 @@ class Withdrawhistory extends Component {
       startTime: '00:00',
       endTime: '00:00',
       today: '',
+      isShowActionSheet: false,
+      type: '0',
+      typeName: '全部',
+      actions: [
+        {
+          name: '全部',
+          type: '0',
+        },
+        {
+          name: '订单',
+          type: '1',
+        },
+        {
+          name: '打赏',
+          type: '2',
+        },
+        {
+          name: '活动奖励',
+          type: '3',
+        },
+        {
+          name: '提现',
+          type: '4',
+        },
+
+      ],
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -44,7 +72,7 @@ class Withdrawhistory extends Component {
   initDate() {
     var currentDate = new Date(+new Date() + 8 * 3600 * 1000);
     var ourDate = new Date(+new Date() + 8 * 3600 * 1000);
-    ourDate.setDate(ourDate.getDate() - 30);
+    ourDate.setDate(ourDate.getDate() - 180);
 
     this.setState({
       startDate: ourDate.toISOString().split('T')[0], endDate: currentDate.toISOString().split('T')[0],
@@ -57,21 +85,21 @@ class Withdrawhistory extends Component {
 
   getList(override) {
     Taro.showLoading({
-      title: '加载中-提现记录',
+      title: '加载中-流水记录',
     });
 
     // 向后端请求指定页码的数据
     const { pageSize, pageNo, startDate,
       endDate,
       startTime,
-      endTime } = this.state
+      endTime, type } = this.state
     const startDateTime = startDate + ' ' + startTime
     const endDateTime = endDate + ' ' + endTime
-    const data = { pageSize, pageNo, startDateTime, endDateTime }
+    const data = { pageSize, pageNo, startDateTime, endDateTime, type }
     this.setState({ loading: true });
-    return getWithdrawList(data)
+    return getStatementList(data)
       .then(res => {
-
+        console.log('res.data.list', res.data.list);
         this.setState({
           list: override ? res.data.list : this.state.list.concat(res.data.list),
           total: res.data.total, //总页数
@@ -132,14 +160,86 @@ class Withdrawhistory extends Component {
       return `提现失败-${reason}`
     }
   }
+  onCancel() {
+    this.setState({ isShowActionSheet: false })
+  }
+  onChange(e) {
+    const index = e.detail.index
+    const type = this.state.actions[index].type
+    const typeName = this.state.actions[index].name
+    this.setState({ isShowActionSheet: false, type, typeName })
+
+  }
+  onShowActionSheet() {
+    this.setState({ isShowActionSheet: true })
+  }
+  typeFormatter(item) {
+    const { type } = item
+    // 小费
+    // 订单
+    // 活动奖励
+    // 提现
+    let state = ''
+    let typeINText = ''
+    let avatar = item.avatar
+    let nickname = item.nickName
+    let amount = ''
+    let createdDate = item.createdDate
+
+    if (type === 1) {
+      state = '完成'
+      typeINText = '小费'
+      amount = item.tips
+    } else if (type === 2) {
+      typeINText = '订单'
+      if (item.orderState === "0") {
+        state = '未完成'
+      }
+      else if (item.orderState === "1") {
+        state = '进行中'
+      }
+      else if (item.orderState === "2") {
+        state = '完成'
+      }
+      amount = item.price
+
+    } else if (type === 3) {
+      typeINText = '活动奖励'
+      if (item.rewardState === '0') {
+        state = '未完成'
+      } else if (item.rewardState === '1') {
+        state = '完成'
+      }
+      amount = item.amount
+    }
+    else if (type === 4) {
+      typeINText = '提现'
+      if (item.withdrawState === "-1") {
+        state = '提现失败'
+      } else if (item.withdrawState === "0") {
+        state = '待确认'
+      } else if (item.withdrawState === "1") {
+        state = '提现成功'
+      }
+      amount = '-' + item.amount
+    }
+
+    return { typeINText, state, avatar, nickname, amount, createdDate }
+
+  }
 
   render() {
     const { list, startDate, total, amount,
       endDate,
       startTime,
-      endTime, today } = this.state
+      endTime, today, isShowActionSheet, actions, typeName } = this.state
     return (
-      <View className='withdrawHistory'>
+      <View className='details'>
+        <i-action-sheet visible={isShowActionSheet} actions={actions} show-cancel onCancel={this.onCancel.bind(this)} onClick={this.onChange.bind(this)} />
+        <View style='display:flex' onClick={this.onShowActionSheet.bind(this)} >
+          <i-input title='收益类型' placeholde='请选择收益类型' disabled={true} value={typeName} ></i-input>
+        </View>
+
         <View style='display:flex' >
           <View style='flex:1'>
             <Picker mode='date' onChange={this.onChangeStartDate.bind(this)} value={startDate} end={today}>
@@ -157,7 +257,8 @@ class Withdrawhistory extends Component {
                   disabled
                 />
               </View>
-            </Picker></View>
+            </Picker>
+          </View>
         </View>
         <View style='display:flex' >
           <View style='flex:1'>
@@ -178,6 +279,8 @@ class Withdrawhistory extends Component {
               </View>
             </Picker></View>
         </View>
+
+
         <View className='button-wrapper'>
           <Button
             size='mini'
@@ -189,18 +292,27 @@ class Withdrawhistory extends Component {
         </View>
         <i-cell-group>
           <i-cell title={'总计:' + amount + '元'} > <View slot="footer">{total}条记录</View> </i-cell>
+
           {list.map(item => {
+            const { state, avatar, nickname, amount, createdDate, typeINText } = this.typeFormatter(item)
             return <i-cell
-              title={'状态:' + this.stateInText(item.state, item.reason)}
-              label={item.createdDate.slice(0, 10) + '  ' + item.createdDate.slice(11, 19)}
-            > <View slot="footer">{item.amount}元</View> </i-cell>
+              // title={'状态:' + this.stateInText(item.state, item.reason)}
+              title={"类型:" + typeINText}
+              label={'收入: ' + amount + ' 元 ' + '  状态:' + state}
+            > <View slot="footer">
+                <i-avatar src={avatar} size='large' />
+                <View className=''>{nickname}</View>
+                <View className=''>{createdDate.slice(0, 10) + '  ' + createdDate.slice(11, 19)}</View>
+
+
+              </View> </i-cell>
 
           })}
         </i-cell-group>
         <i-divider i-class='divider' content='加载已经完成,没有其他数据' ></i-divider>
-      </View>
+      </View >
     )
   }
 }
 
-export default Withdrawhistory
+export default Details

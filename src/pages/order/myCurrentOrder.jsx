@@ -6,6 +6,7 @@ import { getOrderListById, updateOrder } from '@/api/order';
 import { updateUserState } from '@/api/user';
 import { get, set, remove, clear } from '@/utils/localStorage';
 import './myCurrentOrder.scss';
+
 class MyCurrentOrder extends Component {
   config = {
     navigationBarTitleText: '现在订单',
@@ -28,15 +29,16 @@ class MyCurrentOrder extends Component {
     super(...arguments);
     this.state = {
       orderList: [],
-      currentOrderPage: 1,
-      totalOrderPage: 30,
+      pageNo: 1,
+      pageSize: 10,
+      total: 0,
       loading: false,
       stateList: [
-        { value: '1', label: '上线' },
+        { value: '1', label: '接单中' },
         { value: '2', label: '休息中' },
         { value: '0', label: '下线' },
       ],
-      stateRange: ['上线', '休息中', '下线',],
+      stateRange: ['接单中', '休息中', '下线',],
       state: '下线',
       selectedOrder: {},
       isShowModal: false,
@@ -48,20 +50,25 @@ class MyCurrentOrder extends Component {
 
   }
   componentWillUnmount() { }
-  fetchOrderList() {
+  fetchOrderList(override) {
     Taro.showLoading({
       title: '加载中-订单',
     });
     // 向后端请求指定页码的数据
-    const data = { pageSize: 50, pageNo: 1 };
-
+    const data = { pageSize: this.state.pageSize, pageNo: this.state.pageNo }
     return getOrderListById(data)
       .then(res => {
         const state_ = this.state.stateList.filter(
           item => item.value === res.data.userInfo.state
         )[0].label;
+        // this.setState({
+        //   orderList: res.data.list,
+        //   state: state_
+        // });
         this.setState({
-          orderList: res.data.list,
+          orderList: override ? res.data.list : this.state.orderList.concat(res.data.list),
+          total: res.data.total, //总页数
+          // loading: false,
           state: state_
         });
       })
@@ -69,62 +76,17 @@ class MyCurrentOrder extends Component {
         console.log('==> [ERROR]', err);
       });
   }
-  onChangeState(event) {
 
-    const label = this.state.stateList[event.detail.value].label;
-    const value = this.state.stateList[event.detail.value].value;
-    if (label === this.state.state) {
-      return
-    }
-    Taro.getLocation({
-      type: 'wgs84',
-      isHighAccuracy: true,
-      success: res => {
-        const data = {
-          state: value,
-          latitude: res.latitude,
-          longitude: res.longitude,
-        };
-        updateUserState(data).then(res => {
-          this.setState({ state: label });
-          const userInfo_ = get('userInfo') || {}
-          Taro.sendSocketMessage({
-            data: JSON.stringify({
-              type: 'updateUserStateOK',
-              artistId: userInfo_.id,
-              state: value,
-              artist: userInfo_.nickName
-            }),
-          });
-        });
-      },
-      fail: err => {
-        Taro.showModal({
-          title: '提示',
-          content: '请在设置里开启定位',
-          success: res => {
-            if (res.confirm) {
-              Taro.switchTab({
-                url: '/pages/user/user',
-              });
-            } else if (res.cancel) {
-              Taro.showToast({ title: '获取修改状态失败' })
-            }
-          }
-        })
-
-      }
-
-    })
-  }
 
   onPullDownRefresh() {
     // 上拉刷新
     if (!this.state.loading) {
-      this.fetchOrderList().then(res => {
-        // 处理完成后，终止下拉刷新
-        Taro.stopPullDownRefresh();
-      });
+      this.setState({ pageNo: 1 }, () => {
+        this.fetchOrderList(true).then(res => {
+          // 处理完成后，终止下拉刷新
+          Taro.stopPullDownRefresh();
+        });
+      })
     }
   }
 
@@ -210,7 +172,11 @@ class MyCurrentOrder extends Component {
             item.id === id ? { ...item, state: '2' } : item
           ),
         });
-        this.fetchOrderList()
+        this.setState({ pageNo: 1 }, () => {
+
+          this.fetchOrderList(true);
+        })
+
         const userInfo_ = get('userInfo') || {}
         Taro.sendSocketMessage({
           data: JSON.stringify({
@@ -238,16 +204,25 @@ class MyCurrentOrder extends Component {
   }
 
   refresh() {
-    this.fetchOrderList();
+    this.setState({ pageNo: 1 }, () => {
+
+      this.fetchOrderList(true);
+    })
   }
   componentDidShow() {
     this.fetchOrderList(true);
-    this.onChangeState({ detail: { value: '0' } })
-  }
-  componentDidHide() {
-    this.onChangeState({ detail: { value: '2' } })
   }
 
+  onReachBottom() {
+    if (
+
+      this.state.pageNo * this.state.pageSize < this.state.total
+    ) {
+      this.setState({ pageNo: this.state.pageNo + 1 }, () => {
+        this.fetchOrderList(false);
+      });
+    }
+  }
   render() {
     const { orderList, isShowModal, selectedOrder, actions, state, stateList } = this.state;
     return (
@@ -272,7 +247,7 @@ class MyCurrentOrder extends Component {
         <i-row i-class='state'>
 
 
-          <Picker
+          {/* <Picker
             mode='selector'
             range={this.state.stateRange}
             onChange={this.onChangeState.bind(this)} value={stateList.findIndex(item => item.label === state)}
@@ -280,7 +255,7 @@ class MyCurrentOrder extends Component {
             <View onClick={this.hideKeyBoard.bind(this)}>
               <i-input title='状态' value={state} disabled />
             </View>
-          </Picker>
+          </Picker> */}
 
         </i-row>
         {orderList.map((item, index) => {

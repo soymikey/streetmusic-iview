@@ -31,7 +31,7 @@ class Wechat {
                   url: '/pages/user/user',
                 });
               } else if (res.cancel) {
-                Taro.showToast({title:'用户信息失败'})
+                Taro.showToast({ title: '用户信息失败' })
               }
             }
           })
@@ -64,7 +64,7 @@ class Wechat {
       }
       Taro.request({
         url: baseURL + url,
-        data: Object.assign({}, params),
+        data: params,
         header: header,
         method: method,
         success: res => {

@@ -20,8 +20,6 @@ export const request = (url, params, method = 'post', message = '加载中') => 
   }
 
   return new Promise(function (resolve, reject) {
-    console.log('url', url);
-
     Taro.request({
       url: url,
       data: params,

@@ -17,7 +17,7 @@ class Event extends Component {
       'i-row': '../../iView/row/index',
       'i-col': '../../iView/col/index',
       'i-divider': '../../iView/divider/index',
-      "i-message": "../../iView/message/index", 
+      "i-message": "../../iView/message/index",
     },
   }
   constructor(props) {

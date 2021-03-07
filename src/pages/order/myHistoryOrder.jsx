@@ -127,7 +127,7 @@ class myHistoryOrder extends Component {
   }
 
   componentDidHide() { }
- 
+
   render() {
     const { list, startDate, total, amount,
       endDate,
@@ -158,7 +158,7 @@ class myHistoryOrder extends Component {
               </View>
             </Picker></View>
         </View>
-      
+
         <View style='display:flex' >
           <View style='flex:1'>
             <Picker mode='date' onChange={this.onChangeEndDate.bind(this)} value={endDate} end={today}>
@@ -203,7 +203,7 @@ class myHistoryOrder extends Component {
                       歌曲:{item.name}
                     </i-col>
                     <i-col span='6' i-class='col-class state'>
-                      状态:已完成
+                      状态:{item.state === '0' ? '未完成' : (item.state === '1' ? '进行中' : '已完成')}
                     </i-col>
                     <i-col span='24' i-class='col-class date'>
                       订单日期:  {item.createdDate && <Text><Text>{item.createdDate.slice(0, 10)}</Text><Text decode="true">&nbsp;</Text> <Text>{item.createdDate.slice(11, 16)}</Text></Text>}

@@ -1,6 +1,8 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Image } from '@tarojs/components';
 import { goToPage } from '@/utils/tools.js';
+import defaultAvatar from '@/asset/images/defaultAvatar.jpeg';
+
 // import square1 from '@/asset/images/square1.png';
 
 // import square2 from '@/asset/images/square2.png';
@@ -62,7 +64,7 @@ class SixBlockComp extends Component {
           </i-col>
         </i-row>
         <View className='container-wrapper'>
-          {list.map(item => {
+          {list && list.length && list.map(item => {
             return (
               <View
                 className='container'
@@ -70,7 +72,7 @@ class SixBlockComp extends Component {
                 onClick={this.goToSingerPage.bind(this, item.toUserId)}
               >
                 <View className='image-wrapper'>
-                  <Image mode='aspectFill' className='image' src={item.avatar} />
+                  <Image mode='aspectFill' className='image' src={item.avatar} onError={defaultAvatar} />
                 </View>
                 <View className='title'>{type === 'hot' ? item.nickName : item.name}</View>
               </View>

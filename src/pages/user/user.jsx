@@ -7,6 +7,21 @@ import { goToPage } from '@/utils/tools.js';
 import { get, set, remove, clear } from '@/utils/localStorage';
 const logo = require('@/asset/icon/logo.png');
 import './user.scss';
+
+import { connect } from '@tarojs/redux'
+
+import { setUserInfo } from '../../actions/user'
+
+
+
+@connect(({ user }) => ({
+  user
+}), (dispatch) => ({
+  setUserInfo(data) {
+    dispatch(setUserInfo(data))
+  },
+
+}))
 class User extends Component {
   config = {
     enablePullDownRefresh: false,
@@ -52,6 +67,7 @@ class User extends Component {
     return login(userInfo).then(res => {
       set('token', res.data.token)
       set('userInfo', res.data)
+      this.props.setUserInfo(res.data)
       this.setState({ userInfo: res.data })
       Taro.showToast({ title: '登录成功', icon: 'none' })
       const backToPage = get('backToPage')
@@ -65,7 +81,8 @@ class User extends Component {
     })
   }
   logout() {
-    clear()
+    remove('userInfo')
+    remove('token')
     setTimeout(() => {
       Taro.reLaunch({ url: '/pages/index/index' })
     }, 2000);
@@ -95,7 +112,14 @@ class User extends Component {
     return {
       from: 'button',
       title: `来自${userInfo_.nickName}的邀请,邀请码:${userInfo_.referenceCode}`,
-      path: `/pages/user/user?referenceCode=${userInfo_.referenceCode}`
+      path: `/pages/user/user?referenceCode=${userInfo_.referenceCode}`,
+      imageUrl: logo,
+      success: function (res) {
+        // 转发成功之后的回调
+        if (res.errMsg == 'shareAppMessage:ok') {
+          Taro.showToast({ title: '分享成功', icon: 'none' })
+        }
+      },
     }
   }
   componentDidShow() {
@@ -134,137 +158,141 @@ class User extends Component {
     } = this.state.userInfo;
 
     return (
-      <View className='user pb50px'>
+      <View className='user'>
         <i-message id="message" />
-        <i-row i-class='user-info'>
-          {nickName}
-          <i-col span='4'>
-            <i-avatar src={avatar || logo} size='large'></i-avatar>
-          </i-col>
-          <i-col span='20' i-class='col-class'>
-            <View className='user-name'>
-              <Text>{nickName}</Text>
-            </View>
-            <View className='user-level'>
-              {role === 'user' && <i-tag>普通用户</i-tag>}
-              {role === 'artist' && <i-tag>歌手</i-tag>}
-            </View>
-          </i-col>
-        </i-row>
-        <i-row i-class='summary-row'>
-          <i-col span='6' i-class='col-class border-right'>
-            <View className='title'>
-              <Text>活动</Text>
-            </View>
-            <View className='content'>
-              <Text>{eventCount}</Text>
-            </View>
-          </i-col>
-          <i-col span='6' i-class='col-class border-right'>
-            <View className='title'>
-              <Text>关注</Text>
-            </View>
-            <View className='content'>
-              <Text>{followCount}</Text>
-            </View>
-          </i-col>
-          <i-col span='6' i-class='col-class border-right'>
-            <View className='title'>
-              <Text>粉丝</Text>
-            </View>
-            <View className='content'>
-              <Text>{collectionCount}</Text>
-            </View>
-          </i-col>
-          <i-col span='6' i-class='col-class'>
-            <View onClick={this.goToEditMyInfo.bind(this)}>
+        <View className='pb50px' style='background:#fff'>
+
+
+
+          <i-row i-class='user-info'>
+            {nickName}
+            <i-col span='4'>
+              <i-avatar src={avatar || logo} size='large'></i-avatar>
+            </i-col>
+            <i-col span='20' i-class='col-class'>
+              <View className='user-name'>
+                <Text>{nickName}</Text>
+              </View>
+              <View className='user-level'>
+                {role === 'user' && <i-tag>普通用户</i-tag>}
+                {role === 'artist' && <i-tag>歌手</i-tag>}
+              </View>
+            </i-col>
+          </i-row>
+          <i-row i-class='summary-row'>
+            <i-col span='6' i-class='col-class border-right'>
               <View className='title'>
-                <Text>我的资料</Text>
+                <Text>活动</Text>
               </View>
               <View className='content'>
-                <i-icon type='editor' />
+                <Text>{eventCount}</Text>
               </View>
-            </View>
-          </i-col>
-        </i-row>
-        <i-divider i-class='divider' i-class='divider' height={24}></i-divider>
-        <i-cell-group>
-          {role === 'user' && (
-            <View>
-              <i-cell
-                title='注册歌手'
-                is-link
-                url='/pages/user/registerArtist/registerArtist'
-              ></i-cell>
-              <i-cell title='使用指南' is-link url='/pages/user/instruction/instruction'></i-cell>
+            </i-col>
+            <i-col span='6' i-class='col-class border-right'>
+              <View className='title'>
+                <Text>关注</Text>
+              </View>
+              <View className='content'>
+                <Text>{followCount}</Text>
+              </View>
+            </i-col>
+            <i-col span='6' i-class='col-class border-right'>
+              <View className='title'>
+                <Text>粉丝</Text>
+              </View>
+              <View className='content'>
+                <Text>{collectionCount}</Text>
+              </View>
+            </i-col>
+            <i-col span='6' i-class='col-class'>
+              <View onClick={this.goToEditMyInfo.bind(this)}>
+                <View className='title'>
+                  <Text>我的资料</Text>
+                </View>
+                <View className='content'>
+                  <i-icon type='editor' />
+                </View>
+              </View>
+            </i-col>
+          </i-row>
+          <i-divider i-class='divider' i-class='divider' height={24}></i-divider>
+          <i-cell-group>
+            {role === 'user' && (
+              <View>
+                <i-cell
+                  title='注册歌手'
+                  is-link
+                  url='/pages/user/registerArtist/registerArtist'
+                ></i-cell>
+                <i-cell title='使用指南' is-link url='/pages/user/instruction/instruction'></i-cell>
 
-              <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
-            </View>
-          )}
-          {role === 'artist' && (
-            <View>
-              <i-cell
-                title='上传歌曲'
-                is-link
-                url='/pages/user/uploadSong/uploadSong'
-              ></i-cell>
-              <i-cell
-                title='我的歌曲'
-                is-link
-                url='/pages/user/mySong/mySong'
-              ></i-cell>
-              <i-cell
-                title='上传活动'
-                is-link
-                url='/pages/user/uploadEvent/uploadEvent'
-              ></i-cell>
-              <i-cell
-                title='我的活动'
-                is-link
-                url='/pages/user/myEvent/myEvent'
-              ></i-cell>
-              <i-cell title='我的收益' is-link url='/pages/user/profit/profit'></i-cell>
-              <i-cell title='点歌二维码' is-link url={'/pages/user/userQrCode/userQrCode?id=' + id}></i-cell>
-              <i-cell title='使用指南' is-link url='/pages/user/instruction/instruction'></i-cell>
+                <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
+              </View>
+            )}
+            {role === 'artist' && (
+              <View>
+                <i-cell
+                  title='上传歌曲'
+                  is-link
+                  url='/pages/user/uploadSong/uploadSong'
+                ></i-cell>
+                <i-cell
+                  title='我的歌曲'
+                  is-link
+                  url='/pages/user/mySong/mySong'
+                ></i-cell>
+                <i-cell
+                  title='上传活动'
+                  is-link
+                  url='/pages/user/uploadEvent/uploadEvent'
+                ></i-cell>
+                <i-cell
+                  title='我的活动'
+                  is-link
+                  url='/pages/user/myEvent/myEvent'
+                ></i-cell>
+                <i-cell title='我的收益' is-link url='/pages/user/profit/profit'></i-cell>
+                <i-cell title='点歌二维码' is-link url={'/pages/user/userQrCode/userQrCode?id=' + id}></i-cell>
+                <i-cell title='使用指南' is-link url='/pages/user/instruction/instruction'></i-cell>
 
-              <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
-              <Button
-                size='mini'
-                className='share-button'
-                open-type='share'
-              >
-                <i-cell title='邀请有奖' label='邀请好友注册艺人,并完成50个订单.您将获得50元奖励' value={'邀请码:' + referenceCode} >
+                <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
+                <Button
+                  size='mini'
+                  className='share-button'
+                  open-type='share'
+                >
+                  <i-cell title='邀请有奖' label='邀请好友注册艺人,被邀请人并完成50个订单.您将获得50元奖励' value={'邀请码:' + referenceCode} >
 
-                </i-cell> </Button>
-            </View>
-          )}
+                  </i-cell> </Button>
+              </View>
+            )}
 
 
-          {/* <i-cell title='关于' is-link url='/pages/user/about/about'></i-cell> */}
-        </i-cell-group>
+            {/* <i-cell title='关于' is-link url='/pages/user/about/about'></i-cell> */}
+          </i-cell-group>
 
-        <View>
-          <View style='width:150px;margin:20px auto'>
-            {!id ? (
-              <Button
+          <View>
+            <View style='width:150px;margin:20px auto'>
+              {!id ? (
+                <Button
 
-                className='primary'
-                open-type='getUserInfo'
-                onGetUserInfo={this.getUserInfo.bind(this)}
-              >
-                登录
-              </Button>
-            ) : (
-                <Button className='error' onClick={this.logout.bind(this)}>
-                  退出
+                  className='primary'
+                  open-type='getUserInfo'
+                  onGetUserInfo={this.getUserInfo.bind(this)}
+                >
+                  登录
                 </Button>
-              )}
-          </View></View>
-
+              ) : (
+                  <Button className='error' onClick={this.logout.bind(this)}>
+                    退出
+                  </Button>
+                )}
+            </View></View>
+        </View>
         <View className='tabbar-container'>
           <TabbarComp currentTab='user' />
         </View>
-      </View>
+      </View >
     );
   }
 }

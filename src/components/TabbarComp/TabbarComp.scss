@@ -1,1 +1,42 @@
 @import "@/styles/variables.scss";
+.status{
+    position: relative;
+}
+.status::after {
+position: absolute;
+-webkit-transform: translateX(50%);
+-ms-transform: translateX(50%);
+transform: translateX(50%);
+top: -6PX;
+right: 0;
+height: 18PX;
+border-radius: 9PX;
+min-width: 18PX;
+background: #ed3f14;
+border: 1PX solid transparent;
+color: #fff;
+line-height: 18PX;
+text-align: center;
+padding: 0 5PX;
+font-size: 12PX;
+white-space: nowrap;
+-webkit-transform-origin: -10% center;
+-ms-transform-origin: -10% center;
+transform-origin: -10% center;
+z-index: 10;
+-webkit-box-shadow: 0 0 0 1PX #fff;
+box-shadow: 0 0 0 1PX #fff;
+-webkit-box-sizing: border-box;
+box-sizing: border-box;
+text-rendering: optimizeLegibility;
+
+
+    
+
+  }
+.online::after {
+    content: "接单中";
+}
+.pause::after {
+    content: "休息中";
+}

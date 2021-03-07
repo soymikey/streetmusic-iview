@@ -15,6 +15,7 @@ import './profit.scss'
 class Profit extends Component {
 
   config = {
+    enablePullDownRefresh: false,
     navigationBarTitleText: '我的收益',
     usingComponents: {
       'i-cell-group': '../../../iView/cell-group/index',
@@ -24,7 +25,8 @@ class Profit extends Component {
   constructor() {
     super(...arguments);
     this.state = {
-      profit: 0
+      profit: 0,
+      holding: 0,
     };
   }
 
@@ -37,7 +39,10 @@ class Profit extends Component {
   componentWillUnmount() { }
   getProfit() {
     getProfitById().then(res => {
-      this.setState({ profit: res.data.profit })
+      this.setState({
+        balance: res.data.balance,
+        holding: res.data.holding,
+      })
     })
   }
   componentDidShow() {
@@ -47,24 +52,35 @@ class Profit extends Component {
   componentDidHide() { }
 
   render() {
-    const { profit } = this.state
+    const { balance, holding } = this.state
     return (
       <View className='profit'>
         <i-cell-group>
-          <i-cell
-            title='总金额'
 
-          ><View slot="footer">{profit}元</View></i-cell>
+          <i-cell
+            title='余额'
+
+          ><View slot="footer">{balance}元</View></i-cell>
+          <i-cell
+            title='提现审查中'
+
+          ><View slot="footer">{holding}元</View></i-cell>
           <i-cell
             title='提现'
             is-link
             url='/pages/user/profit/withdraw/withdraw'
           >  </i-cell>
-          <i-cell
+          {/* <i-cell
             title='提现记录'
             is-link
             url='/pages/user/profit/withdrawHistory/withdrawHistory'
+          >  </i-cell> */}
+          <i-cell
+            title='收益详情'
+            is-link
+            url='/pages/user/profit/details/details'
           >  </i-cell>
+
         </i-cell-group>
 
       </View>

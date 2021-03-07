@@ -35,7 +35,7 @@ class History extends Component {
       endDate: '',
       startTime: '00:00',
       endTime: '00:00',
-      today:'',
+      today: '',
     };
   }
 
@@ -48,11 +48,11 @@ class History extends Component {
     var currentDate = new Date(+new Date() + 8 * 3600 * 1000);
     var ourDate = new Date(+new Date() + 8 * 3600 * 1000);
     ourDate.setDate(ourDate.getDate() - 30);
-    
+
     this.setState({
       startDate: ourDate.toISOString().split('T')[0], endDate: currentDate.toISOString().split('T')[0],
       endTime: currentDate.toISOString().split('T')[1].slice(0, 5),
-      today:new Date(+new Date() + 8 * 3600 * 1000).toISOString().split('T')[0]
+      today: new Date(+new Date() + 8 * 3600 * 1000).toISOString().split('T')[0]
     }, () => {
       this.getList(true);
     })
@@ -131,7 +131,7 @@ class History extends Component {
     const { list, startDate, total, amount,
       endDate,
       startTime,
-      endTime, today} = this.state
+      endTime, today } = this.state
     return (
 
       <View className='history'>
@@ -179,7 +179,7 @@ class History extends Component {
             className='primary'
             onClick={this.search.bind(this)}
           >
-            搜索订单
+            搜索
               </Button>
         </View>
         <i-cell-group>

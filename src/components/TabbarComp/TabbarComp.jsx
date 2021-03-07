@@ -1,8 +1,16 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text } from '@tarojs/components';
+import { get, set, remove, clear } from '@/utils/localStorage';
 
 import './TabbarComp.scss';
+import { connect } from '@tarojs/redux'
 
+
+@connect(({ user }) => ({
+  user
+}), (dispatch) => ({
+
+}))
 class TabbarComp extends Component {
   // eslint-disable-next-line react/sort-comp
   config = {
@@ -57,13 +65,15 @@ class TabbarComp extends Component {
 
   componentWillUnmount() { }
 
-  componentDidShow() { }
+  componentDidShow() {
+
+
+  }
 
   componentDidHide() { }
 
   render() {
-    const { currentTab } = this.props;
-
+    const { currentTab, user } = this.props;
     return (
       <View className='tabbar-container'>
         <i-tab-bar
@@ -80,19 +90,20 @@ class TabbarComp extends Component {
             key='event'
             icon='remind'
             current-icon='remind_fill'
-            // count='3'
             title='活动'></i-tab-bar-item>
           <i-tab-bar-item
             key='order'
             icon='document'
             current-icon='document_fill'
+            i-class={user.state === '1' ? 'status online' : (user.state === '2' ? 'status pause' : '')}
             title='订单'></i-tab-bar-item>
 
           <i-tab-bar-item
             key='user'
             icon='mine'
             current-icon='mine_fill'
-            dot
+
+            //online pause
             title='我的'></i-tab-bar-item>
         </i-tab-bar>
         <View className='tabbar-block'></View>

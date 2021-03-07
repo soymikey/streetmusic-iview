@@ -3,7 +3,7 @@ import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text, Picker } from '@tarojs/components';
 import { getSongListById, deleteSong } from '@/api/song';
 import { goToPage } from '@/utils/tools.js';
-import { get, set, remove,clear } from '@/utils/localStorage';
+import { get, set, remove, clear } from '@/utils/localStorage';
 
 import './mySong.scss';
 class MySong extends Component {
@@ -48,7 +48,6 @@ class MySong extends Component {
 
     return getSongListById(data)
       .then(res => {
-        console.log('res.data', res.data)
         this.setState({
           list: override ? res.data.list : this.state.list.concat(res.data.list),
           total: res.data.total, //总页数
