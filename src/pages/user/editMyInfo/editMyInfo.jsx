@@ -6,9 +6,20 @@ import './editMyInfo.scss';
 import { getUserFullInfo, updateUserInfo } from '@/api/user';
 import validator from '@/utils/validator'
 import { uploadImage, getSMSCode } from '@/api/common';
-import { get, set, remove,clear } from '@/utils/localStorage';
+import { get, set, remove, clear } from '@/utils/localStorage';
+import { connect } from '@tarojs/redux'
+import { setUserInfo } from '../../../actions/user'
+
 
 let clock
+@connect(({ user }) => ({
+  user
+}), (dispatch) => ({
+  setUserInfo(data) {
+    dispatch(setUserInfo(data))
+  },
+
+}))
 class EditMyInfo extends Component {
   config = {
     navigationBarTitleText: '编辑资料',
@@ -310,7 +321,8 @@ class EditMyInfo extends Component {
       setTimeout(async () => {
         const userInfo_ = get('userInfo') || {}
         await getUserFullInfo({ id: userInfo_.id }).then(res => {
-          set('userInfo', res.data)
+
+          this.props.setUserInfo(res.data)
         })
         Taro.navigateBack(-1)
       }, 2000);

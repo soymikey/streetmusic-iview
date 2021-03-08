@@ -16,7 +16,7 @@ class Profit extends Component {
 
   config = {
     enablePullDownRefresh: false,
-    navigationBarTitleText: '我的收益',
+    navigationBarTitleText: '账户资金',
     usingComponents: {
       'i-cell-group': '../../../iView/cell-group/index',
       'i-cell': '../../../iView/cell/index',
@@ -70,15 +70,16 @@ class Profit extends Component {
             is-link
             url='/pages/user/profit/withdraw/withdraw'
           >  </i-cell>
-          {/* <i-cell
+
+          <i-cell
+            title='收入明细'
+            is-link
+            url='/pages/user/profit/details/details'
+          >  </i-cell>
+          <i-cell
             title='提现记录'
             is-link
             url='/pages/user/profit/withdrawHistory/withdrawHistory'
-          >  </i-cell> */}
-          <i-cell
-            title='收益详情'
-            is-link
-            url='/pages/user/profit/details/details'
           >  </i-cell>
 
         </i-cell-group>

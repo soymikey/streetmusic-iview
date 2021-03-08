@@ -205,15 +205,6 @@ class Registerartist extends Component {
     registerArtist(data).then(res => {
       this.setState({ isDisabled: false, isShowModal: true });
 
-      // setTimeout(() => {
-      //   const openId = get('openId')
-      //   return login({ openid: openId }).then(res => {
-      //     set('token', res.data.token)
-      //     set('userInfo', res.data)
-      //     Taro.navigateBack(-1)
-      //   })
-      // }, 2000);
-
     }).catch(e => {
 
       this.setState({ isDisabled: false });

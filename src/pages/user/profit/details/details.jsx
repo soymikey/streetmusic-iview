@@ -10,7 +10,7 @@ import {
 class Details extends Component {
 
   config = {
-    navigationBarTitleText: '流水列表',
+    navigationBarTitleText: '收入明细',
     usingComponents: {
       'i-cell-group': '../../../../iView/cell-group/index',
       'i-cell': '../../../../iView/cell/index',
@@ -54,10 +54,7 @@ class Details extends Component {
           name: '活动奖励',
           type: '3',
         },
-        {
-          name: '提现',
-          type: '4',
-        },
+
 
       ],
     };
@@ -178,54 +175,24 @@ class Details extends Component {
     // 小费
     // 订单
     // 活动奖励
-    // 提现
     let state = ''
     let typeINText = ''
     let avatar = item.avatar
     let nickname = item.nickName
     let amount = ''
     let createdDate = item.createdDate
-
     if (type === 1) {
-      state = '完成'
+      typeINText = '订单'
+      amount = item.price
+    }
+    else if (type === 2) {
       typeINText = '小费'
       amount = item.tips
-    } else if (type === 2) {
-      typeINText = '订单'
-      if (item.orderState === "0") {
-        state = '未完成'
-      }
-      else if (item.orderState === "1") {
-        state = '进行中'
-      }
-      else if (item.orderState === "2") {
-        state = '完成'
-      }
-      amount = item.price
-
     } else if (type === 3) {
       typeINText = '活动奖励'
-      if (item.rewardState === '0') {
-        state = '未完成'
-      } else if (item.rewardState === '1') {
-        state = '完成'
-      }
       amount = item.amount
     }
-    else if (type === 4) {
-      typeINText = '提现'
-      if (item.withdrawState === "-1") {
-        state = '提现失败'
-      } else if (item.withdrawState === "0") {
-        state = '待确认'
-      } else if (item.withdrawState === "1") {
-        state = '提现成功'
-      }
-      amount = '-' + item.amount
-    }
-
-    return { typeINText, state, avatar, nickname, amount, createdDate }
-
+    return { typeINText, state, avatar, nickname, amount_: amount, createdDate }
   }
 
   render() {
@@ -294,17 +261,14 @@ class Details extends Component {
           <i-cell title={'总计:' + amount + '元'} > <View slot="footer">{total}条记录</View> </i-cell>
 
           {list.map(item => {
-            const { state, avatar, nickname, amount, createdDate, typeINText } = this.typeFormatter(item)
+            const { state, avatar, nickname, amount_, createdDate, typeINText } = this.typeFormatter(item)
             return <i-cell
               // title={'状态:' + this.stateInText(item.state, item.reason)}
               title={"类型:" + typeINText}
-              label={'收入: ' + amount + ' 元 ' + '  状态:' + state}
+              label={createdDate.slice(0, 10) + '  ' + createdDate.slice(11, 19)}
             > <View slot="footer">
-                <i-avatar src={avatar} size='large' />
-                <View className=''>{nickname}</View>
-                <View className=''>{createdDate.slice(0, 10) + '  ' + createdDate.slice(11, 19)}</View>
-
-
+                <View className=''><i-avatar src={avatar} size='small' />{nickname}</View>
+                <View className=''>{'￥ ' + amount_}</View>
               </View> </i-cell>
 
           })}

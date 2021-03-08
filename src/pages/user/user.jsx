@@ -2,14 +2,13 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button, Text } from '@tarojs/components';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
-import { login } from '@/api/user';
+import { login, updateUserState } from '@/api/user';
+
 import { goToPage } from '@/utils/tools.js';
 import { get, set, remove, clear } from '@/utils/localStorage';
 const logo = require('@/asset/icon/logo.png');
 import './user.scss';
-
 import { connect } from '@tarojs/redux'
-
 import { setUserInfo } from '../../actions/user'
 
 
@@ -47,6 +46,7 @@ class User extends Component {
         collectionCount: 0,
         followCount: 0,
         eventCount: 0,
+        isSwitched: false
       }
     };
   }
@@ -55,6 +55,52 @@ class User extends Component {
     if (this.$router.params.referenceCode) {
       set(referenceCode, this.$router.params.referenceCode)
     }
+  }
+  onChangeSwitch(e) {
+    const value = e.detail.value
+    console.log('value', value);
+    Taro.getLocation({
+      type: 'wgs84',
+      isHighAccuracy: true,
+      success: res => {
+        const data = {
+          state: value ? '1' : '0',
+          latitude: res.latitude,
+          longitude: res.longitude,
+        };
+        updateUserState(data).then(res => {
+          this.setState({ isSwitched: value })
+          this.props.setUserInfo({ state: value ? '1' : '0' })
+
+          const userInfo_ = get('userInfo') || {}
+          Taro.sendSocketMessage({
+            data: JSON.stringify({
+              type: 'updateUserStateOK',
+              artistId: userInfo_.id,
+              state: value ? '1' : '0',
+              artist: userInfo_.nickName
+            }),
+          });
+        });
+      },
+      fail: err => {
+        Taro.showModal({
+          title: '提示',
+          content: '请在设置里开启定位',
+          success: res => {
+            if (res.confirm) {
+              Taro.switchTab({
+                url: '/pages/user/user',
+              });
+            } else if (res.cancel) {
+              Taro.showToast({ title: '获取修改状态失败' })
+            }
+          }
+        })
+
+      }
+
+    })
   }
 
   getUserInfo(e) {
@@ -66,7 +112,7 @@ class User extends Component {
     userInfo.openid = get('openId');
     return login(userInfo).then(res => {
       set('token', res.data.token)
-      set('userInfo', res.data)
+
       this.props.setUserInfo(res.data)
       this.setState({ userInfo: res.data })
       Taro.showToast({ title: '登录成功', icon: 'none' })
@@ -130,40 +176,31 @@ class User extends Component {
 
   }
   render() {
+    // const {
+    //   avatar,
+    //   id,
+    //   nickName,
+    //   role,
+    //   collectionCount,
+    //   followCount,
+    //   eventCount,
+    //   referenceCode,
+    // } = this.state.userInfo;
     const {
-      address,
       avatar,
-      city,
-      country,
-      gender,
       id,
-      introduction,
-      language,
-      lastLogin,
       nickName,
-      phoneNumber,
-      province,
-      realName,
-      region,
-      registerArtist,
-      registerArtistDate,
-      registerDate,
       role,
-      state,
-      token,
       collectionCount,
       followCount,
       eventCount,
-      DOB, referenceCode,
-    } = this.state.userInfo;
-
+      referenceCode,
+    } = get('userInfo') || {}
+    const { state } = this.props.user;
     return (
       <View className='user'>
         <i-message id="message" />
         <View className='pb50px' style='background:#fff'>
-
-
-
           <i-row i-class='user-info'>
             {nickName}
             <i-col span='4'>
@@ -224,13 +261,20 @@ class User extends Component {
                   is-link
                   url='/pages/user/registerArtist/registerArtist'
                 ></i-cell>
+                <i-cell title='我的订单' is-link url='/pages/user/myOrder/myOrder'></i-cell>
+
                 <i-cell title='使用指南' is-link url='/pages/user/instruction/instruction'></i-cell>
 
                 <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
               </View>
             )}
+
             {role === 'artist' && (
               <View>
+                <i-cell title={state === '1' ? '接单中' : '下线'}>
+                  <i-switch slot="footer" value={state === '1' ? true : false} onChange={this.onChangeSwitch.bind(this)} />
+                </i-cell>
+                <i-cell title='我点过的歌曲' is-link url='/pages/user/myOrder/myOrder'></i-cell>
                 <i-cell
                   title='上传歌曲'
                   is-link
@@ -251,7 +295,8 @@ class User extends Component {
                   is-link
                   url='/pages/user/myEvent/myEvent'
                 ></i-cell>
-                <i-cell title='我的收益' is-link url='/pages/user/profit/profit'></i-cell>
+                <i-cell title='账户资金' is-link url='/pages/user/profit/profit'></i-cell>
+
                 <i-cell title='点歌二维码' is-link url={'/pages/user/userQrCode/userQrCode?id=' + id}></i-cell>
                 <i-cell title='使用指南' is-link url='/pages/user/instruction/instruction'></i-cell>
 
@@ -273,9 +318,8 @@ class User extends Component {
 
           <View>
             <View style='width:150px;margin:20px auto'>
-              {!id ? (
+              {!userInfo.id ? (
                 <Button
-
                   className='primary'
                   open-type='getUserInfo'
                   onGetUserInfo={this.getUserInfo.bind(this)}

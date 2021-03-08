@@ -1,7 +1,8 @@
 @import "@/styles/variables.scss";
 @import "~taro-ui/dist/style/components/list.scss";
-.order {
+.myOrder {
   background: #fff;
+  height: 100%;
   .order-item-wrapper {
     padding: 20px;
     font-size: $size-s;
@@ -35,13 +36,8 @@
     }
   }
 }
-.refresh{
-  position: fixed;
-top: 90%;
-right: 5%;
-background: #2d8cf0;
-border-radius: 50%;
-padding: 2%;
-z-index: 1;
-
+.button-wrapper {
+  text-align: center;
+  margin: 20px 0;
 }
+

@@ -10,12 +10,13 @@ import {
 class Withdrawhistory extends Component {
 
   config = {
-    navigationBarTitleText: '提现历史',
+    navigationBarTitleText: '提现明细',
     usingComponents: {
       'i-cell-group': '../../../../iView/cell-group/index',
       'i-cell': '../../../../iView/cell/index',
       'i-divider': '../../../../iView/divider/index',
       'i-input': '../../../../iView/input/index',
+      'i-avatar': '../../../../iView/avatar/index',
     },
   }
   constructor() {
@@ -83,6 +84,32 @@ class Withdrawhistory extends Component {
         this.setState({ loading: false })
         console.log('==> [ERROR]', err);
       })
+  }
+  typeFormatter(item) {
+    const { amount,
+      avatar,
+      createdDate,
+      id,
+      nickName,
+      reason,
+      state,
+      userId,
+      verifiedDate, } = item
+
+    // 提现
+    let stateText = ''
+
+    if (state === '0') {
+      stateText = '审核中...'
+    }
+    else if (state === '1') {
+      stateText = '提现成功'
+
+    } else if (state === '-1') {
+      stateText = '提现失败'
+
+    }
+    return { state, stateText, avatar, nickName, amount_: amount, createdDate, reason }
   }
   onChangeStartDate(e) {
     this.setState({ startDate: e.detail.value });
@@ -189,11 +216,21 @@ class Withdrawhistory extends Component {
         </View>
         <i-cell-group>
           <i-cell title={'总计:' + amount + '元'} > <View slot="footer">{total}条记录</View> </i-cell>
+
           {list.map(item => {
+            const { stateText, avatar, nickName, amount_, createdDate, reason, state } = this.typeFormatter(item)
             return <i-cell
-              title={'状态:' + this.stateInText(item.state, item.reason)}
-              label={item.createdDate.slice(0, 10) + '  ' + item.createdDate.slice(11, 19)}
-            > <View slot="footer">{item.amount}元</View> </i-cell>
+              title={"类型:提现"}
+              label={createdDate.slice(0, 10) + '  ' + createdDate.slice(11, 19)}
+            > <View slot="footer">
+                <View className=''>{'￥ ' + amount_}</View>
+                {state === "-1" && <View className='error-text'>{stateText}
+                  <View className='error-text'>{reason}</View>
+                </View>}
+                {state === "0" && <View className='warning-text'>{stateText}</View>}
+                {state === "1" && <View className='primary-text'>{stateText}</View>}
+
+              </View> </i-cell>
 
           })}
         </i-cell-group>

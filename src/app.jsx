@@ -20,14 +20,9 @@ class App extends Component {
   config = {
 
     pages: [
-
+      //首页
       'pages/index/index',
-      'pages/user/profit/profit',
-      'pages/user/profit/details/details',
-
-
       'pages/index/search/search',
-
       //我的tab
       'pages/user/user',
       'pages/user/profit/withdraw/withdraw',
@@ -41,9 +36,15 @@ class App extends Component {
       'pages/user/myEvent/myEvent',
       'pages/user/registerArtist/registerArtist',
       'pages/user/editMyInfo/editMyInfo',
-      // 'pages/user/profit/profit',
+      'pages/user/profit/profit',
+      'pages/user/myOrder/myOrder',
+      'pages/user/profit/details/details',
       'pages/user/profit/withdrawHistory/withdrawHistory',
-      //使用指南
+      'pages/tips/history',
+      'pages/reference/history',
+      'pages/singer/singer',
+      'pages/singer/singerList',
+
       'pages/user/instruction/instruction',
       'pages/user/instruction/howToRegister/howToRegister',
       'pages/user/instruction/howToWithdraw/howToWithdraw',
@@ -51,17 +52,13 @@ class App extends Component {
       'pages/user/instruction/howToUploadSong/howToUploadSong',
       'pages/user/instruction/howToQrCode/howToQrCode',
       'pages/user/instruction/howToTakeOrder/howToTakeOrder',
-
+      //活动
       'pages/event/eventDetail/eventDetail',
       'pages/event/event',
       'pages/comment/comment',
+      // 接单页
       'pages/order/order',
-      'pages/tips/history',
-      'pages/reference/history',
-      'pages/order/myHistoryOrder',
-      'pages/order/myCurrentOrder',
-      'pages/singer/singer',
-      'pages/singer/singerList',
+
     ],
     window: {
       enablePullDownRefresh: true,

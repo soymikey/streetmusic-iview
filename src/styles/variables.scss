@@ -36,6 +36,16 @@ $Divider: #e9eaec;
 // 背景
 $Background: #f8f8f9;
 
+.primary-text{
+  color:$Primary;
+}
+.warning-text{
+  color:$Warning;
+}
+.error-text{
+  color:$Error;
+}
+
 .primary {
   background: $Primary;
   color: #fff;
