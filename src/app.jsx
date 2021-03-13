@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro';
 import Index from './pages/index';
 import './app.scss';
 import { get, set } from '@/utils/localStorage';
-import { getSession, checkUpdateVersion } from '@/utils/tools';
+import { checkUpdateVersion } from '@/utils/tools';
 import { Provider } from '@tarojs/redux'
 
 
@@ -168,7 +168,6 @@ class App extends Component {
 
   componentDidShow() {
     Taro.hideTabBar();
-    getSession()
   }
 
   componentDidHide() {

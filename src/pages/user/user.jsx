@@ -4,23 +4,23 @@ import { View, Button, Text } from '@tarojs/components';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import { login, updateUserState } from '@/api/user';
 
-import { goToPage } from '@/utils/tools.js';
+import { goToPage, getSession } from '@/utils/tools.js';
 import { get, set, remove, clear } from '@/utils/localStorage';
 const logo = require('@/asset/icon/logo.png');
 import './user.scss';
-import { connect } from '@tarojs/redux'
-import { setUserInfo } from '../../actions/user'
+import { connect } from '@tarojs/redux';
+import { setUserInfo } from '../../actions/user';
 
-
-
-@connect(({ user }) => ({
-  user
-}), (dispatch) => ({
-  setUserInfo(data) {
-    dispatch(setUserInfo(data))
-  },
-
-}))
+@connect(
+  ({ user }) => ({
+    user,
+  }),
+  dispatch => ({
+    setUserInfo(data) {
+      dispatch(setUserInfo(data));
+    },
+  })
+)
 class User extends Component {
   config = {
     enablePullDownRefresh: false,
@@ -36,7 +36,7 @@ class User extends Component {
       'i-divider': '../../iView/divider/index',
       'i-avatar': '../../iView/avatar/index',
       'i-icon': '../../iView/icon/index',
-      "i-message": "../../iView/message/index",
+      'i-message': '../../iView/message/index',
     },
   };
   constructor() {
@@ -46,18 +46,18 @@ class User extends Component {
         collectionCount: 0,
         followCount: 0,
         eventCount: 0,
-        isSwitched: false
-      }
+        isSwitched: false,
+      },
     };
   }
 
   componentDidMount() {
     if (this.$router.params.referenceCode) {
-      set(referenceCode, this.$router.params.referenceCode)
+      set(referenceCode, this.$router.params.referenceCode);
     }
   }
   onChangeSwitch(e) {
-    const value = e.detail.value
+    const value = e.detail.value;
     console.log('value', value);
     Taro.getLocation({
       type: 'wgs84',
@@ -69,16 +69,16 @@ class User extends Component {
           longitude: res.longitude,
         };
         updateUserState(data).then(res => {
-          this.setState({ isSwitched: value })
-          this.props.setUserInfo({ state: value ? '1' : '0' })
+          this.setState({ isSwitched: value });
+          this.props.setUserInfo({ state: value ? '1' : '0' });
 
-          const userInfo_ = get('userInfo') || {}
+          const userInfo_ = get('userInfo') || {};
           Taro.sendSocketMessage({
             data: JSON.stringify({
               type: 'updateUserStateOK',
               artistId: userInfo_.id,
               state: value ? '1' : '0',
-              artist: userInfo_.nickName
+              artist: userInfo_.nickName,
             }),
           });
         });
@@ -93,48 +93,45 @@ class User extends Component {
                 url: '/pages/user/user',
               });
             } else if (res.cancel) {
-              Taro.showToast({ title: '获取修改状态失败' })
+              Taro.showToast({ title: '获取修改状态失败' });
             }
-          }
-        })
-
-      }
-
-    })
+          },
+        });
+      },
+    });
   }
 
   getUserInfo(e) {
     let userInfo = e.detail.userInfo;
     if (!get('openId')) {
-      Taro.showToast({ title: '无法获取openId', icon: 'none' })
-      return
+      Taro.showToast({ title: '登录失败,请重新开启小程序.', icon: 'none' });
+      return;
     }
     userInfo.openid = get('openId');
     return login(userInfo).then(res => {
-      set('token', res.data.token)
+      set('token', res.data.token);
 
-      this.props.setUserInfo(res.data)
-      this.setState({ userInfo: res.data })
-      Taro.showToast({ title: '登录成功', icon: 'none' })
-      const backToPage = get('backToPage')
+      this.props.setUserInfo(res.data);
+      this.setState({ userInfo: res.data });
+      Taro.showToast({ title: '登录成功', icon: 'none' });
+      const backToPage = get('backToPage');
       if (backToPage) {
         setTimeout(() => {
-          goToPage(backToPage)
-          remove('backToPage')
+          goToPage(backToPage);
+          remove('backToPage');
         }, 2000);
       }
-
-    })
+    });
   }
   logout() {
-    remove('userInfo')
-    remove('token')
+    clear();
+    Taro.showToast({ title: '正在退出...', icon: 'none', duration: 5000 });
     setTimeout(() => {
-      Taro.reLaunch({ url: '/pages/index/index' })
+      Taro.reLaunch({ url: '/pages/index/index' });
     }, 2000);
   }
   goToEditMyInfo() {
-    const token = get('token')
+    const token = get('token');
     if (token) {
       goToPage('/pages/user/editMyInfo/editMyInfo');
     }
@@ -142,50 +139,38 @@ class User extends Component {
   setting() {
     Taro.openSetting({
       success(res) {
-        console.log('res', res)
-      }
-    })
+        console.log('res', res);
+      },
+    });
   }
   recommendation() {
     Taro.openSetting({
       success(res) {
-        console.log('res', res)
-      }
-    })
+        console.log('res', res);
+      },
+    });
   }
   onShareAppMessage() {
-    const userInfo_ = get('userInfo')
+    const userInfo_ = get('userInfo');
     return {
       from: 'button',
       title: `来自${userInfo_.nickName}的邀请,邀请码:${userInfo_.referenceCode}`,
       path: `/pages/user/user?referenceCode=${userInfo_.referenceCode}`,
       imageUrl: logo,
-      success: function (res) {
+      success: function(res) {
         // 转发成功之后的回调
         if (res.errMsg == 'shareAppMessage:ok') {
-          Taro.showToast({ title: '分享成功', icon: 'none' })
+          Taro.showToast({ title: '分享成功', icon: 'none' });
         }
       },
-    }
+    };
   }
   componentDidShow() {
-    const userInfo_ = get('userInfo')
-    if (userInfo_) {
-      this.setState({ userInfo: userInfo_ })
+    if (!get('openId')) {
+      getSession();
     }
-
   }
   render() {
-    // const {
-    //   avatar,
-    //   id,
-    //   nickName,
-    //   role,
-    //   collectionCount,
-    //   followCount,
-    //   eventCount,
-    //   referenceCode,
-    // } = this.state.userInfo;
     const {
       avatar,
       id,
@@ -195,11 +180,11 @@ class User extends Component {
       followCount,
       eventCount,
       referenceCode,
-    } = get('userInfo') || {}
+    } = get('userInfo') || {};
     const { state } = this.props.user;
     return (
       <View className='user'>
-        <i-message id="message" />
+        <i-message id='message' />
         <View className='pb50px' style='background:#fff'>
           <i-row i-class='user-info'>
             {nickName}
@@ -259,11 +244,16 @@ class User extends Component {
                 <i-cell
                   title='注册歌手'
                   is-link
-                  url='/pages/user/registerArtist/registerArtist'
-                ></i-cell>
-                <i-cell title='我的订单' is-link url='/pages/user/myOrder/myOrder'></i-cell>
+                  url='/pages/user/registerArtist/registerArtist'></i-cell>
+                <i-cell
+                  title='我的订单'
+                  is-link
+                  url='/pages/user/myOrder/myOrder'></i-cell>
 
-                <i-cell title='使用指南' is-link url='/pages/user/instruction/instruction'></i-cell>
+                <i-cell
+                  title='使用指南'
+                  is-link
+                  url='/pages/user/instruction/instruction'></i-cell>
 
                 <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
               </View>
@@ -272,71 +262,80 @@ class User extends Component {
             {role === 'artist' && (
               <View>
                 <i-cell title={state === '1' ? '接单中' : '下线'}>
-                  <i-switch slot="footer" value={state === '1' ? true : false} onChange={this.onChangeSwitch.bind(this)} />
+                  <i-switch
+                    slot='footer'
+                    value={state === '1' ? true : false}
+                    onChange={this.onChangeSwitch.bind(this)}
+                  />
                 </i-cell>
-                <i-cell title='我点过的歌曲' is-link url='/pages/user/myOrder/myOrder'></i-cell>
+                <i-cell
+                  title='我点过的歌曲'
+                  is-link
+                  url='/pages/user/myOrder/myOrder'></i-cell>
                 <i-cell
                   title='上传歌曲'
                   is-link
-                  url='/pages/user/uploadSong/uploadSong'
-                ></i-cell>
+                  url='/pages/user/uploadSong/uploadSong'></i-cell>
                 <i-cell
                   title='我的歌曲'
                   is-link
-                  url='/pages/user/mySong/mySong'
-                ></i-cell>
+                  url='/pages/user/mySong/mySong'></i-cell>
                 <i-cell
                   title='上传活动'
                   is-link
-                  url='/pages/user/uploadEvent/uploadEvent'
-                ></i-cell>
+                  url='/pages/user/uploadEvent/uploadEvent'></i-cell>
                 <i-cell
                   title='我的活动'
                   is-link
-                  url='/pages/user/myEvent/myEvent'
-                ></i-cell>
-                <i-cell title='账户资金' is-link url='/pages/user/profit/profit'></i-cell>
+                  url='/pages/user/myEvent/myEvent'></i-cell>
+                <i-cell
+                  title='账户资金'
+                  is-link
+                  url='/pages/user/profit/profit'></i-cell>
 
-                <i-cell title='点歌二维码' is-link url={'/pages/user/userQrCode/userQrCode?id=' + id}></i-cell>
-                <i-cell title='使用指南' is-link url='/pages/user/instruction/instruction'></i-cell>
+                <i-cell
+                  title='点歌二维码'
+                  is-link
+                  url={'/pages/user/userQrCode/userQrCode?id=' + id}></i-cell>
+                <i-cell
+                  title='使用指南'
+                  is-link
+                  url='/pages/user/instruction/instruction'></i-cell>
 
                 <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
-                <Button
-                  size='mini'
-                  className='share-button'
-                  open-type='share'
-                >
-                  <i-cell title='邀请有奖' label='邀请好友注册艺人,被邀请人并完成50个订单.您将获得50元奖励' value={'邀请码:' + referenceCode} >
-
-                  </i-cell> </Button>
+                <Button size='mini' className='share-button' open-type='share'>
+                  <i-cell
+                    title='邀请有奖'
+                    label='邀请好友注册歌手,被邀请人并完成50个订单.您将获得50元奖励'
+                    value={'邀请码:' + referenceCode}></i-cell>
+                </Button>
               </View>
             )}
-
 
             {/* <i-cell title='关于' is-link url='/pages/user/about/about'></i-cell> */}
           </i-cell-group>
 
           <View>
             <View style='width:150px;margin:20px auto'>
-              {!userInfo.id ? (
+              {!id ? (
                 <Button
                   className='primary'
                   open-type='getUserInfo'
-                  onGetUserInfo={this.getUserInfo.bind(this)}
-                >
+                  onGetUserInfo={this.getUserInfo.bind(this)}>
                   登录
                 </Button>
               ) : (
-                  <Button className='error' onClick={this.logout.bind(this)}>
-                    退出
-                  </Button>
-                )}
-            </View></View>
+                <Button className='error' onClick={this.logout.bind(this)}>
+                  退出
+                </Button>
+              )}
+            </View>
+          </View>
         </View>
         <View className='tabbar-container'>
           <TabbarComp currentTab='user' />
         </View>
-      </View >
+      </View>
     );
   }
 }

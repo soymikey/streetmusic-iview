@@ -137,7 +137,7 @@ class MyOrder extends Component {
         <i-cell-group>
           {list.map(item => {
             return <i-cell
-              title={"类型:" + (item.state === '0' ? '未完成' : (item.state === '1' ? '进行中' : '已完成'))}
+              title={"状态:" + (item.state === '0' ? '未完成' : (item.state === '1' ? '进行中' : '已完成'))}
               label={item.createdDate.slice(0, 10) + '  ' + item.createdDate.slice(11, 19)}
             > <View slot="footer">
                 <View className=''><i-avatar src={item.avatar} size='small' />{item.nickName}</View>

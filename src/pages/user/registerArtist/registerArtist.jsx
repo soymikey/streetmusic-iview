@@ -278,11 +278,10 @@ class Registerartist extends Component {
   componentDidHide() { }
   reLaunch() {
     clear()
-    getSession()
     Taro.reLaunch({ url: '/pages/user/user' })
-    // setTimeout(() => {
-    //   Taro.switchTab({ url: '/pages/user/user' })
-    // }, 2000);
+    setTimeout(() => {
+      Taro.showToast({ title: '注册成功,请重新登录...', icon: 'none' })
+    }, 1000);
   }
   render() {
     const {
