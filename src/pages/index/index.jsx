@@ -15,8 +15,7 @@ import EventSumaryComp from '@/components/eventSumaryComp/eventSumaryComp';
 import TabbarComp from '@/components/TabbarComp/TabbarComp';
 import { getHotEventList } from '@/api/event';
 import { getHotSingerList, getRecommendSongList } from '@/api/song';
-import { getMyOpenid } from '@/api/user';
-import { goToPage } from '@/utils/tools.js';
+import { goToPage, getSession } from '@/utils/tools.js';
 import { get, set, clear, remove } from '@/utils/localStorage';
 import eventPoster from '@/asset/images/posters/eventPoster.jpg';
 
@@ -64,7 +63,11 @@ class Index extends Component {
     }
   }
 
-  componentDidShow() {}
+  componentDidShow() {
+    if (!get('openId')) {
+      getSession();
+    }
+  }
   fetchHotEventList(override) {
     Taro.showLoading({
       title: '加载中-活动',

@@ -81,7 +81,10 @@ function initEventHandle() {
     // }
 
     else if (data.type === 'goFetchOrderList') {
-      if (currentPath === "/pages/order/myCurrentOrder") {
+      console.log('goFetchOrderList');
+      console.log('currentPath ', currentPath);
+      if (currentPath === "/pages/order/order") {
+        console.log('currentPage.onShow', currentPage.onShow);
         currentPage.onShow()//拉取最新的订单
       }
       else if (currentPath === "/pages/singer/singer") {

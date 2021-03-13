@@ -22,7 +22,7 @@ export const getSession = () => {
       if (res.code) {
         return getMyOpenid({ jsCode: res.code }).then(res1 => {
           set('openId', res1.data.openid)
-          linkSocket()
+
         })
       }
     },
@@ -47,7 +47,6 @@ export const goToLogin = () => {
     return
   }
   clear()
-  getSession()
   set('backToPage', prePageUrl);
   Taro.switchTab({ url: '/pages/user/user' })
 }

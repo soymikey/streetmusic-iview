@@ -4,12 +4,11 @@ import { View, Button, Text, Picker } from '@tarojs/components';
 import ImagePickerComp from '@/components/ImagePickerComp/ImagePickerComp';
 import './registerArtist.scss';
 import { getUserInfo, registerArtist, login } from '@/api/user';
-import validator from '@/utils/validator'
+import validator from '@/utils/validator';
 import { getSMSCode } from '@/api/common';
 import { get, set, remove, clear } from '@/utils/localStorage';
-import { getSession } from '@/utils/tools';
 
-let clock
+let clock;
 class Registerartist extends Component {
   config = {
     navigationBarTitleText: '注册歌手',
@@ -47,27 +46,24 @@ class Registerartist extends Component {
       isShowModal: false,
       action: [
         {
-          name: '重新登录'
+          name: '重新登录',
         },
-
       ],
     };
   }
   componentDidMount() {
-    const referenceCode = get('referenceCode')
+    const referenceCode = get('referenceCode');
     if (referenceCode) {
-      this.setState({ referenceCode: referenceCode })
+      this.setState({ referenceCode: referenceCode });
     }
-    const userInfo_ = get('userInfo') || {}
+    const userInfo_ = get('userInfo') || {};
 
     getUserInfo({ id: userInfo_.id }).then(res => {
-      const { address,
-        avatar, introduction,
-      } = res.data
+      const { address, avatar, introduction } = res.data;
       this.setState({
         avatar: [{ url: avatar }],
-      })
-    })
+      });
+    });
   }
 
   onChangeRealName(e) {
@@ -120,7 +116,8 @@ class Registerartist extends Component {
       address,
       phone,
       DOB,
-      residentId, referenceCode
+      residentId,
+      referenceCode,
     } = this.state;
     if (!this.state.code.length) {
       Taro.showToast({ title: '验证码不能为空', icon: 'none' });
@@ -130,63 +127,74 @@ class Registerartist extends Component {
       Taro.showToast({ title: '验证码不正确', icon: 'none' });
       return;
     }
-    const isValid = validator(
-      [
-
-        {
-          value: realName,
-          rules: [{
+    const isValid = validator([
+      {
+        value: realName,
+        rules: [
+          {
             rule: 'required',
-            msg: '真实名字不能为空'
-          }]
-        },
-        {
-          value: DOB,
-          rules: [{
+            msg: '真实名字不能为空',
+          },
+        ],
+      },
+      {
+        value: DOB,
+        rules: [
+          {
             rule: 'required',
-            msg: '生日不能为空'
-          }]
-        },
-        {
-          value: phone,
-          rules: [{
+            msg: '生日不能为空',
+          },
+        ],
+      },
+      {
+        value: phone,
+        rules: [
+          {
             rule: 'isMobile',
-          }]
-        },
-        {
-          value: residentId,
-          rules: [{
+          },
+        ],
+      },
+      {
+        value: residentId,
+        rules: [
+          {
             rule: 'isIdentityNumber',
-          }]
-        },
-        {
-          value: provinceCityRegion.value,
-          rules: [{
+          },
+        ],
+      },
+      {
+        value: provinceCityRegion.value,
+        rules: [
+          {
             rule: 'arrLength',
-            msg: '省市区不能为空'
-          }]
-        },
-        {
-          value: address,
-          rules: [{
+            msg: '省市区不能为空',
+          },
+        ],
+      },
+      {
+        value: address,
+        rules: [
+          {
             rule: 'required',
-            msg: '地址不能为空'
-          }]
-        },
-        {
-          value: introduction,
-          rules: [{
+            msg: '地址不能为空',
+          },
+        ],
+      },
+      {
+        value: introduction,
+        rules: [
+          {
             rule: 'required',
-            msg: '个人介绍不能为空或者小于30个字'
+            msg: '个人介绍不能为空或者小于30个字',
           },
           {
             rule: 'greater',
             type: 30,
-            msg: '个人介绍不能为空或者小于30个字'
-          }]
-        },
-      ]
-    )
+            msg: '个人介绍不能为空或者小于30个字',
+          },
+        ],
+      },
+    ]);
     if (!isValid.status) {
       Taro.showToast({ title: isValid.msg, icon: 'none' });
       return;
@@ -199,59 +207,65 @@ class Registerartist extends Component {
       phone,
       residentId,
       DOB,
-      referenceCode
-    }
+      referenceCode,
+    };
     this.setState({ isDisabled: true });
-    registerArtist(data).then(res => {
-      this.setState({ isDisabled: false, isShowModal: true });
-
-    }).catch(e => {
-
-      this.setState({ isDisabled: false });
-    })
-
-
+    registerArtist(data)
+      .then(res => {
+        this.setState({ isDisabled: false, isShowModal: true });
+      })
+      .catch(e => {
+        this.setState({ isDisabled: false });
+      });
   }
 
   sendCode() {
-    this.setState({ smsDisabled: true, smsText: this.state.smsCountDown + '秒后可重新获取' })
+    this.setState({
+      smsDisabled: true,
+      smsText: this.state.smsCountDown + '秒后可重新获取',
+    });
     clock = setInterval(this.doLoop, 1000, this);
   }
   doLoop(that) {
     that.setState({ smsCountDown: that.state.smsCountDown - 1 }, () => {
       if (that.state.smsCountDown > 0) {
-        that.setState({ smsText: that.state.smsCountDown + '秒后可重新获取' })
+        that.setState({ smsText: that.state.smsCountDown + '秒后可重新获取' });
       } else {
         clearInterval(clock); //清除js定时器
-        that.setState({ smsText: '点击发送验证码', smsDisabled: false, smsCountDown: 60 })
+        that.setState({
+          smsText: '点击发送验证码',
+          smsDisabled: false,
+          smsCountDown: 60,
+        });
       }
-    })
+    });
   }
   fetchMSMCode() {
-    const isValid = validator(
-      [{
+    const isValid = validator([
+      {
         value: this.state.phone,
-        rules: [{
-          rule: 'isMobile',
-        }]
-      },]
-    )
+        rules: [
+          {
+            rule: 'isMobile',
+          },
+        ],
+      },
+    ]);
     if (!isValid.status) {
       Taro.showToast({ title: isValid.msg, icon: 'none' });
       return;
     }
     return getSMSCode({ phone: this.state.phone }).then(res => {
-      this.setState({ randomCode: res.data.code })
-      this.sendCode()
-    })
+      this.setState({ randomCode: res.data.code });
+      this.sendCode();
+    });
   }
   getAddress() {
     Taro.chooseLocation({
-      success: (res) => {
-        if (res.errMsg === "chooseLocation:ok") {
-          this.setState({ address: res.name + ' ' + res.address })
+      success: res => {
+        if (res.errMsg === 'chooseLocation:ok') {
+          this.setState({ address: res.name + ' ' + res.address });
         }
-
       },
       fail: err => {
         Taro.showModal({
@@ -263,24 +277,23 @@ class Registerartist extends Component {
                 url: '/pages/user/user',
               });
             } else if (res.cancel) {
-              Taro.showToast({ title: '获取修改状态失败' })
+              Taro.showToast({ title: '获取修改状态失败' });
             }
-          }
-
-        })
-      }
-    })
+          },
+        });
+      },
+    });
   }
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
-  componentDidShow() { }
+  componentDidShow() {}
 
-  componentDidHide() { }
+  componentDidHide() {}
   reLaunch() {
-    clear()
-    Taro.reLaunch({ url: '/pages/user/user' })
+    clear();
+    Taro.reLaunch({ url: '/pages/user/user' });
     setTimeout(() => {
-      Taro.showToast({ title: '注册成功,请重新登录...', icon: 'none' })
+      Taro.showToast({ title: '注册成功,请重新登录...', icon: 'none' });
     }, 1000);
   }
   render() {
@@ -291,12 +304,25 @@ class Registerartist extends Component {
       address,
       avatar,
       phone,
-      residentId, isDisabled, DOB, code,
-      smsDisabled, smsCountDown, smsText, isShowModal, action
+      residentId,
+      isDisabled,
+      DOB,
+      code,
+      smsDisabled,
+      smsCountDown,
+      smsText,
+      isShowModal,
+      action,
     } = this.state;
     return (
       <View className='registerArtist'>
-        <i-modal title="恭喜您,注册成功~" visible={isShowModal} actions={action} action-mode="vertical" onClick={this.reLaunch.bind(this)} />
+        <i-modal
+          title='恭喜您,注册成功~'
+          visible={isShowModal}
+          actions={action}
+          action-mode='vertical'
+          onClick={this.reLaunch.bind(this)}
+        />
         {/* <i-panel title='个人头像'>
           <ImagePickerComp
             count={1}
@@ -322,7 +348,7 @@ class Registerartist extends Component {
           placeholder='手机号码'
           value={phone}
           maxlength={11}
-          type="number"
+          type='number'
           onChange={this.onChangePhone.bind(this)}
         />
         <View style='display:flex'>
@@ -337,29 +363,30 @@ class Registerartist extends Component {
             />
           </View>
           <View style='flex:1;display: flex; align-items: center;justify-content: end; background: #fff;'>
-            <View style='text-align:right;width:100%;padding-right:15px' >
+            <View style='text-align:right;width:100%;padding-right:15px'>
               <Button
                 size='mini'
                 className='success'
                 onClick={this.fetchMSMCode.bind(this)}
-                disabled={smsDisabled}
-              >
+                disabled={smsDisabled}>
                 {smsText}
               </Button>
             </View>
           </View>
-
         </View>
         <i-input
           title='身份证'
           placeholder='身份证号码'
           value={residentId}
           maxlength={18}
-          type="number"
+          type='number'
           onChange={this.onChangeResidentId.bind(this)}
         />
 
-        <Picker mode='region' onChange={this.onChangeProvinceCityRegion.bind(this)} value={provinceCityRegion.value}>
+        <Picker
+          mode='region'
+          onChange={this.onChangeProvinceCityRegion.bind(this)}
+          value={provinceCityRegion.value}>
           <View onClick={this.hideKeyBoard.bind(this)}>
             <i-input
               title='省市区'
@@ -393,12 +420,10 @@ class Registerartist extends Component {
             <Button
               size='mini'
               className='success'
-              onClick={this.getAddress.bind(this)}
-            >
+              onClick={this.getAddress.bind(this)}>
               地址
-          </Button>
+            </Button>
           </View>
-
         </View>
         <i-input
           title='介绍'
@@ -416,7 +441,11 @@ class Registerartist extends Component {
           onChange={this.onChangeReferenceCode.bind(this)}
         />
         <View className='button-wrapper'>
-          <Button size='mini' className='primary' onClick={this.registerArtist.bind(this)} disabled={isDisabled}>
+          <Button
+            size='mini'
+            className='primary'
+            onClick={this.registerArtist.bind(this)}
+            disabled={isDisabled}>
             注册歌手
           </Button>
         </View>

@@ -42,7 +42,7 @@ export default function user(state = INITIAL_STATE, action) {
   switch (action.type) {
     case SETUSERINFO:
       return {
-        ...state,
+        // ...state,
         ...action.data
       }
 

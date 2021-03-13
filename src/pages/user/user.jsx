@@ -107,24 +107,31 @@ class User extends Component {
       Taro.showToast({ title: '登录失败,请重新开启小程序.', icon: 'none' });
       return;
     }
-    userInfo.openid = get('openId');
-    return login(userInfo).then(res => {
-      set('token', res.data.token);
-
-      this.props.setUserInfo(res.data);
-      this.setState({ userInfo: res.data });
-      Taro.showToast({ title: '登录成功', icon: 'none' });
-      const backToPage = get('backToPage');
-      if (backToPage) {
-        setTimeout(() => {
-          goToPage(backToPage);
-          remove('backToPage');
-        }, 2000);
-      }
+    Taro.showLoading({
+      title: '登录中...',
     });
+    userInfo.openid = get('openId');
+    return login(userInfo)
+      .then(res => {
+        set('token', res.data.token);
+        this.props.setUserInfo(res.data);
+        this.setState({ userInfo: res.data });
+        Taro.showToast({ title: '登录成功', icon: 'none' });
+        const backToPage = get('backToPage');
+        if (backToPage) {
+          setTimeout(() => {
+            goToPage(backToPage);
+            remove('backToPage');
+          }, 2000);
+        }
+      })
+      .finally(() => {
+        Taro.hideLoading();
+      });
   }
   logout() {
     clear();
+    this.props.setUserInfo({});
     Taro.showToast({ title: '正在退出...', icon: 'none', duration: 5000 });
     setTimeout(() => {
       Taro.reLaunch({ url: '/pages/index/index' });
@@ -180,7 +187,7 @@ class User extends Component {
       followCount,
       eventCount,
       referenceCode,
-    } = get('userInfo') || {};
+    } = this.props.user || {};
     const { state } = this.props.user;
     return (
       <View className='user'>
