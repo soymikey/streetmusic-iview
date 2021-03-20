@@ -435,6 +435,11 @@ class Singer extends Component {
                   .then(res => {
                     this.setState({ isShowModal: false, tips: 0 });
                     console.log('准备发送toArtist');
+                    const order = get('order');
+                    console.log('order', order);
+                    Taro.sendSocketMessage({
+                      data: order,
+                    });
 
                     setTimeout(() => {
                       this.fetchOrderList();
@@ -458,6 +463,12 @@ class Singer extends Component {
                 createTips(data)
                   .then(res => {
                     this.setState({ isShowTipsModal: false, tips: 0 });
+
+                    const tips = get('tips');
+                    Taro.sendSocketMessage({
+                      data: tips,
+                    });
+
                     Taro.showToast({
                       title: '感谢支持',
                       icon: 'none',

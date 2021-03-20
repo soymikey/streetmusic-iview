@@ -1,1 +1,2 @@
 export const SETUSERINFO = 'SETUSERINFO'
+export const RESETUSERINFO = 'RESETUSERINFO'

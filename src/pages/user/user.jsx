@@ -9,7 +9,7 @@ import { get, set, remove, clear } from '@/utils/localStorage';
 const logo = require('@/asset/icon/logo.png');
 import './user.scss';
 import { connect } from '@tarojs/redux';
-import { setUserInfo } from '../../actions/user';
+import { setUserInfo, resetUserInfo } from '../../actions/user';
 
 @connect(
   ({ user }) => ({
@@ -18,6 +18,9 @@ import { setUserInfo } from '../../actions/user';
   dispatch => ({
     setUserInfo(data) {
       dispatch(setUserInfo(data));
+    },
+    resetUserInfo(data) {
+      dispatch(resetUserInfo(data));
     },
   })
 )
@@ -130,11 +133,12 @@ class User extends Component {
       });
   }
   logout() {
+    this.props.resetUserInfo({});
     clear();
-    this.props.setUserInfo({});
     Taro.showToast({ title: '正在退出...', icon: 'none', duration: 5000 });
     setTimeout(() => {
-      Taro.reLaunch({ url: '/pages/index/index' });
+      // Taro.reLaunch({ url: '/pages/index/index' });
+      Taro.switchTab({ url: '/pages/index/index' });
     }, 2000);
   }
   goToEditMyInfo() {
@@ -187,8 +191,8 @@ class User extends Component {
       followCount,
       eventCount,
       referenceCode,
+      state,
     } = this.props.user || {};
-    const { state } = this.props.user;
     return (
       <View className='user'>
         <i-message id='message' />

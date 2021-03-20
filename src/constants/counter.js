@@ -1,5 +1,6 @@
 export const ADD = 'ADD'
 export const MINUS = 'MINUS'
 export const SETUSERINFO = 'SETUSERINFO'
+export const RESETUSERINFO = 'RESETUSERINFO'
 export const LOGOUT = 'LOGOUT'
 export const SETWSSTATE = 'SETWSSTATE'

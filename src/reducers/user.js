@@ -1,4 +1,4 @@
-import { SETUSERINFO } from '../constants/user'
+import { SETUSERINFO, RESETUSERINFO } from '../constants/user'
 
 // { value: '1', label: '接单中' },
 // { value: '2', label: '休息中' },
@@ -42,8 +42,12 @@ export default function user(state = INITIAL_STATE, action) {
   switch (action.type) {
     case SETUSERINFO:
       return {
-        // ...state,
+        ...state,
         ...action.data
+      }
+    case RESETUSERINFO:
+      return {
+        ...INITIAL_STATE
       }
 
     default:
