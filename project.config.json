@@ -72,6 +72,14 @@
 					"id": -1,
 					"name": "pages/index/index",
 					"pathName": "pages/index/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 2,
+					"name": "推荐码",
+					"pathName": "pages/user/user",
+					"query": "referenceCode=1007",
 					"scene": null
 				}
 			]

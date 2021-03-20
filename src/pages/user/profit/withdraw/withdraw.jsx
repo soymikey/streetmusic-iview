@@ -1,24 +1,21 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View, Button, Text } from '@tarojs/components'
+import Taro, { Component } from '@tarojs/taro';
+import { View, Button, Text } from '@tarojs/components';
 import { getSMSCode } from '@/api/common';
 
-import {
-  withdrawByUserId,
+import { withdrawByUserId } from '@/api/user';
+import './withdraw.scss';
+import validator from '@/utils/validator';
 
-} from '@/api/user';
-import './withdraw.scss'
-import validator from '@/utils/validator'
-
-let clock
+let clock;
 class Withdraw extends Component {
-
   config = {
     navigationBarTitleText: '提现',
     usingComponents: {
       'i-panel': '../../../../iView/panel/index',
-      'i-input': '../../../../iView/input/index'
+      'i-input': '../../../../iView/input/index',
+      'i-modal': '../../../../iView/modal/index',
     },
-  }
+  };
   constructor() {
     super(...arguments);
     this.state = {
@@ -29,12 +26,14 @@ class Withdraw extends Component {
       smsDisabled: false,
       smsText: '点击发送验证码',
       smsCountDown: 60,
-      randomCode: ''
+      randomCode: '',
+      withdrawModal: false,
+      withdrawText: '',
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps)
+    console.log(this.props, nextProps);
   }
 
   onChangeTotal(e) {
@@ -47,62 +46,72 @@ class Withdraw extends Component {
     this.setState({ code: e.detail.detail.value });
   }
   sendCode() {
-    this.setState({ smsDisabled: true, smsText: this.state.smsCountDown + '秒后可重新获取' })
+    this.setState({
+      smsDisabled: true,
+      smsText: this.state.smsCountDown + '秒后可重新获取',
+    });
     clock = setInterval(this.doLoop, 1000, this);
   }
   doLoop(that) {
     that.setState({ smsCountDown: that.state.smsCountDown - 1 }, () => {
       if (that.state.smsCountDown > 0) {
-        that.setState({ smsText: that.state.smsCountDown + '秒后可重新获取' })
+        that.setState({ smsText: that.state.smsCountDown + '秒后可重新获取' });
       } else {
         clearInterval(clock); //清除js定时器
-        that.setState({ smsText: '点击发送验证码', smsDisabled: false, smsCountDown: 60 })
+        that.setState({
+          smsText: '点击发送验证码',
+          smsDisabled: false,
+          smsCountDown: 60,
+        });
       }
-    })
+    });
   }
   fetchMSMCode() {
-    const isValid = validator(
-      [{
+    const isValid = validator([
+      {
         value: this.state.phone,
-        rules: [{
-          rule: 'isMobile',
-        }]
-      },]
-    )
+        rules: [
+          {
+            rule: 'isMobile',
+          },
+        ],
+      },
+    ]);
     if (!isValid.status) {
       Taro.showToast({ title: isValid.msg, icon: 'none' });
       return;
     }
-    return getSMSCode({phone:this.state.phone}).then(res => {
-      this.setState({ randomCode: res.data.code })
-      this.sendCode()
-    })
+    return getSMSCode({ phone: this.state.phone }).then(res => {
+      this.setState({ randomCode: res.data.code });
+      this.sendCode();
+    });
   }
 
   withdraw() {
-
     if (this.state.code !== this.state.randomCode) {
       Taro.showToast({ title: '验证码输入错误,请重试~', icon: 'none' });
       return;
     }
-    const isValid = validator(
-      [
-        {
-          value: this.state.total,
-          rules: [{
+    const isValid = validator([
+      {
+        value: this.state.total,
+        rules: [
+          {
             rule: 'isPrice',
-            msg: '提现金额格式错误'
-          }]
-        },
-        {
-          value: this.state.phone,
-          rules: [{
+            msg: '提现金额格式错误',
+          },
+        ],
+      },
+      {
+        value: this.state.phone,
+        rules: [
+          {
             rule: 'isMobile',
-            msg: '联系电话格式错误'
-          }]
-        },
-      ]
-    )
+            msg: '联系电话格式错误',
+          },
+        ],
+      },
+    ]);
 
     if (!isValid.status) {
       Taro.showToast({ title: isValid.msg, icon: 'none' });
@@ -110,34 +119,59 @@ class Withdraw extends Component {
     }
     if (!(Number(this.state.total) > 0 && Number(this.state.total) < 1000)) {
       Taro.showToast({ title: '金额不能小于0或者大于999', icon: 'none' });
-      return
+      return;
     }
-    this.setState({ disabled: true })
-    withdrawByUserId({ amount: this.state.total, phone: this.state.phone }).then(res => {
-      this.setState({ total: 0, phone: '', code: '', disabled: false })
-    }).catch(e => {
-      this.setState({ disabled: false })
-    })
+    this.setState({ disabled: true });
+    withdrawByUserId({ amount: this.state.total, phone: this.state.phone })
+      .then(res => {
+        this.setState({
+          total: '',
+          phone: '',
+          code: '',
+          disabled: false,
+          withdrawText: res.message,
+          withdrawModal: true,
+        });
+      })
+      .catch(e => {
+        this.setState({ disabled: false });
+      });
   }
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
-  componentDidShow() { }
+  componentDidShow() {}
 
-  componentDidHide() { }
+  componentDidHide() {}
 
   render() {
-    const { total, disabled,
+    const {
+      total,
+      disabled,
       phone,
       code,
       smsDisabled,
       smsText,
-
-    } = this.state
+      withdrawModal,
+      withdrawText,
+    } = this.state;
     return (
       <View className='withdraw'>
+        <i-modal
+          actions={[
+            {
+              name: '确定',
+              color: '#2d8cf0',
+            },
+          ]}
+          visible={withdrawModal}
+          onClick={() => {
+            this.setState({ withdrawModal: false });
+          }}>
+          <View>{withdrawText}</View>
+        </i-modal>
         <i-input
           title='手机'
-          type="number"
+          type='number'
           placeholder='注册的手机号码'
           value={phone}
           maxlength={11}
@@ -155,25 +189,38 @@ class Withdraw extends Component {
             />
           </View>
           <View style='flex:1;display: flex; align-items: center;justify-content: end; background: #fff;'>
-            <View style='text-align:right;width:100%;padding-right:15px' >
+            <View style='text-align:right;width:100%;padding-right:15px'>
               <Button
                 size='mini'
                 className='success'
                 onClick={this.fetchMSMCode.bind(this)}
-                disabled={smsDisabled}
-              >
+                disabled={smsDisabled}>
                 {smsText}
               </Button>
             </View>
-          </View></View>
-        <i-input value={total} right title="提现(元):" maxlength={3} placeholder="一次提现金额不能超过999元" onChange={this.onChangeTotal.bind(this)} type='number' />
+          </View>
+        </View>
+        <i-input
+          value={total}
+          right
+          title='提现(元):'
+          maxlength={3}
+          placeholder='请输入提现金额'
+          onChange={this.onChangeTotal.bind(this)}
+          type='number'
+        />
         <View style='text-align:center;margin-top:20px;'>
-          <Button className='primary' size='mini' onClick={this.withdraw.bind(this)} disabled={disabled} >
-            提现 </Button>
+          <Button
+            className='primary'
+            size='mini'
+            onClick={this.withdraw.bind(this)}
+            disabled={disabled}>
+            提现
+          </Button>
         </View>
       </View>
-    )
+    );
   }
 }
 
-export default Withdraw
+export default Withdraw;

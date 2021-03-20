@@ -36,6 +36,7 @@ text-rendering: optimizeLegibility;
   }
 .online::after {
     content: "接单中";
+    right:-20PX
 }
 .pause::after {
     content: "休息中";

@@ -46,7 +46,7 @@ class Wechat {
   // message:进度条的提示信息
   // success:成功的回调函数
   // fail：失败的回调
-  static async request(url, params, method = 'post', message = '加载中') {
+  static async request(url, params, method = 'post', message = '加载中', showRespondMessage = true) {
 
     if (message != '') {
       Taro.showLoading({
@@ -74,7 +74,10 @@ class Wechat {
           if (res.statusCode == 200) {
             if (res.data.errno === 0) {
               if (res.data.message) {
-                Taro.showToast({ title: res.data.message, icon: 'none' });
+                if (showRespondMessage) {
+
+                  Taro.showToast({ title: res.data.message, icon: 'none' });
+                }
               }
               resolve(res.data);
             } else if (res.data.errno === -2) {

@@ -7,8 +7,19 @@ import { getUserInfo, registerArtist, login } from '@/api/user';
 import validator from '@/utils/validator';
 import { getSMSCode } from '@/api/common';
 import { get, set, remove, clear } from '@/utils/localStorage';
-
+import { connect } from '@tarojs/redux';
+import { resetUserInfo } from '../../../actions/user';
 let clock;
+@connect(
+  ({ user }) => ({
+    user,
+  }),
+  dispatch => ({
+    resetUserInfo(data) {
+      dispatch(resetUserInfo(data));
+    },
+  })
+)
 class Registerartist extends Component {
   config = {
     navigationBarTitleText: '注册歌手',
@@ -290,10 +301,16 @@ class Registerartist extends Component {
 
   componentDidHide() {}
   reLaunch() {
+    // clear();
+    // Taro.reLaunch({ url: '/pages/user/user' });
+    // setTimeout(() => {
+    //   Taro.showToast({ title: '注册成功,请重新登录...', icon: 'none' });
+    // }, 2000);
+
+    this.props.resetUserInfo({});
     clear();
-    Taro.reLaunch({ url: '/pages/user/user' });
     setTimeout(() => {
-      Taro.showToast({ title: '注册成功,请重新登录...', icon: 'none' });
+      Taro.reLaunch({ url: '/pages/user/user' });
     }, 1000);
   }
   render() {
@@ -313,6 +330,7 @@ class Registerartist extends Component {
       smsText,
       isShowModal,
       action,
+      referenceCode,
     } = this.state;
     return (
       <View className='registerArtist'>

@@ -56,7 +56,7 @@ class User extends Component {
 
   componentDidMount() {
     if (this.$router.params.referenceCode) {
-      set(referenceCode, this.$router.params.referenceCode);
+      set('referenceCode', this.$router.params.referenceCode);
     }
   }
   onChangeSwitch(e) {
@@ -135,13 +135,17 @@ class User extends Component {
   logout() {
     this.props.resetUserInfo({});
     clear();
-    Taro.showToast({ title: '正在退出...', icon: 'none', duration: 5000 });
     setTimeout(() => {
       // Taro.reLaunch({ url: '/pages/index/index' });
       Taro.switchTab({ url: '/pages/index/index' });
     }, 2000);
   }
   goToEditMyInfo() {
+    const { role } = this.props.user;
+    if (role === 'user') {
+      Taro.showToast({ title: '此功能还未对普通用户还未开放~', icon: 'none' });
+      return;
+    }
     const token = get('token');
     if (token) {
       goToPage('/pages/user/editMyInfo/editMyInfo');
@@ -267,6 +271,7 @@ class User extends Component {
                   url='/pages/user/instruction/instruction'></i-cell>
 
                 <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
+                <i-cell title='当前版本' value='1.1.0'></i-cell>
               </View>
             )}
 
@@ -314,6 +319,7 @@ class User extends Component {
                   url='/pages/user/instruction/instruction'></i-cell>
 
                 <i-cell title='设置' onClick={this.setting.bind(this)}></i-cell>
+                <i-cell title='当前版本' value='1.1.0'></i-cell>
                 <Button size='mini' className='share-button' open-type='share'>
                   <i-cell
                     title='邀请有奖'

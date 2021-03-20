@@ -57,7 +57,7 @@ export const createArtist = data => {
 
 export const getProfitById = () => { return Wechat.request('/api/userinfo/profit') }//获取某个歌手的总金额
 export const getStatementList = (data) => { return Wechat.request('/api/userinfo/statement', data) }//获取某个歌手的流水
-export const withdrawByUserId = (data) => { return Wechat.request('/api/userinfo/withdraw/create', data) }
+export const withdrawByUserId = (data) => { return Wechat.request('/api/userinfo/withdraw/create', data, 'post', '加载中', false) }
 export const getWithdrawList = (data) => { return Wechat.request('/api/userinfo/withdraw/history', data) }
 export const createPay = (data) => { return Wechat.request('/api/userinfo/pay/create', data) }
 export const createQrCodeStand = (data) => { return Wechat.request('/api/userinfo/createQRCodeStand', data) }

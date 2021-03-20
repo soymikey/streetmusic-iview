@@ -40,8 +40,6 @@ class App extends Component {
       'pages/user/myOrder/myOrder',
       'pages/user/profit/details/details',
       'pages/user/profit/withdrawHistory/withdrawHistory',
-      'pages/tips/history',
-      'pages/reference/history',
       'pages/singer/singer',
       'pages/singer/singerList',
 
