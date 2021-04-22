@@ -350,8 +350,8 @@ class Registerartist extends Component {
           />
         </i-panel> */}
         <i-input
-          title='名字'
-          placeholder='真实名字'
+          title='实名制名字'
+          placeholder='微信实名制名字'
           value={realName}
           maxlength={-1}
           onChange={this.onChangeRealName.bind(this)}

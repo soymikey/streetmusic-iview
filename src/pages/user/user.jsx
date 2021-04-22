@@ -185,6 +185,14 @@ class User extends Component {
       getSession();
     }
   }
+  copy() {
+    Taro.setClipboardData({
+      data: 'streetmusic01',
+      success(res) {
+        
+      },
+    });
+  }
   render() {
     const {
       avatar,
@@ -244,7 +252,7 @@ class User extends Component {
             <i-col span='6' i-class='col-class'>
               <View onClick={this.goToEditMyInfo.bind(this)}>
                 <View className='title'>
-                  <Text>我的资料</Text>
+                  <Text>编辑资料</Text>
                 </View>
                 <View className='content'>
                   <i-icon type='editor' />
@@ -264,6 +272,7 @@ class User extends Component {
                   title='我的订单'
                   is-link
                   url='/pages/user/myOrder/myOrder'></i-cell>
+                <i-cell title='复制客服微信' onClick={this.copy.bind(this)}></i-cell>
 
                 <i-cell
                   title='使用指南'
@@ -313,6 +322,7 @@ class User extends Component {
                   title='点歌二维码'
                   is-link
                   url={'/pages/user/userQrCode/userQrCode?id=' + id}></i-cell>
+                <i-cell title='联系我们客服' onClick={this.copy.bind(this)}></i-cell>
                 <i-cell
                   title='使用指南'
                   is-link
@@ -337,7 +347,7 @@ class User extends Component {
               {!id ? (
                 <Button
                   className='primary'
-                  open-type='getUserInfo'
+                  open-type='getUserProfile'
                   onGetUserInfo={this.getUserInfo.bind(this)}>
                   登录
                 </Button>
